@@ -1,0 +1,32 @@
+dm:
+  main:
+  makeCerts:
+  purgeAll:
+  loadAppSetting:
+  init:
+    collection: false
+    args:
+      name:
+        required: true
+        type: String
+        defaultValue:
+      force:
+        required: false
+        type: Boolean
+        defaultValue: false
+      remove_all:
+        required: false
+        type: Boolean
+        defaultValue: false
+      include:
+        required: false
+        type: Array
+        defaultValue: []
+  setUp:
+  setExecDbService:
+    collection: false
+    args:
+      base_image:
+        required: true
+        type: String
+        defaultValue:

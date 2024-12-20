@@ -1,0 +1,4 @@
+# Ignora módulos
+node_modules/*
+# Ignora configuración de entorno
+env.*
