@@ -14,6 +14,6 @@ task:
       call: exec
       args:
         cd: (({}.var.up_home_root))
-        cmd: docker compose logs -f -t
+        cmd: export COMPOSE_PROJECT_NAME=(({origin}._tag)); export APPSETTING_UID=(({}.user.uid)); export APPSETTING_GID=(({}.user.gid)); export APPSETTING_USER=(({}.user.username)); export APPSETTING_ENV=(({origin}._env)); docker compose logs -f -t
         out: true
     - { event: 'origin windup' }
