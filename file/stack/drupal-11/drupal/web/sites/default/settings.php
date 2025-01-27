@@ -90,7 +90,7 @@ if (getenv('APPSETTING_DEV') == "true") {
 
 # Environment setting
   switch (getenv('APPSETTING_ENV')) {
-    case 'ddev':
+    case 'local':
       # Environment indicator
         $config['environment_indicator.indicator']['fg_color'] = '#b8b8b8';
         $config['environment_indicator.indicator']['bg_color'] = '#006803';

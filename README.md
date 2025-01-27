@@ -26,6 +26,7 @@
 * [ls.network](docs/auto_generated--proc--ls.network.md)
 * [ls.php.conf](docs/auto_generated--proc--ls.php.conf.md)
 * [make.drupal](docs/auto_generated--proc--make.drupal.md)
+* [make.reinstall.drupal](docs/auto_generated--proc--make.reinstall.drupal.md)
 * [poweroff](docs/auto_generated--proc--poweroff.md)
 * [proxy.up](docs/auto_generated--proc--proxy.up.md)
 * [ps](docs/auto_generated--proc--ps.md)
