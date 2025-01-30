@@ -63,18 +63,6 @@ task:
       args:
         cd: (({origin}.appsetting.root))
         cmd: (({}.exec)) dm.drush updb -y
-    # Comprueba traducciones
-    - label: Comprobando traducciones
-      call: exec
-      args:
-        cd: (({origin}.appsetting.root))
-        cmd: (({}.exec)) dm.drush locale:check
-    # Actualiza traducciones
-    - label: Actualizando traducciones
-      call: exec
-      args:
-        cd: (({origin}.appsetting.root))
-        cmd: (({}.exec)) dm.drush locale:update
     # Vaciando la caché
     - label: Actualizando traducciones
       call: exec
