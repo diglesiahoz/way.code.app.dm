@@ -44,7 +44,8 @@ task:
       args:
         cd: (({origin}.appsetting.root))
         cmd: (({}.exec)) exec www grep -r "uuid:" ./ | grep config/system.site.yml | awk "{ print \$2 }" | xargs
-        pipe: site.uuid 
+        pipe: site.uuid
+        out: false 
     # Establece UUID del sitio
     - label: Estableciendo UUID del sitio 
       call: exec
@@ -63,16 +64,36 @@ task:
       args:
         cd: (({origin}.appsetting.root))
         cmd: (({}.exec)) dm.drush updb -y
+    ## Comprueba traducciones
+    #- label: Comprobando traducciones
+    #  call: exec
+    #  args:
+    #    cd: (({origin}.appsetting.root))
+    #    cmd: (({}.exec)) dm.drush locale:check
+    ## Actualiza traducciones
+    #- label: Actualizando traducciones
+    #  call: exec
+    #  args:
+    #    cd: (({origin}.appsetting.root))
+    #    cmd: (({}.exec)) dm.drush locale:update
     # Vaciando la caché
     - label: Actualizando traducciones
       call: exec
       args:
         cd: (({origin}.appsetting.root))
         cmd: (({}.exec)) dm.drush cr
+    # Obtiene acceso a sitio web
+    - label: Obteniendo acceso a sitio web
+      call: exec
+      args:
+        cd: (({origin}.appsetting.root))
+        cmd: (({}.exec)) dm.drush uli
+        pipe: access.url
+        out: false
     # Mensaje de exito
     - call: log
       args:
-        message: Re-instalado (({origin}.appsetting.stack))
+        message: "URL: (({}.var.access.url))"
         type: success
     # Lanza evento de fin
     - event: 'origin windup'

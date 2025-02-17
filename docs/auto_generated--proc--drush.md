@@ -44,16 +44,16 @@ task:
             call: var
             args:
               key: alter_arg
-              value: uli --uri (({origin}.appsetting.service.www.host))
+              value: uli --uri https://(({origin}.appsetting.service.www.host))
     -
       call: var
       args:
         key: args
         value: (({}.var.alter_arg)) (({}.args._))
-    - call: removeDuplicateFromString
-      args:
-        data: (({}.var.args))
-        pipe: args
+    #- call: removeDuplicateFromString
+    #  args:
+    #    data: (({}.var.args))
+    #    pipe: args
     -
       call: exec
       args:
