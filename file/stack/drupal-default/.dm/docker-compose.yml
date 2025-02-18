@@ -76,7 +76,7 @@ services:
     volumes:
       - 
         consistency: cached
-        source: ../
+        source: ${APPSETTING_SERVICE_WWW_SOURCE}
         target: /var/www/html
         type: bind
     healthcheck:

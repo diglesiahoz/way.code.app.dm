@@ -33,10 +33,10 @@ $settings['class_loader_auto_detect'] = FALSE;
 
 # Path
   $base_path = $app_root . '/' . $site_path;
-  $settings['file_public_path'] = getenv('APPSETTING_SERVICE_WWW_FILE_PUBLIC_PATH');
-  $settings['file_private_path'] = getenv('APPSETTING_SERVICE_WWW_FILE_PRIVATE_PATH');
-  $settings['file_temp_path'] = getenv('APPSETTING_SERVICE_WWW_FILE_TEMP_PATH');
-  $settings['config_sync_directory'] = getenv('APPSETTING_SERVICE_WWW_FILE_CONFIG_PATH');
+  $settings['file_public_path'] = getenv('APPSETTING_SERVICE_WWW_FILE_SYSTEM_PUBLIC_PATH');
+  $settings['file_private_path'] = getenv('APPSETTING_SERVICE_WWW_FILE_SYSTEM_PRIVATE_PATH');
+  $settings['file_temp_path'] = getenv('APPSETTING_SERVICE_WWW_FILE_SYSTEM_TEMP_PATH');
+  $settings['config_sync_directory'] = getenv('APPSETTING_SERVICE_WWW_FILE_SYSTEM_CONFIG_PATH');
 
 # Load env services
   $env_services = $base_path . '/services.' . getenv('APPSETTING_ENV') . '.php';

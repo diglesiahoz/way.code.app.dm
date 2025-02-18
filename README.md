@@ -32,8 +32,8 @@
 * [ps](docs/auto_generated--proc--ps.md)
 * [restart](docs/auto_generated--proc--restart.md)
 * [test](docs/auto_generated--proc--test.md)
-* [trace.nginx.access](docs/auto_generated--proc--trace.nginx.access.md)
-* [trace.nginx.error](docs/auto_generated--proc--trace.nginx.error.md)
+* [trace.access](docs/auto_generated--proc--trace.access.md)
+* [trace.error](docs/auto_generated--proc--trace.error.md)
 * [trace.ps](docs/auto_generated--proc--trace.ps.md)
 * [up](docs/auto_generated--proc--up.md)
 ## Recetas

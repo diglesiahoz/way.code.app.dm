@@ -1,21 +1,37 @@
+# arg:
 ARG APPSETTING_SERVICE_WWW_BASE_IMAGE
 FROM $APPSETTING_SERVICE_WWW_BASE_IMAGE
-
 ARG APPSETTING_GID
 ARG APPSETTING_UID
 ARG APPSETTING_USER
 ARG APPSETTING_SERVICE_WWW_PHP_RELEASE
 ARG APPSETTING_SERVICE_WWW_COMPOSER_RELEASE
 
+# env:
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Madrid"
 (({}.var.env_dockerfile))
 
+# packages:
 RUN apt-get update
 RUN apt-get install -y software-properties-common
 RUN apt-get install -y --no-install-recommends
+RUN apt-get install -y sudo
+RUN apt-get install -y nano
+RUN apt-get install -y patch
+RUN apt-get install -y apt-utils
+RUN apt-get install -y iputils-ping
+RUN apt-get install -y apt-transport-https
+RUN apt-get install -y ca-certificates
+RUN update-ca-certificates
+RUN apt-get install -y curl
+RUN apt-get install -y net-tools
+RUN apt-get install -y git
+RUN apt-get install -y zip unzip
+RUN apt-get install -y mysql-client
 
+# php:
 RUN LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
-RUN apt-get update -y && apt-get install -y \
+RUN apt-get install -y \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE} \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-fpm \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-cli \
@@ -33,36 +49,31 @@ RUN apt-get update -y && apt-get install -y \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-ldap \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-curl \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-intl \
-    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-bcmath
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-bcmath \
+    libapache2-mod-php${APPSETTING_SERVICE_WWW_PHP_RELEASE}
 
-RUN apt-get install -y sudo
-RUN apt-get install -y nano
-RUN apt-get install -y patch
-RUN apt-get install -y apt-utils
-RUN apt-get install -y iputils-ping
-RUN apt-get install -y apt-transport-https
-RUN apt-get install -y ca-certificates
-RUN update-ca-certificates
-RUN apt-get install -y curl
-RUN apt-get install -y net-tools
-RUN apt-get install -y git
-RUN apt-get install -y zip unzip
-RUN apt-get install -y mysql-client
+# web-server:
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then apt-get install -y nginx; fi
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then apt-get install -y apache2; fi
 
-RUN apt-get install -y nginx
+ADD ../templates/php.fpm.pool.conf /tmp/php.fpm.pool.conf
+RUN cat /tmp/php.fpm.pool.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/pool.d/www.conf
+RUN rm /tmp/php.fpm.pool.conf
 
+ADD ../templates/php.ini.conf /tmp/php.ini.conf
+RUN cat /tmp/php.ini.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini
+RUN rm /tmp/php.ini.conf
+
+ADD ../templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf > /etc/nginx/sites-available/default; fi
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf > /etc/apache2/sites-available/000-default.conf; fi
+RUN rm /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf
+
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then a2enmod rewrite; fi
+
+# composer:
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer self-update --${APPSETTING_SERVICE_WWW_COMPOSER_RELEASE}
-
-RUN echo "listen = 127.0.0.1:9000" >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/pool.d/www.conf
-RUN echo "clear_env = no" >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/pool.d/www.conf
-
-RUN echo "" >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini
-RUN echo "[custom]" >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini
-RUN echo "extension=zip" >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini
-RUN echo "max_input_vars = 3000" >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini
-
-ADD ../templates/nginx.default.conf /etc/nginx/sites-available/default
 
 # user:
 RUN addgroup $APPSETTING_USER
