@@ -85,10 +85,13 @@ RUN echo "${APPSETTING_USER} ALL=NOPASSWD: ALL" >> /etc/sudoers
 ADD ../templates/bashrc /home/$APPSETTING_USER/.bashrc
 ADD ../templates/bashrc /root/.bashrc
 
+# build info:
 RUN echo "Built on $(date)" > /build.log
 
+# stopsignal:
 STOPSIGNAL SIGQUIT
 
+# entrypoint:
 COPY ../entrypoint/docker-entrypoint.www.sh /docker-entrypoint.www.sh
 RUN chmod +x /docker-entrypoint.www.sh
 ENTRYPOINT [ "/docker-entrypoint.www.sh" ]
