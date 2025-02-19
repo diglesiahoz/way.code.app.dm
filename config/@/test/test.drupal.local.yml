@@ -43,12 +43,12 @@ appsetting:
       drupal:
         release: ^11 # [ ^10 | ^11 ]
       root: drupal
+      file_system:
+        config_path: sites/default/config
+        public_path: sites/default/files
+        private_path: ../private
+        temp_path: /tmp
       error_level: verbose
-      file_config_path: sites/default/config
-      file_public_path: sites/default/files
-      file_private_path: /var/www/html/private
-      file_temp_path: /tmp
-
 
 hook:
   call: {}
