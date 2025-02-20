@@ -8,7 +8,6 @@
 
 * [@proxy.local](docs/auto_generated--proxy--@proxy.local.md)
 * [@test.drupal.local](docs/auto_generated--test--@test.drupal.local.md)
-* [@test.nginxphp.local](docs/auto_generated--test--@test.nginxphp.local.md)
 
 #### Proc.
 
@@ -25,6 +24,7 @@
 * [ls.db.size.table](docs/auto_generated--proc--ls.db.size.table.md)
 * [ls.network](docs/auto_generated--proc--ls.network.md)
 * [ls.php.conf](docs/auto_generated--proc--ls.php.conf.md)
+* [ls.php.extensions](docs/auto_generated--proc--ls.php.extensions.md)
 * [make.drupal](docs/auto_generated--proc--make.drupal.md)
 * [make.reinstall.drupal](docs/auto_generated--proc--make.reinstall.drupal.md)
 * [poweroff](docs/auto_generated--proc--poweroff.md)

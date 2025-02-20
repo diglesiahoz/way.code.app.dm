@@ -12,7 +12,7 @@ task:
     -
       call: exec
       args:
-        cmd: docker exec -it (({origin}.appsetting.tag))-www tail -f /var/log/(({origin}.appsetting.service.www.webserver))/access.log
+        cmd: docker exec -it (({origin}.appsetting.tag))-www tail -f /var/log/(({origin}.appsetting.service.www.webserver))/error.log
         out: true
 ```
 [```config/proc/trace.error.yml```](../config/proc/trace.error.yml)

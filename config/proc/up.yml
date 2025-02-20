@@ -17,8 +17,6 @@ task:
             value: "@dm.proxy.local"
         true:
           - { call: exec, args: { cmd: "(({}.exec)) dm.proxy.up -v" }}
-    - { call: dm.loadAppSetting }
-    - { call: dm.setUp }
     - check:
         data: 
           -
@@ -26,10 +24,6 @@ task:
             is: decoded
         true:
           - { call: exec, args: { cmd: "(({}.exec)) (({origin}._config_name)) dm.init -vf" }}
-    -
-      call: exec
-      args:
-        cd: (({}.var.up_home_root))
-        cmd: export COMPOSE_PROJECT_NAME=(({origin}._tag)); export APPSETTING_UID=(({}.user.uid)); export APPSETTING_GID=(({}.user.gid)); export APPSETTING_USER=(({}.user.username)); export APPSETTING_ENV=(({origin}._env)); docker compose --env-file .env up -d --build && echo && docker ps --filter name=^/(({origin}.appsetting.tag)) && echo
-        out: true
+    - { call: dm.setUp }
+    - { call: exec, args: { cd: "(({}.var.setup_home_root))", cmd: "(({}.var.setup_compose_cmd))", out: true }}
     - { event: 'origin windup' }

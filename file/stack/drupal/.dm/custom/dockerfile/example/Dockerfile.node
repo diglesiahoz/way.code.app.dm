@@ -1,0 +1,20 @@
+ARG APPSETTING_SERVICE_NODE_BASE_IMAGE
+FROM $APPSETTING_SERVICE_NODE_BASE_IMAGE
+
+ARG APPSETTING_UID
+ARG APPSETTING_GID
+
+# https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md#non-root-user
+RUN groupmod -g $APPSETTING_GID node && usermod -u $APPSETTING_UID -g $APPSETTING_GID node
+
+ADD ../templates/bashrc.default /home/node/.bashrc
+
+RUN echo "Built on $(date)" > /build.log
+
+STOPSIGNAL SIGQUIT
+
+COPY ../entrypoint/docker-entrypoint.node.sh /docker-entrypoint.node.sh
+RUN chmod +x /docker-entrypoint.node.sh
+ENTRYPOINT [ "/docker-entrypoint.node.sh" ]
+
+USER node

@@ -67,8 +67,6 @@ task:
       args:
         cd: (({origin}.appsetting.root))
         cmd: (({}.exec)) dm.restart
-        out: false
-    # - call: exit
     # Crea proyecto Drupal mediante Composer
     - label: Creando proyecto Drupal
       call: exec
@@ -157,10 +155,18 @@ task:
       args:
         cd: (({origin}.appsetting.root))
         cmd: sudo chmod 777 (({origin}.appsetting.service.www.root))/private
+    # Obtiene acceso a sitio web
+    - label: Obteniendo acceso a sitio web
+      call: exec
+      args:
+        cd: (({origin}.appsetting.root))
+        cmd: (({}.exec)) dm.drush uli
+        pipe: access.url
+        out: false
     # Mensaje de exito
     - call: log
       args:
-        message: Instalado (({origin}.appsetting.stack))
+        message: "URL: (({}.var.access.url))"
         type: success
     # Lanza evento de fin
     - event: 'origin windup'
