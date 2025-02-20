@@ -7,7 +7,7 @@ appsetting:
   tag: ((._tag))
   key: ((._key))
   root: ((._pwd))
-  stack: drupal-11
+  stack: drupal
   wildcard_host: ((._key))
   path:
     backup_db: ((_pwd))/private/db
@@ -20,34 +20,46 @@ appsetting:
       pass: ((._tag))_pass
       conf:
         db-export:
-          excluded-tables:
-            - "batch" 
-            - "cache_" 
-            - "flood" 
-            - "queue" 
-            - "search_dataset" 
-            - "search_index" 
-            - "search_total" 
-            - "semaphore" 
-            - "sessions" 
-            - "watchdog"
+          excluded-tables: []
+          #  - "batch" 
+          #  - "cache_" 
+          #  - "flood" 
+          #  - "queue" 
+          #  - "search_dataset" 
+          #  - "search_index" 
+          #  - "search_total" 
+          #  - "semaphore" 
+          #  - "sessions" 
+          #  - "watchdog"
     pma:
       base_image: phpmyadmin/phpmyadmin
       host: ((_env))-pma.((appsetting.wildcard_host))
     www:
       base_image: ubuntu:24.04
       host: ((_env)).((appsetting.wildcard_host))
+      # Establece el directorio desde el cual se monta el volumen. Ej: [ ../ | ../drupal | ../web ]
+      source: "../((appsetting.stack))"
+      # Establece el tipo de servidor web. Ej: [ nginx | apache2 ]
+      webserver: nginx 
+      # Establece el nombre del directorio al que accede las peticiones del servidor web. 
+      # Deja en blanco para no añadir ninguna ruta relativa y que el directorio raíz sea /var/www/html.
+      # Ej: [ /web ]
+      webserver_docroot: "/web"
       php:
         release: 8.3 # [ 8.1 | 8.3 ]
+      composer:
+        release: 2
       drupal:
         release: ^11 # [ ^10 | ^11 ]
-      root: drupal
-      file_system:
-        config_path: sites/default/config
-        public_path: sites/default/files
-        private_path: ../private
-        temp_path: /tmp
-      error_level: verbose
+        target: ((appsetting.stack))
+        error_level: verbose
+        file_system:
+          config_path: ../config
+          public_path: sites/default/files
+          private_path: ../private
+          temp_path: /tmp
+  env_dockerfile:
+    - APPSETTING_DEV=true
 hook:
   call: {}
   event:
@@ -63,12 +75,13 @@ hook:
               - require drupal/devel
               - require drupal/devel_kint_extras
               - require drupal/environment_indicator
+              - require drupal/gin_toolbar
+              - require drupal/gin
               - require drupal/metatag
               - require drupal/masquerade:^2.0@RC
               - require drupal/paragraphs
               - require drupal/pathauto
               - require drupal/redirect
-              # - require drupal/redis
               - require drupal/twig_tweak
               - require drupal/viewsreference:^2.0@beta
               - require drupal/ckeditor5_plugin_pack
@@ -88,7 +101,6 @@ hook:
               - pm:enable paragraphs
               - pm:enable pathauto
               - pm:enable redirect
-              # - pm:enable redis
               - pm:enable twig_tweak
               - pm:enable viewsreference
               - pm:enable ckeditor5_plugin_pack
@@ -96,8 +108,14 @@ hook:
               - config-set system.performance js.preprocess 1
               - user:create admin.editor --password admin
               - user:role:add content_editor admin.editor
-              - pm:enable navigation
-              - pm:enable navigation_top_bar
+              # - pm:enable navigation
+              # - pm:enable navigation_top_bar
+              - theme:enable gin
+              - pm:enable gin_toolbar
+              - config-set system.theme admin gin
+              - config-set gin.settings enable_darkmode 0
+              - config-set gin.settings classic_toolbar horizontal
+              - cset locale.settings translation.import_enabled false -y
       windup: {}
 ```
 [```config/@/test/test.drupal.local.yml```](../config/@/test/test.drupal.local.yml)

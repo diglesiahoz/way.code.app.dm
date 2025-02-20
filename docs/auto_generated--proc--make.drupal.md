@@ -11,10 +11,16 @@ task:
     args: {}
     opt: {}
     settings:
-      appsetting.stack: ^drupal-11
+      # appsetting.stack: ^drupal-11
+      appsetting.stack: ^drupal
   do:
     # Lanza evento de inicio
     - event: 'origin startup'
+    # Establece variable que permite desplegar todo el "stack"
+    - call: var
+      args:
+        key: deploy_all_stack
+        value: true
     # Pregunta de control
     - call: ask
       args:
@@ -39,7 +45,7 @@ task:
             call: exec
             args:
               cd: (({origin}.appsetting.root))
-              cmd: sudo chmod 777 -R (({origin}.appsetting.service.www.root))
+              cmd: sudo chmod 777 -R (({origin}.appsetting.service.www.drupal.target))
           - label: Desplegando configuración
             call: dm.init
             args:
@@ -55,7 +61,7 @@ task:
               include: []
     # Establece directorios de destino drupal
     - loop:
-        - (({origin}.appsetting.root))/(({origin}.appsetting.service.www.root))/recommended-project
+        - (({origin}.appsetting.root))/(({origin}.appsetting.service.www.drupal.target))/recommended-project
       do:
         - label: Creando directorio (())
           call: exec
@@ -78,7 +84,7 @@ task:
       call: exec
       args:
         cd: (({origin}.appsetting.root))
-        cmd: cp -r (({origin}.appsetting.service.www.root))/recommended-project/. (({origin}.appsetting.service.www.root))/ && rm -r (({origin}.appsetting.service.www.root))/recommended-project
+        cmd: cp -r (({origin}.appsetting.service.www.drupal.target))/recommended-project/. (({origin}.appsetting.service.www.drupal.target))/ && rm -r (({origin}.appsetting.service.www.drupal.target))/recommended-project
     # Establece dependencias
     - check:
         data: 
@@ -121,6 +127,12 @@ task:
       args:
         cd: (({origin}.appsetting.root))
         cmd: (({}.exec)) dm.drush -y site:install --site-name=(({origin}._name)) --account-name=admin --account-pass=(({}.var.password))
+    # Exporta configuración
+    - label: Exportando configuración
+      call: exec
+      args:
+        cd: (({origin}.appsetting.root))
+        cmd: (({}.exec)) dm.drush cex
     # Configura Drupal
     - check:
         data: 
@@ -142,19 +154,19 @@ task:
       call: exec
       args:
         cd: (({origin}.appsetting.root))
-        # cmd: chown -R $(id -u):$(id -g) (({origin}.appsetting.service.www.root))/
-        cmd: sudo chown -R $(id -u):www-data (({origin}.appsetting.service.www.root))/web
+        # cmd: chown -R $(id -u):$(id -g) (({origin}.appsetting.service.www.drupal.target))/
+        cmd: sudo chown -R $(id -u):www-data (({origin}.appsetting.service.www.drupal.target))/web
     # Establece permisos
     - label: Estableciendo propietario y permisos para "web"
       call: exec
       args:
         cd: (({origin}.appsetting.root))
-        cmd: sudo chmod -R g+w (({origin}.appsetting.service.www.root))/web
+        cmd: sudo chmod -R g+w (({origin}.appsetting.service.www.drupal.target))/web
     - label: Estableciendo propietario y permisos para "private"
       call: exec
       args:
         cd: (({origin}.appsetting.root))
-        cmd: sudo chmod 777 (({origin}.appsetting.service.www.root))/private
+        cmd: sudo chmod 777 (({origin}.appsetting.service.www.drupal.target))/private
     # Obtiene acceso a sitio web
     - label: Obteniendo acceso a sitio web
       call: exec

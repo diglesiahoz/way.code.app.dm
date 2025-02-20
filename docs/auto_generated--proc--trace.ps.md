@@ -10,7 +10,6 @@ task:
       - .*(\.local) origin
   do:
     - { event: 'origin startup' }
-    - { call: dm.loadAppSetting }
     - { call: dm.setUp }
     -
       call: exec
