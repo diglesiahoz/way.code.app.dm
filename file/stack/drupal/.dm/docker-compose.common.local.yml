@@ -72,12 +72,12 @@ services:
         APPSETTING_SERVICE_WWW_BASE_IMAGE: ${APPSETTING_SERVICE_WWW_BASE_IMAGE}
         APPSETTING_SERVICE_WWW_PHP_RELEASE: ${APPSETTING_SERVICE_WWW_PHP_RELEASE}
         APPSETTING_SERVICE_WWW_COMPOSER_RELEASE: ${APPSETTING_SERVICE_WWW_COMPOSER_RELEASE}
-    working_dir: /var/www/html/
+    working_dir: ${APPSETTING_SERVICE_WWW_TARGET}
     volumes:
       - 
         consistency: cached
         source: ${APPSETTING_SERVICE_WWW_SOURCE}
-        target: /var/www/html
+        target: ${APPSETTING_SERVICE_WWW_TARGET}
         type: bind
       - 
         consistency: cached

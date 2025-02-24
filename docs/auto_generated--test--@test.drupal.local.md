@@ -37,8 +37,10 @@ appsetting:
     www:
       base_image: ubuntu:24.04
       host: ((_env)).((appsetting.wildcard_host))
-      # Establece el directorio desde el cual se monta el volumen. Ej: [ ../ | ../drupal | ../web ]
+      # Establece el directorio de origen, desde el cual se monta el volumen. Ej: [ ../ | ../drupal | ../web ]
       source: "../((appsetting.stack))"
+      # Establece el directorio de destino en el contenedor. Ej: [ /var/www/html ]
+      target: "/var/www/html"
       # Establece el tipo de servidor web. Ej: [ nginx | apache2 ]
       webserver: nginx 
       # Establece el nombre del directorio al que accede las peticiones del servidor web. 

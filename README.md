@@ -31,6 +31,7 @@
 * [proxy.up](docs/auto_generated--proc--proxy.up.md)
 * [ps](docs/auto_generated--proc--ps.md)
 * [restart](docs/auto_generated--proc--restart.md)
+* [startup](docs/auto_generated--proc--startup.md)
 * [test](docs/auto_generated--proc--test.md)
 * [trace.access](docs/auto_generated--proc--trace.access.md)
 * [trace.error](docs/auto_generated--proc--trace.error.md)

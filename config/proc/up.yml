@@ -16,14 +16,14 @@ task:
             is: not equal
             value: "@dm.proxy.local"
         true:
-          - { call: exec, args: { cmd: "(({}.exec)) dm.proxy.up -v" }}
+          - { call: exec, args: { cmd: "(({}.exec)) dm.proxy.up (({}.optSig))" }}
     - check:
         data: 
           -
             key: (({origin}.appsetting.stack))
             is: decoded
         true:
-          - { call: exec, args: { cmd: "(({}.exec)) (({origin}._config_name)) dm.init -vf" }}
+          - { call: exec, args: { cmd: "(({}.exec)) (({origin}._config_name)) dm.init (({}.optSig))" }}
     - { call: dm.setUp }
     - { call: exec, args: { cd: "(({}.var.setup_home_root))", cmd: "(({}.var.setup_compose_cmd))", out: true }}
     - { event: 'origin windup' }
