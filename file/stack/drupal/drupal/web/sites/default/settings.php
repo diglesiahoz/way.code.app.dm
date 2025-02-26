@@ -9,7 +9,7 @@ $databases['default']['default'] = [
   'username' => getenv('APPSETTING_SERVICE_DB_USER'),
   'password' => getenv('APPSETTING_SERVICE_DB_PASS'),
   'prefix' => '',
-  'host' => getenv('APPSETTING_SERVICE_DB_HOST'),
+  'host' => getenv('APPSETTING_SERVICE_DB_HOST_SV'),
   'port' => '3306',
   'isolation_level' => 'READ COMMITTED',
   'driver' => 'mysql',
@@ -98,6 +98,12 @@ if (getenv('APPSETTING_DEV') == "true") {
         $config['gdpr_onetrust.settings']['gdpr_onetrust_compliance_uuid'] = '';
         $config['gdpr_onetrust.settings']['gdpr_onetrust_compliance_environment'] = '';
         $config['gdpr_onetrust.settings']['gdpr_onetrust_compliance_opt_out'] = '';
+      # Mailhog
+        $config['symfony_mailer_lite.settings']['default_transport'] = 'smtp';
+        $config['symfony_mailer_lite.symfony_mailer_lite_transport.smtp']['configuration']['user'] = '';
+        $config['symfony_mailer_lite.symfony_mailer_lite_transport.smtp']['configuration']['pass'] = '';
+        $config['symfony_mailer_lite.symfony_mailer_lite_transport.smtp']['configuration']['host'] = getenv('APPSETTING_SERVICE_MAILHOG_HOST_SV');
+        $config['symfony_mailer_lite.symfony_mailer_lite_transport.smtp']['configuration']['port'] = '1025';
       # File system
         # $config['system.file']['default_scheme'] = 'public';
         # $config['system.file']['file_default_scheme'] = 'windowsazurestorage';

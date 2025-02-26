@@ -14,7 +14,9 @@ appsetting:
   service:
     db:
       base_image: mariadb:11 # [ mariadb:10.3 | mariadb:11 | mysql:8.0.0 ]
-      host: ((._tag))-db
+      host:
+        sv: ((._tag))-db
+        ui: ''
       name: ((._tag))
       user: ((._tag))_user
       pass: ((._tag))_pass
@@ -33,10 +35,19 @@ appsetting:
           #  - "watchdog"
     pma:
       base_image: phpmyadmin/phpmyadmin
-      host: ((_env))-pma.((appsetting.wildcard_host))
+      host:
+        sv: ''
+        ui: ((_env))-pma.((appsetting.wildcard_host))
+    mailhog:
+      base_image: mailhog/mailhog
+      host:
+        sv: ((._tag))-mailhog
+        ui: ((_env))-mailhog.((appsetting.wildcard_host))
     www:
       base_image: ubuntu:24.04
-      host: ((_env)).((appsetting.wildcard_host))
+      host:
+        sv: ''
+        ui: ((_env)).((appsetting.wildcard_host))
       # Establece el directorio de origen, desde el cual se monta el volumen. Ej: [ ../ | ../drupal | ../web ]
       source: "../((appsetting.stack))"
       # Establece el directorio de destino en el contenedor. Ej: [ /var/www/html ]
@@ -75,6 +86,7 @@ hook:
             key: composer.run
             value:
               - require drupal/admin_toolbar
+              - require drupal/ckeditor5_plugin_pack
               - require drupal/devel
               - require drupal/devel_kint_extras
               - require drupal/environment_indicator
@@ -85,9 +97,9 @@ hook:
               - require drupal/paragraphs
               - require drupal/pathauto
               - require drupal/redirect
+              - require drupal/symfony_mailer_lite
               - require drupal/twig_tweak
               - require drupal/viewsreference:^2.0@beta
-              - require drupal/ckeditor5_plugin_pack
         - 
           call: var
           args:
@@ -96,6 +108,7 @@ hook:
             value:
               - pm:enable admin_toolbar
               - pm:enable admin_toolbar_tools
+              - pm:enable ckeditor5_plugin_pack
               - pm:enable devel
               - pm:enable devel_kint_extras
               - pm:enable environment_indicator
@@ -104,9 +117,9 @@ hook:
               - pm:enable paragraphs
               - pm:enable pathauto
               - pm:enable redirect
+              - pm:enable symfony_mailer_lite
               - pm:enable twig_tweak
               - pm:enable viewsreference
-              - pm:enable ckeditor5_plugin_pack
               - config-set system.performance css.preprocess 1
               - config-set system.performance js.preprocess 1
               - user:create admin.editor --password admin

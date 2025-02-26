@@ -42,18 +42,25 @@ task:
       args:
         cmd: docker exec -i (({origin}.appsetting.tag))-db (({}.var.service_db_exec)) -B -e "use (({origin}.appsetting.service.db.name)); show tables" | sed -e "s/^Tables.*//" | xargs -n1
         pipe: tables
-    -
-      loop: (({origin}.appsetting.service.db.conf.db-export.excluded-tables))
-      do:
-        -
-          call: exec
-          args:
-            cmd: echo "(({}.var.tables))" | grep ^(()) | awk "{ print \"--ignore-table=(({origin}.appsetting.service.db.name)).\"\$1 }" | xargs
-            pipe: signature
-        -
-          call: eval
-          args:
-            cmd: process.env.OUT=`${process.env.OUT} (({}.var.signature))`
+    - 
+      check:
+        data:
+          -
+            key: (({origin}.appsetting.service.db.conf.db-export.excluded-tables))
+            is: not empty
+        true:
+          -
+            loop: (({origin}.appsetting.service.db.conf.db-export.excluded-tables))
+            do:
+              -
+                call: exec
+                args:
+                  cmd: echo "(({}.var.tables))" | grep ^(()) | awk "{ print \"--ignore-table=(({origin}.appsetting.service.db.name)).\"\$1 }" | xargs
+                  pipe: signature
+              -
+                call: eval
+                args:
+                  cmd: process.env.OUT=`${process.env.OUT} (({}.var.signature))`
     -
       call: exec
       args:

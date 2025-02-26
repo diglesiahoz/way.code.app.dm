@@ -2,7 +2,6 @@ dm:
   main:
   makeCerts:
   purgeAll:
-  loadAppSetting:
   init:
     collection: false
     args:
