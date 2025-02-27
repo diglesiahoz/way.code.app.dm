@@ -44,7 +44,7 @@ task:
             call: var
             args:
               key: alter_arg
-              value: uli --uri https://(({origin}.appsetting.service.www.host))
+              value: uli --uri https://(({origin}.appsetting.service.www.host.ui))
     -
       call: var
       args:

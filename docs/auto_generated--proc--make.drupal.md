@@ -127,12 +127,6 @@ task:
       args:
         cd: (({origin}.appsetting.root))
         cmd: (({}.exec)) dm.drush -y site:install --site-name=(({origin}._name)) --account-name=admin --account-pass=(({}.var.password))
-    # Exporta configuración
-    - label: Exportando configuración
-      call: exec
-      args:
-        cd: (({origin}.appsetting.root))
-        cmd: (({}.exec)) dm.drush cex
     # Configura Drupal
     - check:
         data: 
@@ -149,6 +143,12 @@ task:
                 args:
                   cd: (({origin}.appsetting.root))
                   cmd: (({}.exec)) dm.drush -y (())
+    # Exporta configuración
+    - label: Exportando configuración
+      call: exec
+      args:
+        cd: (({origin}.appsetting.root))
+        cmd: (({}.exec)) dm.drush cex
     # Establece propietario
     - label: Estableciendo propietario y permisos
       call: exec

@@ -1,7 +1,5 @@
 dm:
-  main:
-  makeCerts:
-  purgeAll:
+  getRunCommands:
   init:
     collection: false
     args:
@@ -21,7 +19,10 @@ dm:
         required: false
         type: Array
         defaultValue: []
-  setUp:
+  loadRunEnv:
+  main:
+  makeCerts:
+  purgeAll:
   setExecDbService:
     collection: false
     args:
@@ -29,3 +30,4 @@ dm:
         required: true
         type: String
         defaultValue:
+  setUp:
