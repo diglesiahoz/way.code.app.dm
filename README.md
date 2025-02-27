@@ -28,6 +28,7 @@
 * [make.drupal](docs/auto_generated--proc--make.drupal.md)
 * [make.reinstall.drupal](docs/auto_generated--proc--make.reinstall.drupal.md)
 * [poweroff](docs/auto_generated--proc--poweroff.md)
+* [proxy.down](docs/auto_generated--proc--proxy.down.md)
 * [proxy.up](docs/auto_generated--proc--proxy.up.md)
 * [ps](docs/auto_generated--proc--ps.md)
 * [restart](docs/auto_generated--proc--restart.md)
@@ -41,5 +42,6 @@
 ## Recetas
 
 * [Instalar Drupal](docs/auto_generated--proc--make.drupal--recipe1--instalar_drupal.md)
+* [Apaga proxy](docs/auto_generated--proc--proxy.down--recipe1--apaga_proxy.md)
 * [Levanta proxy](docs/auto_generated--proc--proxy.up--recipe1--levanta_proxy.md)
 * [Modificar y/o crear certificados](docs/auto_generated--proc--proxy.up--recipe2--modificar_y_o_crear_certificados.md)

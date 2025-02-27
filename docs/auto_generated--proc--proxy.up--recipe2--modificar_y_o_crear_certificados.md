@@ -5,6 +5,7 @@
 ```console
 cd ~/project/apps/way.code/app/custom/app/dm
 make cert && \
+way core.init && \
 way proxy.up -v && \
 way @dm.test.drupal.local up -v
 ```

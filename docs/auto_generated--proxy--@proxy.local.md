@@ -18,9 +18,7 @@ hook:
     dm.init:
       startup: {}
       windup: {}
-      #
-      # issue: problema al usar certificados generados en docker y usarlos en el navegador del host
-      #
+      # Problema al usar certificados generados en docker y usarlos en el navegador del host
       # windup:
       #   - { call: dm.makeCerts }
 ```
