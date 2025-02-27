@@ -42,6 +42,6 @@
 ## Recetas
 
 * [Instalar Drupal](docs/auto_generated--proc--make.drupal--recipe1--instalar_drupal.md)
-* [Apaga proxy](docs/auto_generated--proc--proxy.down--recipe1--apaga_proxy.md)
-* [Levanta proxy](docs/auto_generated--proc--proxy.up--recipe1--levanta_proxy.md)
+* [Apagar proxy](docs/auto_generated--proc--proxy.down--recipe1--apagar_proxy.md)
+* [Levantar proxy](docs/auto_generated--proc--proxy.up--recipe1--levantar_proxy.md)
 * [Modificar y/o crear certificados](docs/auto_generated--proc--proxy.up--recipe2--modificar_y_o_crear_certificados.md)

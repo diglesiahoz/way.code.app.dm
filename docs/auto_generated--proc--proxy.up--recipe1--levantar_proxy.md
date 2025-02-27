@@ -1,4 +1,4 @@
-### Levanta proxy
+### Levantar proxy
 
 ```console
 way dm.proxy.up -v
