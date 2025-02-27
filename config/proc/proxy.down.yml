@@ -1,4 +1,4 @@
-# RECIPE:Apaga proxy:
+# RECIPE:Apagar proxy:
 # ```console
 # way dm.proxy.down -v
 # ```
