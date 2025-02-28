@@ -22,9 +22,13 @@ dm:
   loadRunEnv:
   main:
   makeCerts:
-  makeDbConnect:
+  makeDbAccess:
     collection: false
     args:
+      from_service:
+        required: true
+        type: String
+        defaultValue:
       base_image:
         required: true
         type: String
@@ -48,6 +52,10 @@ dm:
   makeDbExport:
     collection: false
     args:
+      from_service:
+        required: true
+        type: String
+        defaultValue:
       base_image:
         required: true
         type: String
