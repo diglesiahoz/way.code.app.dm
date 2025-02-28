@@ -14,7 +14,6 @@ task:
     -
       call: dm.makeDbConnect
       args:
-        is_remote: (({origin}.appsetting.service.db.is_remote))
         base_image: (({origin}.appsetting.service.db.base_image))
         host: (({origin}.appsetting.service.db.host.sv))
         name: (({origin}.appsetting.service.db.name))

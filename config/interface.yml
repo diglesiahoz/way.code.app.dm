@@ -25,10 +25,6 @@ dm:
   makeDbConnect:
     collection: false
     args:
-      is_remote:
-        required: true
-        type: Boolean
-        defaultValue:
       base_image:
         required: true
         type: String
@@ -52,10 +48,6 @@ dm:
   makeDbExport:
     collection: false
     args:
-      is_remote:
-        required: true
-        type: Boolean
-        defaultValue:
       base_image:
         required: true
         type: String
