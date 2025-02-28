@@ -22,8 +22,70 @@ dm:
   loadRunEnv:
   main:
   makeCerts:
+  makeDbConnect:
+    collection: false
+    args:
+      is_remote:
+        required: true
+        type: Boolean
+        defaultValue:
+      base_image:
+        required: true
+        type: String
+        defaultValue:
+      host:
+        required: true
+        type: String
+        defaultValue:
+      name:
+        required: true
+        type: String
+        defaultValue:
+      user:
+        required: true
+        type: String
+        defaultValue:
+      pass:
+        required: true
+        type: String
+        defaultValue:
+  makeDbExport:
+    collection: false
+    args:
+      is_remote:
+        required: true
+        type: Boolean
+        defaultValue:
+      base_image:
+        required: true
+        type: String
+        defaultValue:
+      host:
+        required: true
+        type: String
+        defaultValue:
+      name:
+        required: true
+        type: String
+        defaultValue:
+      user:
+        required: true
+        type: String
+        defaultValue:
+      pass:
+        required: true
+        type: String
+        defaultValue:
+      excluded_tables:
+        required: true
+        type: Array
+        defaultValue:
+      backup_db_path:
+        required: true
+        type: String
+        defaultValue:
   purgeAll:
-  setExecDbService:
+  setDbExec:
     collection: false
     args:
       base_image:
