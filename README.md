@@ -9,7 +9,7 @@
 * [@proxy.local](docs/auto_generated--proxy--@proxy.local.md)
 * [@test.drupal.local](docs/auto_generated--test--@test.drupal.local.md)
 
-#### Proc.
+#### Procedimientos
 
 * [composer](docs/auto_generated--proc--composer.md)
 * [db.access](docs/auto_generated--proc--db.access.md)
