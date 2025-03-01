@@ -4,7 +4,7 @@
 
 ## Docs
 
-#### Profiles
+#### Perfiles
 
 * [@proxy.local](docs/auto_generated--proxy--@proxy.local.md)
 * [@test.drupal.local](docs/auto_generated--test--@test.drupal.local.md)
@@ -39,7 +39,7 @@
 * [trace.error](docs/auto_generated--proc--trace.error.md)
 * [trace.ps](docs/auto_generated--proc--trace.ps.md)
 * [up](docs/auto_generated--proc--up.md)
-## Recipes
+## Recetas
 
 * [Instalar Drupal](docs/auto_generated--proc--make.drupal--recipe1--instalar_drupal.md)
 * [Apagar proxy](docs/auto_generated--proc--proxy.down--recipe1--apagar_proxy.md)
