@@ -84,6 +84,41 @@ dm:
         required: true
         type: String
         defaultValue:
+  makeDbImport:
+    collection: false
+    args:
+      from_service:
+        required: true
+        type: String
+        defaultValue:
+      base_image:
+        required: true
+        type: String
+        defaultValue:
+      host:
+        required: true
+        type: String
+        defaultValue:
+      name:
+        required: true
+        type: String
+        defaultValue:
+      user:
+        required: true
+        type: String
+        defaultValue:
+      pass:
+        required: true
+        type: String
+        defaultValue:
+      backup_db_path:
+        required: true
+        type: String
+        defaultValue:
+      file:
+        required: true 
+        type: String
+        defaultValue:
   purgeAll:
   setDbExec:
     collection: false

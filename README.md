@@ -39,7 +39,7 @@
 * [trace.error](docs/auto_generated--proc--trace.error.md)
 * [trace.ps](docs/auto_generated--proc--trace.ps.md)
 * [up](docs/auto_generated--proc--up.md)
-## Recetas
+## Recipes
 
 * [Instalar Drupal](docs/auto_generated--proc--make.drupal--recipe1--instalar_drupal.md)
 * [Apagar proxy](docs/auto_generated--proc--proxy.down--recipe1--apagar_proxy.md)

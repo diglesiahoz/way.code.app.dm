@@ -12,8 +12,9 @@ task:
   do:
     - { event: 'origin startup' }
     -
-      call: dm.makeDbConnect
+      call: dm.makeDbAccess
       args:
+        from_service: (({origin}._tag))-db
         base_image: (({origin}.appsetting.service.db.base_image))
         host: (({origin}.appsetting.service.db.host.sv))
         name: (({origin}.appsetting.service.db.name))
