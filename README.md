@@ -15,6 +15,7 @@
 * [db.access](docs/auto_generated--proc--db.access.md)
 * [db.export](docs/auto_generated--proc--db.export.md)
 * [db.import](docs/auto_generated--proc--db.import.md)
+* [db.sync](docs/auto_generated--proc--db.sync.md)
 * [down](docs/auto_generated--proc--down.md)
 * [drush](docs/auto_generated--proc--drush.md)
 * [exec](docs/auto_generated--proc--exec.md)

@@ -1,4 +1,5 @@
 dm:
+  checkEnvDbSync:
   getRunCommands:
   init:
     collection: false

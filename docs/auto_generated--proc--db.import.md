@@ -9,7 +9,7 @@ example:
 task:
   require:
     config:
-      - .*(\.local) origin
+      - .*(\.local|\.dev|\.test|\.pre) origin
     opt:
       last:
         type: Boolean
