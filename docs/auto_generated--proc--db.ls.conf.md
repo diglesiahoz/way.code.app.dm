@@ -1,4 +1,4 @@
-### ls.db.conf
+### db.ls.conf
 
 ```yml
 help: Muestra configuración de base de datos
@@ -18,8 +18,8 @@ task:
       call: exec
       args:
         message: ""
-        cmd: docker exec -i (({origin}.appsetting.tag))-db (({}.var.db_exec)) -B -e "SHOW variables"
+        cmd: docker exec -i -e MYSQL_PWD=(({origin}.appsetting.service.db.pass)) (({origin}.appsetting.tag))-db (({}.var.db_exec)) -h (({origin}.appsetting.service.db.host.sv)) -u (({origin}.appsetting.service.db.user)) -B -e "SHOW variables"
         out: true
     - { event: 'origin windup' }
 ```
-[```config/proc/ls.db.conf.yml```](../config/proc/ls.db.conf.yml)
+[```config/proc/db.ls.conf.yml```](../config/proc/db.ls.conf.yml)

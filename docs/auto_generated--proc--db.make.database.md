@@ -1,7 +1,9 @@
+### db.make.database
+
+```yml
 help: Acceso a base de datos
 example:
 - (({}.tmp.proc.sig))
-
 task:
   require:
     config:
@@ -10,7 +12,7 @@ task:
   do:
     - { event: 'origin startup' }
     -
-      call: dm.makeDbAccess
+      call: dm.makeDbMakeDatabase
       args:
         from_service: (({origin}._tag))-db
         base_image: (({origin}.appsetting.service.db.base_image))
@@ -18,4 +20,8 @@ task:
         name: (({origin}.appsetting.service.db.name))
         user: (({origin}.appsetting.service.db.user))
         pass: (({origin}.appsetting.service.db.pass))
+        charset: (({origin}.appsetting.service.db.charset))
+        collation: (({origin}.appsetting.service.db.collation))
     - { event: 'origin windup' }
+```
+[```config/proc/db.make.database.yml```](../config/proc/db.make.database.yml)
