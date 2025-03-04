@@ -1,7 +1,7 @@
 ### exec
 
 ```yml
-help: Ejecuta comando en contenedor
+help: Ejecuta comando
 example:
 - (({}.tmp.proc.sig)) www whoami
 - (({}.tmp.proc.sig)) www ls -la
@@ -9,11 +9,8 @@ example:
 task:
   require:
     config:
-      - .*(\.local) origin
+      - .*(\.local|\.dev|\.test|\.pre) origin
     args:
-      service:
-        type: String
-        default: (({origin}.appsetting.service))
       command:
         type: .*
         default: /bin/bash
@@ -27,39 +24,21 @@ task:
       check:
         data:
           -
-            key: (({}.opt.user))
-            is: not equal
-            value: ""
-        true:
-          -
-            call: var
-            args:
-              key: user
-              value: (({}.opt.user))
-        false:
-          -
-            call: var
-            args:
-              key: user
-              value: (({}.user.username))
-    - 
-      check:
-        data:
-          -
-            exec: docker ps --filter name=^/(({origin}.appsetting.tag))-(({}.args.service)) | tail -n +2
-            is: not empty
+            key: (({origin}._env))
+            is: equal
+            value: local
         true:
           -
             call: exec
             args:
-              cmd: docker exec -it --user (({}.var.user)) (({origin}.appsetting.tag))-(({}.args.service)) (({}.args.command))
-              out: true   
+              cmd: (({}.exec)) (({origin}._config_name)) service.exec www (({}.args.command))
+              out: true
         false:
           -
-            call: log
+            call: exec
             args:
-              message: "Not found service: (({}.args.service))"
-              type: warning
+              cmd: (({}.args._))
+              out: true
     - { event: 'origin windup' }
 ```
 [```config/proc/exec.yml```](../config/proc/exec.yml)
