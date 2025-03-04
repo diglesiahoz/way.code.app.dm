@@ -23,16 +23,17 @@ appsetting:
       conf:
         db-export:
           excluded-tables: []
-          #  - "batch" 
-          #  - "cache_" 
-          #  - "flood" 
-          #  - "queue" 
-          #  - "search_dataset" 
-          #  - "search_index" 
-          #  - "search_total" 
-          #  - "semaphore" 
-          #  - "sessions" 
-          #  - "watchdog"
+          # excluded-tables:
+          #   - "batch" 
+          #   - "cache_" 
+          #   - "flood" 
+          #   - "queue" 
+          #   - "search_dataset" 
+          #   - "search_index" 
+          #   - "search_total" 
+          #   - "semaphore" 
+          #   - "sessions" 
+          #   - "watchdog"
     pma:
       base_image: phpmyadmin/phpmyadmin
       host:
