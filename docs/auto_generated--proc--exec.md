@@ -12,12 +12,14 @@ task:
       - .*(\.local|\.dev|\.test|\.pre) origin
     args:
       command:
+        required: true
         type: .*
-        default: /bin/bash
+        default: ""
     opt:
       user:
         type: String
         default:
+    settings: {}
   do:
     - { event: 'origin startup' }
     - 
@@ -37,7 +39,9 @@ task:
           -
             call: exec
             args:
-              cmd: (({}.args._))
+              user: (({origin}.hook.call[dm.exec].exec.user))
+              pass: (({origin}.hook.call[dm.exec].exec.pass))
+              cmd: (({}.args.command))
               out: true
     - { event: 'origin windup' }
 ```
