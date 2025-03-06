@@ -14,6 +14,7 @@ task:
     -
       call: dm.makeDbAccess
       args:
+        leap_from: (({origin}.appsetting.service.db.leap_from))
         from_service: (({origin}._tag))-db
         base_image: (({origin}.appsetting.service.db.base_image))
         host: (({origin}.appsetting.service.db.host.sv))

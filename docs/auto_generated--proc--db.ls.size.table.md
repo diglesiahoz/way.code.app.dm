@@ -7,7 +7,7 @@ example:
 task:
   require:
     config:
-      - .*(\.local) origin
+      - .*(\.local|\.dev|\.test|\.pre) origin
   do:
     - { event: 'origin startup' }
     -
@@ -18,7 +18,7 @@ task:
       call: exec
       args:
         message: ""
-        cmd: docker exec -i -e MYSQL_PWD=(({origin}.appsetting.service.db.pass)) (({origin}.appsetting.tag))-db (({}.var.db_exec)) -h (({origin}.appsetting.service.db.host.sv)) -u (({origin}.appsetting.service.db.user)) -B -e "SELECT table_name AS \"Table\",ROUND(((data_length + index_length) / 1024 / 1024), 2) AS \"Size (MB)\" FROM information_schema.TABLES WHERE table_schema = \"(({origin}.appsetting.service.db.name))\" ORDER BY (data_length + index_length);" | tail -n +2 | sort -u | xargs printf "%-50s %s\n"
+        cmd: docker exec -i -e MYSQL_PWD=(({origin}.appsetting.service.db.pass)) (({origin}._parent_key))-db (({}.var.db_exec)) -h (({origin}.appsetting.service.db.host.sv)) -u (({origin}.appsetting.service.db.user)) -B -e "SELECT table_name AS \"Table\",ROUND(((data_length + index_length) / 1024 / 1024), 2) AS \"Size (MB)\" FROM information_schema.TABLES WHERE table_schema = \"(({origin}.appsetting.service.db.name))\" ORDER BY (data_length + index_length);" | tail -n +2 | sort -u | xargs printf "%-50s %s\n"
         out: true
     - { event: 'origin windup' }
 ```

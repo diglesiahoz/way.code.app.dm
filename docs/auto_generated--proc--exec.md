@@ -14,7 +14,7 @@ task:
       command:
         required: true
         type: .*
-        default: ""
+        default: /bin/bash
     opt:
       user:
         type: String
@@ -39,8 +39,8 @@ task:
           -
             call: exec
             args:
-              user: (({origin}.hook.call[dm.exec].exec.user))
-              pass: (({origin}.hook.call[dm.exec].exec.pass))
+              # user: (({origin}.hook.call[dm.exec].exec.user))
+              # pass: (({origin}.hook.call[dm.exec].exec.pass))
               cmd: (({}.args.command))
               out: true
     - { event: 'origin windup' }

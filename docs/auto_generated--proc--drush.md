@@ -12,53 +12,18 @@ task:
   require:
     config:
       - .*(\.local) origin
-    args: {}
+    args:
+      command:
+        required: false
+        type: .*
+        default: ""
   do:
     - { event: 'origin startup' }
     -
-      call: var
-      args:
-        key: alter_arg
-        value: ""
-    - 
-      check:
-        data:
-          -
-            key: (({}.args.arg1))
-            is: decoded
-        false:
-          -
-            call: var
-            args:
-              key: alter_arg
-              value: --raw
-    - 
-      check:
-        data:
-          -
-            key: (({}.args.arg1))
-            is: equal
-            value: uli
-        true:
-          -
-            call: var
-            args:
-              key: alter_arg
-              value: uli --uri https://(({origin}.appsetting.service.www.host.ui))
-    -
-      call: var
-      args:
-        key: args
-        value: (({}.var.alter_arg)) (({}.args._))
-    #- call: removeDuplicateFromString
-    #  args:
-    #    data: (({}.var.args))
-    #    pipe: args
-    -
       call: exec
       args:
-        cmd: docker exec --user (({}.user.username)) -it (({origin}.appsetting.tag))-www vendor/bin/drush (({}.var.args))
-        out: true       
+        cmd: docker exec --user (({}.user.username)) -it (({origin}.appsetting.tag))-www vendor/bin/drush (({}.args.command))
+        out: true
     - { event: 'origin windup' }
 ```
 [```config/proc/drush.yml```](../config/proc/drush.yml)

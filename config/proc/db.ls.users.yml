@@ -5,7 +5,7 @@ example:
 task:
   require:
     config:
-      - .*(\.local|\.pre) origin
+      - .*(\.local|\.dev|\.test|\.pre) origin
   do:
     - { event: 'origin startup' }
     -
@@ -16,6 +16,6 @@ task:
       call: exec
       args:
         message: ""
-        cmd: docker exec -i -e MYSQL_PWD=(({origin}.appsetting.service.db.pass)) (({origin}.appsetting.tag))-db (({}.var.db_exec)) -h (({origin}.appsetting.service.db.host.sv)) -u (({origin}.appsetting.service.db.user)) -e "SELECT user,host FROM mysql.user;" | tail -n +2 | xargs printf "%-25s %s\n"
+        cmd: docker exec -i -e MYSQL_PWD=(({origin}.appsetting.service.db.pass)) (({origin}._parent_key))-db (({}.var.db_exec)) -h (({origin}.appsetting.service.db.host.sv)) -u (({origin}.appsetting.service.db.user)) -e "SELECT user,host FROM mysql.user;" | tail -n +2 | xargs printf "%-25s %s\n"
         out: true
     - { event: 'origin windup' }

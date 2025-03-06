@@ -1,11 +1,9 @@
 ### access
 
 ```yml
-help: Ejecuta comando
+help: Accede a servidor remoto
 example:
-- (({}.tmp.proc.sig)) www whoami
-- (({}.tmp.proc.sig)) www ls -la
-- (({}.tmp.proc.sig)) www vendor/bin/phpstan.phar analyze web/modules/custom --memory-limit=256M
+- (({}.tmp.proc.sig))
 task:
   require:
     config:
