@@ -7,13 +7,13 @@ example:
 task:
   require:
     config:
-      - .*(\.local) origin
+      - .*(\.local|\.dev|\.test|\.pre) origin
   do:
     - { event: 'origin startup' }
     -
       call: exec
       args:
-        cmd: docker exec -it (({origin}.appsetting.tag))-www tail -f /var/log/(({origin}.appsetting.service.www.webserver))/access.log
+        cmd: (({}.exec)) (({origin}._config_name)) exec sudo tail -f /var/log/(({origin}.appsetting.service.www.webserver))/access.log
         out: true
     - { event: 'origin windup' }
 ```
