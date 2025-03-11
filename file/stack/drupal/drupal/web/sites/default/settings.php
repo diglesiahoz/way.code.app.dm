@@ -107,10 +107,19 @@ if (getenv('APPSETTING_DEV') == "true") {
       # File system
         # $config['system.file']['default_scheme'] = 'public';
         # $config['system.file']['file_default_scheme'] = 'windowsazurestorage';
-      # PHP
-        # ini_set('memory_limit', '6096M');
-        # ini_set('max_execution_time', 300);
-        # ini_set('max_input_vars', '2000');
+      # # PHP
+      #   ini_set('memory_limit', '6096M');
+      #   ini_set('max_execution_time', 300);
+      #   ini_set('max_input_vars', '2000');
+      # # Memcache
+      #   $settings['memcache']['debug'] = FALSE;
+      #   $settings['memcache']['key_prefix'] = 'memora_'.getenv('APPSETTING_ENV'); 
+      #   $settings['memcache']['servers'] = ['memora-memcached:11211' => 'default']; // ['127.0.0.1:11211' => 'default']
+      #   $settings['memcache']['bins'] = ['default' => 'default'];
+      #   $settings['cache']['default'] = 'cache.backend.memcache';
+      # APCu
+        $settings['cache']['bins']['bootstrap'] = 'cache.backend.chainedfast';
+        $settings['cache']['bins']['discovery'] = 'cache.backend.chainedfast';
       break;
     case 'pre':
     case 'prod':

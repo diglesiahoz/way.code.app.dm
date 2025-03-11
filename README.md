@@ -40,6 +40,7 @@
 * [run](docs/auto_generated--proc--run.md)
 * [send.mail.test](docs/auto_generated--proc--send.mail.test.md)
 * [service.exec](docs/auto_generated--proc--service.exec.md)
+* [sync](docs/auto_generated--proc--sync.md)
 * [test](docs/auto_generated--proc--test.md)
 * [trace.access](docs/auto_generated--proc--trace.access.md)
 * [trace.error](docs/auto_generated--proc--trace.error.md)

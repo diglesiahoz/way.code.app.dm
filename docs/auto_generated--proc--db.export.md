@@ -5,14 +5,18 @@ help: Exporta base de datos
 example:
 - (({}.tmp.proc.sig))
 - (({}.tmp.proc.sig)) --tag test
+- (({}.tmp.proc.sig)) --lock-tables
 task:
   require:
     config:
-      - .*(\.local|\.dev|\.test|\.pre) origin
+      - .*(\.local|\.dev|\.test|\.pre|\.prod) origin
     opt:
       tag:
         type: String
         default:
+      lock-tables:
+        type: Boolean
+        default: false
   do: 
     - { event: 'origin startup' }
     -

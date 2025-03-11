@@ -13,9 +13,11 @@ task:
     args:
       service:
         type: String
+        required: true
         default: (({origin}.appsetting.service))
       command:
         type: .*
+        required: false
         default: /bin/bash
     opt:
       user:

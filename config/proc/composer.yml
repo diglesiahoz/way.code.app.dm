@@ -9,12 +9,16 @@ task:
   require:
     config:
       - .*(\.local) origin
-    args: {}
+    args:
+      command:
+        required: false
+        type: .*
+        default: ""
   do:
     - { event: 'origin startup' }
     -
       call: exec
       args:
-        cmd: docker exec --user (({}.user.username)) -it (({origin}.appsetting.tag))-www composer (({}.args._))
+        cmd: docker exec --user (({}.user.username)) -it (({origin}.appsetting.tag))-www composer (({}.args.command))
         out: true       
     - { event: 'origin windup' }

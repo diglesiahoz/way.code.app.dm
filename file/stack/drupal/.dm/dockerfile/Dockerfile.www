@@ -52,6 +52,7 @@ RUN apt-get install -y \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-intl \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-bcmath \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-memcached \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-apcu \
     libapache2-mod-php${APPSETTING_SERVICE_WWW_PHP_RELEASE}
 
 # web-server:

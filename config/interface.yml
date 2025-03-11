@@ -1,6 +1,7 @@
 dm:
   checkEnvDbSync:
   getRunCommands:
+  getEnvKeys:
   init:
     collection: false
     args:
@@ -89,6 +90,10 @@ dm:
         required: true
         type: String
         defaultValue:
+      dump_options:
+        required: false
+        type: String
+        defaultValue: "--skip-opt --add-drop-table --add-locks --create-options --disable-keys --extended-insert --quick --set-charset --routines --max_allowed_packet=512M"
   makeDbImport:
     collection: false
     args:
@@ -159,6 +164,25 @@ dm:
         required: true
         type: String
         defaultValue:
+  makeSync:
+    collection: false
+    args:
+      env_key:
+        required: true
+        type: String
+        defaultValue:
+      source_path:
+        required: true
+        type: String
+        defaultValue:
+      target_path:
+        required: false
+        type: String
+        defaultValue:
+      rsync_options:
+        required: false
+        type: String
+        defaultValue: "-O -avzc --no-o --no-g --no-perms"
   purgeAll:
   setDbExec:
     collection: false
