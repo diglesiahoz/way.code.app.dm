@@ -1,0 +1,18 @@
+### deploy
+
+```yml
+help: Despliega código
+example:
+- (({}.tmp.proc.sig))
+task:
+  require:
+    config:
+      - .*(\.local|\.dev|\.test|\.pre) origin
+    args: {}
+    opt: {}
+    settings: {}
+  do:
+    - { event: 'origin startup' }
+    - { event: 'origin windup' }
+```
+[```config/proc/deploy.yml```](../config/proc/deploy.yml)

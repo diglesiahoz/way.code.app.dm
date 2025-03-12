@@ -23,6 +23,7 @@
 * [db.ls.users](docs/auto_generated--proc--db.ls.users.md)
 * [db.make.database](docs/auto_generated--proc--db.make.database.md)
 * [db.sync](docs/auto_generated--proc--db.sync.md)
+* [deploy](docs/auto_generated--proc--deploy.md)
 * [down](docs/auto_generated--proc--down.md)
 * [drush](docs/auto_generated--proc--drush.md)
 * [exec](docs/auto_generated--proc--exec.md)

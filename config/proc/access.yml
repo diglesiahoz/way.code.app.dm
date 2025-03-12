@@ -19,6 +19,7 @@ task:
       args:
         user: (({origin}.hook.call[dm.access].exec.user))
         pass: (({origin}.hook.call[dm.access].exec.pass))
+        default_options: "-t"
         cmd: /bin/bash
         out: true
     - { event: 'origin windup' }

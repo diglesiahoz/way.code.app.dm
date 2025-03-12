@@ -33,7 +33,7 @@ task:
           -
             call: exec
             args:
-              cmd: (({}.exec)) (({origin}._config_name)) service.exec www (({}.args.command))
+              cmd: (({}.exec)) (({origin}._config_name)) (({}.optSig)) service.exec www (({}.args.command))
               out: true
         false:
           -
