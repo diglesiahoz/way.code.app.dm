@@ -1,7 +1,8 @@
 dm:
   checkEnvDbSync:
-  getRunCommands:
   getEnvKeys:
+  getHookEventKeys:
+  getCustomScriptNames:
   init:
     collection: false
     args:

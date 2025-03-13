@@ -1,23 +1,21 @@
 ### run
 
 ```yml
-help: Ejecuta scripts personalizados
+help: Ejecuta comandos personalizados
 example:
-- (({}.tmp.proc.sig))
+- (({}.tmp.proc.sig)) deploy
 task:
-  complete: []
   require:
     config:
-      - .*(\.local) origin
+      - .*(\.local|\.dev|\.test|\.pre) origin
     args:
-      run:
+      run_name:
         type: String
-        default: callback::dm.getRunCommands
+        required: true
+        default: callback::dm.getHookEventKeys
     opt: {}
+    settings: {}
   do:
-    - { event: 'origin startup' }
-    - { call: dm.loadRunEnv }
-    - { call: exec, args: { cmd: "(({}.var.env)); [ -f (({origin}.appsetting.root))/.dm/custom/run/(({}.args.run)) ] && (({origin}.appsetting.root))/.dm/custom/run/(({}.args.run)) (({}.args._))", out: true } }
-    - { event: 'origin windup' }
+    - { event: 'origin (({}.args.run_name))' }
 ```
 [```config/proc/run.yml```](../config/proc/run.yml)
