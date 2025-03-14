@@ -5,6 +5,9 @@ ARG APPSETTING_GID
 ARG APPSETTING_UID
 ARG APPSETTING_USER
 
+# user:
+USER root
+
 # env:
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Madrid"
 (({}.var.env_dockerfile))
@@ -75,11 +78,11 @@ RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then cat /tmp/webserve
 RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf > /etc/apache2/sites-available/000-default.conf; fi
 RUN rm /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf
 
-RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then a2enmod actions proxy proxy_fcgi rewrite; fi
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then a2enmod proxy_fcgi rewrite; fi
 
 # composer:
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer self-update --${APPSETTING_SERVICE_WWW_COMPOSER_RELEASE}
+RUN /usr/local/bin/composer self-update --${APPSETTING_SERVICE_WWW_COMPOSER_RELEASE}
 
 # user:
 RUN if [ "$APPSETTING_SERVICE_WWW_BASE_IMAGE" = "ubuntu:24.04" ] ; then deluser --remove-home ubuntu; fi
