@@ -1,0 +1,16 @@
+### ls.php.ini
+
+```yml
+help: Muestra configuración de PHP
+example:
+- (({}.tmp.proc.sig))
+task:
+  require:
+    config:
+      - .*(\.local|\.dev|\.test|\.pre) origin
+  do:
+    - { event: 'origin startup' }
+    - { call: exec, args: { cmd: "(({}.exec)) (({origin}._config_name)) exec cat /etc/php/(({origin}.appsetting.service.www.php.release))/fpm/php.ini | grep -v \"^;\" | grep -v \"^\\[\" | grep -v \"^[[:space:]]*$\"", out: true }}
+    - { event: 'origin windup' }
+```
+[```config/proc/ls.php.ini.yml```](../config/proc/ls.php.ini.yml)

@@ -1,24 +1,16 @@
 ### ls.php.extensions
 
 ```yml
-help: Muestra configuración de PHP
+help: Muestra configuración de PHP (extensiones)
 example:
 - (({}.tmp.proc.sig))
 task:
   require:
     config:
-      - .*(\.local) origin
+      - .*(\.local|\.dev|\.test|\.pre) origin
   do:
-    # Lanza evento "startup"
-    - 
-      event: startup
-    -
-      call: exec
-      args:
-        cmd: docker exec -it --user root (({origin}.appsetting.tag))-www php -m
-        out: true  
-    # Lanza evento "windup"
-    - 
-      event: windup
+    - { event: 'origin startup' }
+    - { call: exec, args: { cmd: "(({}.exec)) (({origin}._config_name)) exec php -m | grep -v \"^[[:space:]]*$\"", out: true }}
+    - { event: 'origin windup' }
 ```
 [```config/proc/ls.php.extensions.yml```](../config/proc/ls.php.extensions.yml)
