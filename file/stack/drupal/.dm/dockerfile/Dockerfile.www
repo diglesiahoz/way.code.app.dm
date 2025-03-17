@@ -95,6 +95,9 @@ RUN echo "${APPSETTING_USER} ALL=NOPASSWD: ALL" >> /etc/sudoers
 ADD ../templates/bashrc /home/$APPSETTING_USER/.bashrc
 ADD ../templates/bashrc /root/.bashrc
 
+# extra commands
+(({}.var.extra_commands))
+
 # build info:
 RUN echo "Built on $(date)" > /build.log
 
