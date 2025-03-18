@@ -1,0 +1,24 @@
+help: Muestra cabeceras
+example:
+- (({}.tmp.proc.sig))
+
+task:
+  require:
+    config:
+      - .*(\.local|\.dev|\.test|\.pre) origin
+  do:
+    - { event: 'origin startup' }
+    - check:
+        data: 
+          -
+            key: (({origin}._env))
+            is: equal
+            value: local
+        true:
+          # No soportado conexión HTTPS desde petición en contenedor
+          # Pinta comando a ejecutar
+          #- { call: log, args: { message: "curl -kIs --http2 https://(({origin}.appsetting.service.www.domain)) 2>/dev/null | sed \"/^[[:space:]]*$/d\"", type: success }}
+          - { call: exec, args: { cmd: "(({}.exec)) (({origin}._config_name)) service.exec www curl -kIs --http2 http://(({origin}.appsetting.service.www.domain)) 2>/dev/null | sed \"/^[[:space:]]*$/d\"", out: true }}
+        false:
+          - { call: exec, args: { cmd: "(({}.exec)) (({origin}._config_name)) exec curl -kIs --http2 https://(({origin}.appsetting.service.www.domain)) 2>/dev/null | sed \"/^[[:space:]]*$/d\"", out: true }}
+    - { event: 'origin windup' }
