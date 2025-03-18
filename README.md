@@ -31,6 +31,7 @@
 * [ls.php.extensions](docs/auto_generated--proc--ls.php.extensions.md)
 * [ls.php.fpm.pool](docs/auto_generated--proc--ls.php.fpm.pool.md)
 * [ls.php.ini](docs/auto_generated--proc--ls.php.ini.md)
+* [ls.site.headers](docs/auto_generated--proc--ls.site.headers.md)
 * [make.drupal](docs/auto_generated--proc--make.drupal.md)
 * [make.reinstall.drupal](docs/auto_generated--proc--make.reinstall.drupal.md)
 * [poweroff](docs/auto_generated--proc--poweroff.md)
