@@ -1,0 +1,12 @@
+memcached:
+  container_name: ${COMPOSE_PROJECT_NAME}-memcached
+  build:
+    context: .
+    dockerfile: ./custom/dockerfile/Dockerfile.memcached
+    args:
+      APPSETTING_SERVICE_MEMCACHED_BASE_IMAGE: ${APPSETTING_SERVICE_MEMCACHED_BASE_IMAGE}
+  restart: unless-stopped
+  labels:
+    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_db.loadbalancer.server.port=11211"
+  networks:
+    - dm_proxy

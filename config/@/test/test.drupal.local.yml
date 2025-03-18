@@ -7,7 +7,7 @@ appsetting:
   tag: ((._tag))
   key: ((._key))
   root: ((._pwd))
-  stack: drupal
+  stack: drupal_new
   wildcard_host: ((._key))
   path:
     backup_db: ((_pwd))/private/db

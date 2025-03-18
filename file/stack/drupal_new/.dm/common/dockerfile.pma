@@ -1,0 +1,6 @@
+ARG APPSETTING_SERVICE_PMA_BASE_IMAGE
+FROM $APPSETTING_SERVICE_PMA_BASE_IMAGE
+
+ADD ../templates/bashrc /root/.bashrc
+
+(({}.var.extra_commands))

@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#
+# EXAMPLES:
+#
+# lsb_release -a
+# $WAY_EXEC $_CONFIG_NAME send.mail.test -v
+# printenv | sort
+
+echo Executed $0

@@ -1,0 +1,51 @@
+#!/bin/bash
+# way run sync-files-to-local <ENV> [--dry-run]
+
+SOURCE_ENV=$1
+[ "$SOURCE_ENV" == "" ] && echo "[ERROR] Necesitas especificar el entorno de origen" && exit
+
+YES=""
+if [ "$(echo $* | xargs -n1 | grep -E '^-y$')" != "" ]
+then
+  YES=true
+fi
+
+DRY_RUN=""
+if [ "$(echo $* | xargs -n1 | grep -E '^--dry-run$')" != "" ]
+then
+  DRY_RUN="--dry-run"
+fi
+
+DELETE_ON_TARGET=""
+if [ "$(echo $* | xargs -n1 | grep -E '^--delete$')" != "" ]
+then
+  DELETE_ON_TARGET="--delete"
+fi
+
+if [ "$(echo "$SOURCE_ENV" | grep pre)" != "" ]
+then
+  COLOR="\033[33m"
+fi
+if [ "$(echo "$SOURCE_ENV" | grep prod)" != "" ]
+then
+  COLOR="\033[31m"
+fi
+
+SOURCE_SETTINGS=$($WAY_EXEC @memora.$SOURCE_ENV -o | jq .[])
+TARGET_SETTINGS=$($WAY_EXEC @memora.local -o | jq .[])
+
+USER=$(echo $SOURCE_SETTINGS | jq -r '.hook.call.["dm.access"].exec.user')
+PASS=$(echo $SOURCE_SETTINGS | jq -r '.hook.call.["dm.access"].exec.pass')
+HOST=$(echo $SOURCE_SETTINGS | jq -r '.hook.call.["dm.access"].exec.host')
+SOURCE=$(echo $SOURCE_SETTINGS | jq -r '.hook.call.["dm.access"].exec.cd')"/sites/default/files"
+TARGET=$(echo $TARGET_SETTINGS | jq -r .appsetting.root)/drupal/sites/default/files
+
+CMD="sshpass -p '$PASS' rsync $DRY_RUN $DELETE_ON_TARGET -O -avzc --no-o --no-g --no-perms $USER@$HOST:$SOURCE/ $TARGET/"
+printf $COLOR'From %s environment\033[m\n' "$SOURCE_ENV"
+printf '\n\033[37m%s\033[m\n\n' "$CMD"
+
+if [ "$YES" = "" ]
+then
+  read -p "Continue? (Y/N): " confirm && [[ $confirm == [yY] || $confirm == [yY][eE][sS] ]] || exit 1
+fi
+eval $CMD

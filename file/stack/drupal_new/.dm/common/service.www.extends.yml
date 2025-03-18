@@ -1,0 +1,7 @@
+www:
+  extends:
+    file: docker-compose.common.local.yml
+    service: www
+  build:
+    context: .
+    dockerfile: ./custom/dockerfile/Dockerfile.www
