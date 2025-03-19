@@ -9,9 +9,9 @@ appsetting:
   wildcard_host: ((._key))
   service:
     proxy:
-      host: ((_env)).((appsetting.wildcard_host))
       base_image: traefik:v3.1
       extra_commands: []
+      host: ((_env)).((appsetting.wildcard_host))
 
 hook:
   call: {}

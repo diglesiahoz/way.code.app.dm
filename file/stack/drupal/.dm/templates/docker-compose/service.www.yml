@@ -3,7 +3,7 @@ www:
   hostname: ${COMPOSE_PROJECT_NAME}-www
   build:
     context: .
-    dockerfile: ./templates/dockerfile.www
+    dockerfile: ./templates/dockerfile/www
     args:
       APPSETTING_USER: ${APPSETTING_USER}
       APPSETTING_UID: ${APPSETTING_UID}

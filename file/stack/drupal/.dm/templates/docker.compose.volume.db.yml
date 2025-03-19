@@ -1,2 +1,0 @@
-db_data:
-  name: ${COMPOSE_PROJECT_NAME}-db_data

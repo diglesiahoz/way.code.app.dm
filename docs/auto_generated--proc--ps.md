@@ -5,20 +5,26 @@ help: Lista servicios
 example:
 - (({}.tmp.proc.sig))
 task:
-  require: { }
+  require:
+    config: []
+    args:
+      filter:
+        required: false
+        type: String
+        default:
   do:
     - { event: 'origin startup' }
     - 
       check:
         data:
           -
-            key: (({}.args.arg1))
+            key: (({}.args.filter))
             is: decoded
         true:
           -
             call: exec
             args:
-              cmd: docker ps -a --filter name=^/(({}.args.arg1))
+              cmd: docker ps -a --filter name=^/(({}.args.filter))
               out: true  
         false:
           -

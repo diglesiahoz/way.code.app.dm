@@ -106,6 +106,6 @@ RUN echo "Built on $(date)" > /build.log
 STOPSIGNAL SIGQUIT
 
 # entrypoint:
-COPY ./templates/entrypoint.www.sh /docker-entrypoint.www.sh
+COPY ./templates/entrypoint/www.sh /docker-entrypoint.www.sh
 RUN chmod +x /docker-entrypoint.www.sh
 ENTRYPOINT [ "/docker-entrypoint.www.sh" ]

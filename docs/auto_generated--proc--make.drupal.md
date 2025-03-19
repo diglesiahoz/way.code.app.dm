@@ -11,7 +11,6 @@ task:
     args: {}
     opt: {}
     settings:
-      # appsetting.stack: ^drupal-11
       appsetting.stack: ^drupal
   do:
     # Lanza evento de inicio
@@ -126,7 +125,7 @@ task:
       call: exec
       args:
         cd: (({origin}.appsetting.root))
-        cmd: (({}.exec)) dm.drush -y site:install --site-name=(({origin}._name)) --account-name=admin --account-pass=(({}.var.password))
+        cmd: (({}.exec)) dm.drush site:install -y --site-name=(({origin}._name)) --account-name=admin --account-pass=(({}.var.password))
     # Configura Drupal
     - check:
         data: 

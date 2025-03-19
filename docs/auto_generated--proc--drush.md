@@ -20,9 +20,14 @@ task:
   do:
     - { event: 'origin startup' }
     -
+      call: var
+      args:
+        key: command
+        value: --uri https://(({origin}.appsetting.service.www.host.ui)) (({}.args.command))
+    -
       call: exec
       args:
-        cmd: docker exec --user (({}.user.username)) -it (({origin}.appsetting.tag))-www vendor/bin/drush (({}.args.command))
+        cmd: docker exec --user (({}.user.username)) -it (({origin}.appsetting.tag))-www vendor/bin/drush (({}.var.command))
         out: true
     - { event: 'origin windup' }
 ```

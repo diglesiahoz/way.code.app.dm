@@ -2,7 +2,7 @@ solr:
   container_name: ${COMPOSE_PROJECT_NAME}-solr
   build:
     context: .
-    dockerfile: ./templates/dockerfile.solr
+    dockerfile: ./templates/dockerfile/solr
     args:
       APPSETTING_SERVICE_SOLR_BASE_IMAGE: ${APPSETTING_SERVICE_SOLR_BASE_IMAGE}
   volumes:

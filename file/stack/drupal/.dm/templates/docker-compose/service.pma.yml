@@ -2,7 +2,7 @@ pma:
   container_name: ${COMPOSE_PROJECT_NAME}-pma
   build:
     context: .
-    dockerfile: ./templates/dockerfile.pma
+    dockerfile: ./templates/dockerfile/pma
     args:
       APPSETTING_SERVICE_PMA_BASE_IMAGE: ${APPSETTING_SERVICE_PMA_BASE_IMAGE}
   links:

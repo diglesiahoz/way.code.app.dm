@@ -1,25 +1,26 @@
 ### @test.drupal.local
 
 ```yml
-_pwd: (({}.user.homedir))/project/((._key))
+_pwd: (({}.user.homedir))/project/((_key))
 appsetting:
-  env: ((._env))
-  tag: ((._tag))
-  key: ((._key))
-  root: ((._pwd))
+  env: ((_env))
+  tag: ((_tag))
+  key: ((_key))
+  root: ((_pwd))
   stack: drupal
-  wildcard_host: ((._key))
+  wildcard_host: ((_key))
   path:
     backup_db: ((_pwd))/private/db
   service:
     db:
       base_image: mariadb:11 # [ mariadb:10.3 | mariadb:11 | mysql:8.0.0 ]
+      extra_commands: []
       host:
-        sv: ((._tag))-db
+        sv: ((_tag))-db
         ui: ''
-      name: ((._tag))
-      user: ((._tag))_user
-      pass: ((._tag))_pass
+      name: ((_tag))
+      user: ((_tag))_user
+      pass: ((_tag))_pass
       conf:
         db-export:
           excluded-tables: []
@@ -36,16 +37,31 @@ appsetting:
           #   - "watchdog"
     pma:
       base_image: phpmyadmin/phpmyadmin
+      extra_commands: []
       host:
         sv: ''
         ui: ((_env))-pma.((appsetting.wildcard_host))
     mailhog:
       base_image: mailhog/mailhog
+      extra_commands: []
       host:
-        sv: ((._tag))-mailhog
+        sv: ((_tag))-mailhog
         ui: ((_env))-mailhog.((appsetting.wildcard_host))
+    # memcached:
+    #   base_image: memcached
+    #   extra_commands: []
+    # redis:
+    #   base_image: redis:6.2-alpine
+    #   extra_commands: []
+    solr:
+      base_image: solr
+      extra_commands: []
+      host:
+        sv: ((_tag))-solr
+        ui: ((_env))-solr.((appsetting.wildcard_host))
     www:
       base_image: ubuntu:24.04
+      extra_commands: []
       host:
         sv: ''
         ui: ((_env)).((appsetting.wildcard_host))
@@ -75,6 +91,7 @@ appsetting:
   env_dockerfile:
     - APPSETTING_DEV=true
 hook:
+  args: {}
   call: {}
   event:
     dm.make.drupal:
@@ -97,6 +114,7 @@ hook:
               - require drupal/paragraphs
               - require drupal/pathauto
               - require drupal/redirect
+              - require drupal/search_api_solr
               - require drupal/symfony_mailer_lite
               - require drupal/twig_tweak
               - require drupal/viewsreference:^2.0@beta
@@ -117,6 +135,7 @@ hook:
               - pm:enable paragraphs
               - pm:enable pathauto
               - pm:enable redirect
+              - pm:enable search_api_solr
               - pm:enable symfony_mailer_lite
               - pm:enable twig_tweak
               - pm:enable viewsreference
