@@ -34,7 +34,8 @@ RUN apt-get install -y swaks
 RUN apt-get install -y sshpass
 RUN apt-get install -y rsync
 RUN apt-get install -y htop
-RUN apt-get install -y npm
+RUN apt-get install -y wget
+# RUN apt-get install -y npm
 
 # php:
 RUN LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
@@ -61,11 +62,11 @@ RUN apt-get install -y \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-apcu \
     libapache2-mod-php${APPSETTING_SERVICE_WWW_PHP_RELEASE}
 
-ADD ../templates/php.ini.conf /tmp/php.ini.conf
+ADD ./templates/php.ini.conf /tmp/php.ini.conf
 RUN cat /tmp/php.ini.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini
 RUN rm /tmp/php.ini.conf
 
-ADD ../templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf
+ADD ./templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf
 RUN cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/pool.d/www.conf
 RUN rm /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf
 
@@ -73,7 +74,7 @@ RUN rm /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf
 RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then apt-get install -y nginx; fi
 RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then apt-get install -y apache2; fi
 
-ADD ../templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf
+ADD ./templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf
 RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf > /etc/nginx/sites-available/default; fi
 RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf > /etc/apache2/sites-available/000-default.conf; fi
 RUN rm /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf
@@ -92,8 +93,8 @@ RUN usermod -aG www-data $APPSETTING_USER
 RUN usermod -aG sudo $APPSETTING_USER
 RUN echo "" >> /etc/sudoers
 RUN echo "${APPSETTING_USER} ALL=NOPASSWD: ALL" >> /etc/sudoers
-ADD ../templates/bashrc /home/$APPSETTING_USER/.bashrc
-ADD ../templates/bashrc /root/.bashrc
+ADD ./templates/bashrc /home/$APPSETTING_USER/.bashrc
+ADD ./templates/bashrc /root/.bashrc
 
 # extra commands
 (({}.var.extra_commands))
@@ -105,6 +106,6 @@ RUN echo "Built on $(date)" > /build.log
 STOPSIGNAL SIGQUIT
 
 # entrypoint:
-COPY ../entrypoint/docker-entrypoint.www.sh /docker-entrypoint.www.sh
+COPY ./templates/entrypoint.www.sh /docker-entrypoint.www.sh
 RUN chmod +x /docker-entrypoint.www.sh
 ENTRYPOINT [ "/docker-entrypoint.www.sh" ]

@@ -3,7 +3,7 @@ www:
   hostname: ${COMPOSE_PROJECT_NAME}-www
   build:
     context: .
-    dockerfile: ./dockerfile/Dockerfile.www
+    dockerfile: ./templates/dockerfile.www
     args:
       APPSETTING_USER: ${APPSETTING_USER}
       APPSETTING_UID: ${APPSETTING_UID}
@@ -17,11 +17,11 @@ www:
       source: ${APPSETTING_SERVICE_WWW_SOURCE}
       target: ${APPSETTING_SERVICE_WWW_TARGET}
       type: bind
-    - 
-      consistency: cached
-      source: ./custom
-      target: /root/custom
-      type: bind
+    # - 
+    #   consistency: cached
+    #   source: ../custom
+    #   target: /root/custom
+    #   type: bind
   healthcheck:
     interval: 1s
     retries: 120

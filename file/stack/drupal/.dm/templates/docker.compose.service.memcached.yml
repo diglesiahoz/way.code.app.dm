@@ -2,7 +2,7 @@ memcached:
   container_name: ${COMPOSE_PROJECT_NAME}-memcached
   build:
     context: .
-    dockerfile: ./custom/dockerfile/Dockerfile.memcached
+    dockerfile: ./templates/dockerfile.memcached
     args:
       APPSETTING_SERVICE_MEMCACHED_BASE_IMAGE: ${APPSETTING_SERVICE_MEMCACHED_BASE_IMAGE}
   restart: unless-stopped

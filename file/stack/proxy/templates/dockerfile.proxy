@@ -1,0 +1,5 @@
+ARG APPSETTING_SERVICE_PROXY_BASE_IMAGE
+FROM $APPSETTING_SERVICE_PROXY_BASE_IMAGE
+
+# extra commands
+(({}.var.extra_commands))

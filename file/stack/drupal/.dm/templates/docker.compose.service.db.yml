@@ -2,7 +2,7 @@ db:
   container_name: ${COMPOSE_PROJECT_NAME}-db
   build:
     context: .
-    dockerfile: ./dockerfile/Dockerfile.db
+    dockerfile: ./templates/dockerfile.db
     args:
       APPSETTING_SERVICE_DB_BASE_IMAGE: ${APPSETTING_SERVICE_DB_BASE_IMAGE}
   environment:
@@ -17,7 +17,7 @@ db:
   ]
   restart: unless-stopped
   volumes:
-    - ./entrypoint/docker-entrypoint.db.init.sql:/docker-entrypoint-initdb.d/docker-entrypoint.db.init.sql
+    - ./templates/entrypoint.db.init.sql:/docker-entrypoint-initdb.d/docker-entrypoint.db.init.sql
     - db_data:/var/lib/mysql
   labels:
     - "traefik.http.services.${COMPOSE_PROJECT_NAME}_db.loadbalancer.server.port=3306"

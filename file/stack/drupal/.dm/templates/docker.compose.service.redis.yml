@@ -2,7 +2,7 @@ redis:
   container_name: ${COMPOSE_PROJECT_NAME}-redis
   build:
     context: .
-    dockerfile: ./custom/dockerfile/Dockerfile.redis
+    dockerfile: ./templates/dockerfile.redis
     args:
       APPSETTING_SERVICE_REDIS_BASE_IMAGE: ${APPSETTING_SERVICE_REDIS_BASE_IMAGE}
   restart: unless-stopped

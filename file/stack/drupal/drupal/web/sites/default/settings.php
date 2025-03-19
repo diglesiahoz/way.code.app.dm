@@ -204,6 +204,25 @@ if (getenv('APPSETTING_DEV') == "true") {
       break;
   }
 
+# Solr
+# - Configuration: https://www.youtube.com/watch?v=m0cF_XbC8ek
+# - Drush: 
+#    - way drush cget search_api.server.solr --include-overridden
+#    - way drush cget search_api.server.solr backend_config --include-overridden
+# - Drupal (solr): /config/search/search-api/server/solr/edit
+# - Drupal (index): /admin/config/search/search-api/index/index
+$config['search_api.server.solr'] = [
+  'backend_config' => [
+    'connector_config' => [
+      'scheme' => 'http',
+      'host' => getenv('APPSETTING_SERVICE_SOLR_HOST_SV'),
+      'path' => '/',
+      'core' => getenv('APPSETTING_SERVICE_SOLR_HOST_SV'),
+      'port' => '8983',
+    ],
+  ],
+];
+
 # # Windows Azure Storage
 #   $config['windows_azure_storage.settings']['account'] = getenv('APPSETTING_WINDOWS_AZURE_STORAGE_ACCOUNT');
 #   $config['windows_azure_storage.settings']['primary_key'] = getenv('APPSETTING_WINDOWS_AZURE_STORAGE_PRIMARY_KEY');

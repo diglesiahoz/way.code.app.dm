@@ -4,4 +4,4 @@ www:
     service: www
   build:
     context: .
-    dockerfile: ./custom/dockerfile/Dockerfile.www
+    dockerfile: ./custom/dockerfile.www
