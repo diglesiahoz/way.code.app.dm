@@ -1,5 +1,4 @@
-#_pwd: (({}.user.homedir))/.dm
-_pwd: (({}.user.homedir))/project/.dm
+_pwd: ~/project/.dm
 
 appsetting:
   tag: ((._tag))

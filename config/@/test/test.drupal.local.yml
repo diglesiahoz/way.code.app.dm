@@ -1,6 +1,4 @@
-# REF: https://github.com/madsnorgaard/drupal11_docker_composer_drush/blob/main/docker-compose.yml
-
-_pwd: (({}.user.homedir))/project/((_key))
+_pwd: ~/project/((_key))
 
 appsetting:
   env: ((_env))
