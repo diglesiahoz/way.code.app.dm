@@ -103,6 +103,14 @@ fi
 ##########
 alias ll="ls -lhA"
 
+if [ "$(type -t __git_ps1)" ]; then
+  GIT_PS1_SHOWDIRTYSTATE=1
+  GIT_PS1_SHOWSTASHSTATE=1
+  GIT_PS1_SHOWUNTRACKEDFILES=1
+  GIT_PS1_DESCRIBE_STYLE='contains'
+  GIT_PS1_SHOWUPSTREAM='auto'
+  source /etc/bash_completion.d/git-prompt
+fi
 ENV_U_COLOR=29;
 ENV_P_COLOR=60;
 ENV_G_COLOR=140;
