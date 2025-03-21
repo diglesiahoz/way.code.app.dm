@@ -1,16 +1,19 @@
-# arg:
 ARG APPSETTING_SERVICE_WWW_BASE_IMAGE
 FROM $APPSETTING_SERVICE_WWW_BASE_IMAGE
+
+# arg:
 ARG APPSETTING_GID
 ARG APPSETTING_UID
 ARG APPSETTING_USER
-
-# user:
-USER root
+ARG APPSETTING_SERVICE_WWW_WEBSERVER
+ARG APPSETTING_SERVICE_WWW_PHP_RELEASE
+ARG APPSETTING_SERVICE_WWW_COMPOSER_RELEASE
 
 # env:
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Madrid"
-(({}.var.env_dockerfile))
+
+# user:
+USER root
 
 # packages:
 RUN apt-get update
@@ -86,7 +89,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN /usr/local/bin/composer self-update --${APPSETTING_SERVICE_WWW_COMPOSER_RELEASE}
 
 # user:
-RUN if [ "$APPSETTING_SERVICE_WWW_BASE_IMAGE" = "ubuntu:24.04" ] ; then deluser --remove-home ubuntu; fi
+RUN if [ "$(grep -c '^ubuntu:' /etc/passwd)" = 1 ] ; then deluser --remove-home ubuntu; fi
 RUN addgroup $APPSETTING_USER
 RUN useradd -m -u $APPSETTING_UID -g $APPSETTING_GID -s /bin/bash -d /home/$APPSETTING_USER $APPSETTING_USER
 RUN usermod -aG www-data $APPSETTING_USER
