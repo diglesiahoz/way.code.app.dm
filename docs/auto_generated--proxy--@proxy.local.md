@@ -1,7 +1,7 @@
 ### @proxy.local
 
 ```yml
-_pwd: (({}.user.homedir))/project/.dm
+_pwd: ~/project/.dm
 appsetting:
   tag: ((._tag))
   key: ((._key))

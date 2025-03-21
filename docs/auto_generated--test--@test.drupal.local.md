@@ -1,7 +1,7 @@
 ### @test.drupal.local
 
 ```yml
-_pwd: (({}.user.homedir))/project/((_key))
+_pwd: ~/project/((_key))
 appsetting:
   env: ((_env))
   tag: ((_tag))
