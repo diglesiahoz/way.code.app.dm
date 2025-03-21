@@ -1,4 +1,4 @@
-ENV_VARS = export COMPOSE_PROJECT_NAME=(({}.env._this._tag)); export APPSETTING_ENV=(({}.env._this._env)); export APPSETTING_UID=$(shell id -g); export APPSETTING_GID=$(shell id -g); export APPSETTING_USER=$(USER);
+ENV_VARS = export COMPOSE_PROJECT_NAME=(({}.env._this._tag)); export APPSETTING_USER=$(USER); export APPSETTING_UID=$(shell id -g); export APPSETTING_GID=$(shell id -g);
 
 up:
 	$(ENV_VARS) docker compose --env-file .env -f docker-compose.yml up -d --build
