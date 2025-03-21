@@ -1,10 +1,8 @@
-ENV_VARS = export COMPOSE_PROJECT_NAME=(({}.env._this._tag)); export APPSETTING_USER=$(USER); export APPSETTING_UID=$(shell id -g); export APPSETTING_GID=$(shell id -g);
-
 up:
-	$(ENV_VARS) docker compose --env-file .env -f docker-compose.yml up -d --build
+	docker compose --env-file .env -f docker-compose.yml up -d --build
 down:
-	$(ENV_VARS) docker compose --env-file .env down
+	docker compose --env-file .env down
 logs:
-	$(ENV_VARS) docker compose logs -f -t
+	docker compose --env-file .env logs -f -t
 ps:
-	$(ENV_VARS) docker ps --filter name=^/(({}.env._this._tag))
+	docker ps --filter name=^/(({}.env._this._tag))
