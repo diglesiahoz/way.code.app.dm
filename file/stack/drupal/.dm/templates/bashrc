@@ -103,15 +103,6 @@ fi
 ##########
 alias ll="ls -lhA"
 
-if [ "$(type -t __git_ps1)" ]; then
-  GIT_PS1_SHOWDIRTYSTATE=1
-  GIT_PS1_SHOWSTASHSTATE=1
-  GIT_PS1_SHOWUNTRACKEDFILES=1
-  GIT_PS1_DESCRIBE_STYLE='contains'
-  GIT_PS1_SHOWUPSTREAM='auto'
-  source /etc/bash_completion.d/git-prompt
-fi
 ENV_U_COLOR=29;
 ENV_P_COLOR=60;
-ENV_G_COLOR=140;
-export PS1="\[\033[38;5;"$ENV_U_COLOR"m\]\u@\h\[$(tput sgr0)\]\[$(tput sgr0)\] \[\033[38;5;"$ENV_P_COLOR"m\]\w\[$(tput sgr0)\]\[$(tput sgr0)\] \[\033[38;5;"$ENV_G_COLOR"m\]\$(__git_ps1 '(%s)')\[$(tput sgr0)\] \n\[$(tput bold)\[\033[38;5;"$ENV_U_COLOR"m\]\$\[$(tput sgr0)\] ";
+export PS1="\[\033[38;5;"$ENV_U_COLOR"m\]\u@\h\[$(tput sgr0)\]\[$(tput sgr0)\] \[\033[38;5;"$ENV_P_COLOR"m\]\w\[$(tput sgr0)\]\[$(tput sgr0)\] \n\[$(tput bold)\[\033[38;5;"$ENV_U_COLOR"m\]\$\[$(tput sgr0)\] ";
