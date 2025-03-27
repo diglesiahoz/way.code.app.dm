@@ -10,8 +10,7 @@ task:
     opt: {}
   do:
     - { event: 'origin startup' }
-    #- call: dm.main
-    #- call: out
-    - { call: exec, args: { cmd: "watch -n 0.5 ls -la", out: true }}
+    - call: dm.main
+    - call: out
     - { event: 'origin windup' }
 
