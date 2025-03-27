@@ -82,7 +82,7 @@ RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then cat /tmp/webserve
 RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf > /etc/apache2/sites-available/000-default.conf; fi
 RUN rm /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf
 
-RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then a2enmod proxy_fcgi rewrite expires; fi
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then a2enmod proxy_fcgi rewrite expires headers; fi
 
 # composer:
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

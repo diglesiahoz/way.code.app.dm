@@ -11,4 +11,10 @@ solr:
     - solr-precreate
     - ${APPSETTING_SERVICE_SOLR_HOST_SV}
   restart: unless-stopped
-  ports: [ "8983:8983" ]
+  labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_solr.tls=true"
+    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_solr.rule=Host(`${APPSETTING_SERVICE_SOLR_HOST_UI}`)"
+    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_solr.loadbalancer.server.port=8983"
+  networks:
+    - dm_proxy

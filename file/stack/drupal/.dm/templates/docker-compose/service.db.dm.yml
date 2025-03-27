@@ -19,4 +19,7 @@ db:
   volumes:
     - ./templates/entrypoint/db.init.sql:/docker-entrypoint-initdb.d/docker-entrypoint.db.init.sql
     - db_data:/var/lib/mysql
-  ports: [ "3307:3306" ]
+  labels:
+    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_db.loadbalancer.server.port=3306"
+  networks:
+    - dm_proxy

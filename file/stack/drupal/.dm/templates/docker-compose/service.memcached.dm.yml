@@ -6,4 +6,7 @@ memcached:
     args:
       APPSETTING_SERVICE_MEMCACHED_BASE_IMAGE: ${APPSETTING_SERVICE_MEMCACHED_BASE_IMAGE}
   restart: unless-stopped
-  ports: [ "11311:11211" ]
+  labels:
+    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_db.loadbalancer.server.port=11211"
+  networks:
+    - dm_proxy

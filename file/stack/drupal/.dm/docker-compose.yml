@@ -1,6 +1,2 @@
-networks:
-  dm_proxy:
-    external: true
-
 volumes: (({}.var.volumes))
 services: (({}.var.services))

@@ -1,9 +1,0 @@
-ARG APPSETTING_SERVICE_MEMCACHED_BASE_IMAGE
-FROM $APPSETTING_SERVICE_MEMCACHED_BASE_IMAGE
-
-# packages:
-RUN apt-get update
-RUN apt-get install netcat-openbsd
-
-# user:
-ADD ../templates/bashrc /root/.bashrc
