@@ -25,7 +25,7 @@ task:
             key: (({origin}.appsetting.stack))
             is: decoded
         true:
-          - { call: exec, args: { cmd: "(({}.exec)) (({origin}._config_name)) dm.init (({}.optSig)) -f" }}
+          - { call: exec, args: { cmd: "(({}.exec)) (({origin}._config_name)) dm.init (({}.optSig))" }}
     - { call: dm.setUp }
     - { call: exec, args: { cd: "(({}.var.setup_home_root))", cmd: "(({}.var.setup_compose_cmd))", out: true }}
     - { event: 'origin windup' }

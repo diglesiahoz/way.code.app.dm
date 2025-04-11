@@ -1,0 +1,4 @@
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+# */5 * * * * $HOME/sh/drupal_cron.sh -v > /var/log/cron_jobs.log 2>&1
+# An empty line is required at the end of this file for a valid cron file.

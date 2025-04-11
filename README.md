@@ -46,6 +46,7 @@
 * [sync](docs/auto_generated--proc--sync.md)
 * [test](docs/auto_generated--proc--test.md)
 * [trace.access](docs/auto_generated--proc--trace.access.md)
+* [trace.cron](docs/auto_generated--proc--trace.cron.md)
 * [trace.error](docs/auto_generated--proc--trace.error.md)
 * [trace.ps](docs/auto_generated--proc--trace.ps.md)
 * [up](docs/auto_generated--proc--up.md)

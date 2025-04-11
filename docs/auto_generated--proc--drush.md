@@ -11,7 +11,7 @@ task:
   complete: [ cr, uli ]
   require:
     config:
-      - .*(\.local) origin
+      - .*(\.local|\.dev|\.test|\.pre) origin
     args:
       command:
         required: false
@@ -27,7 +27,7 @@ task:
     -
       call: exec
       args:
-        cmd: docker exec --user (({}.user.username)) -it (({origin}.appsetting.tag))-www vendor/bin/drush (({}.var.command))
+        cmd: (({}.exec)) (({origin}._config_name)) exec (({origin}.appsetting.service.www.target))/vendor/bin/drush (({}.var.command))
         out: true
     - { event: 'origin windup' }
 ```
