@@ -66,6 +66,7 @@ RUN apt-get install -y \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-bcmath \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-memcached \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-apcu \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-xdebug \
     libapache2-mod-php${APPSETTING_SERVICE_WWW_PHP_RELEASE}
 
 ADD ./templates/php.ini.conf /tmp/php.ini.conf
