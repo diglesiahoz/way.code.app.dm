@@ -74,8 +74,8 @@ appsetting:
       # Ej: [ /web ]
       webserver_docroot: "/web"
       # Pemite compartir aplicación a través de Ngrok.
-      # See: https://ngrok.com/docs/guides/developer-preview/getting-started/
-      # Dashboard: https://dashboard.ngrok.com/get-started/setup/linux
+      # Ver: https://ngrok.com/docs/guides/developer-preview/getting-started/
+      # Panel de control: https://dashboard.ngrok.com/get-started/setup/linux
       ngrok:
         token: ""
       php:
