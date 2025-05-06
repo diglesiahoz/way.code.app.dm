@@ -13,7 +13,7 @@ task:
     -
       call: exec
       args:
-        cmd: (({}.exec)) (({origin}._config_name)) exec cat /var/log/cron_jobs.log
+        cmd: (({}.exec)) (({origin}._config_name)) exec tail -f /var/log/cron_jobs.log
         out: true
     - { event: 'origin windup' }
 ```

@@ -43,6 +43,7 @@
 * [send.mail.test](docs/auto_generated--proc--send.mail.test.md)
 * [service.exec](docs/auto_generated--proc--service.exec.md)
 * [sh](docs/auto_generated--proc--sh.md)
+* [share](docs/auto_generated--proc--share.md)
 * [sync](docs/auto_generated--proc--sync.md)
 * [test](docs/auto_generated--proc--test.md)
 * [trace.access](docs/auto_generated--proc--trace.access.md)

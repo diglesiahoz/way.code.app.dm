@@ -73,6 +73,11 @@ appsetting:
       # Deja en blanco para no añadir ninguna ruta relativa y que el directorio raíz sea /var/www/html.
       # Ej: [ /web ]
       webserver_docroot: "/web"
+      # Pemite compartir aplicación a través de Ngrok.
+      # See: https://ngrok.com/docs/guides/developer-preview/getting-started/
+      # Dashboard: https://dashboard.ngrok.com/get-started/setup/linux
+      ngrok:
+        token: ""
       php:
         release: 8.3 # [ 8.1 | 8.3 ]
       composer:

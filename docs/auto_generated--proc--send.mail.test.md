@@ -13,7 +13,7 @@ task:
     opt: {}
   do:
     - { event: 'origin startup' }
-    - { call: exec, args: { cmd: 'docker exec -it (({origin}.appsetting.tag))-www swaks -s (({origin}.appsetting.service.mailhog.host.sv)):1025 --to webmaster@(({origin}.appsetting.wildcard_host))', out: true } }
+    - { call: exec, args: { cmd: 'docker exec -it (({origin}.appsetting.tag))-www swaks -s (({origin}.appsetting.service.mailhog.host.sv)):1025 --to webmaster@(({origin}.appsetting.wildcard_host)) --add-header "Subject: Test email" --add-header "Content-Type: text/html" --body "<h3 style=\"color: #0b8707;\">This is a test email</h3>"', out: true } }
     - { event: 'origin windup' }
 ```
 [```config/proc/send.mail.test.yml```](../config/proc/send.mail.test.yml)
