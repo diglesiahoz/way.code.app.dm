@@ -2,7 +2,7 @@
 
 1. Instalar extensiones de Visual Studio Code
    - PHP Debug (https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug)
-2. Establecer el fichero de configuración (launch.json)
+2. Establecer el fichero de configuración (launch.json) en Visual Studio Code
 ```console
 {
   "version": "0.2.0",
