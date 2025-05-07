@@ -1,6 +1,8 @@
 ### Depurar con XDebug y Visual Studio Code
 
-1. Ejemplo de fichero de configuración (launch.json)
+1. Instalar extensiones de Visual Studio Code
+   - PHP Debug (https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug)
+2. Establecer el fichero de configuración (launch.json)
 ```console
 {
   "version": "0.2.0",
@@ -23,3 +25,4 @@
   ]
 }
 ```
+3. En Visual Studio Code iniciar depuración
