@@ -31,5 +31,7 @@ www:
     retries: 120
     start_period: 2m0s
     timeout: 2m0s
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
   restart: unless-stopped
   ports: [ "80:80", "443:443" ]

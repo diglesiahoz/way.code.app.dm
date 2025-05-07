@@ -57,3 +57,4 @@
 * [Apagar proxy](docs/auto_generated--proc--proxy.down--recipe1--apagar_proxy.md)
 * [Levantar proxy](docs/auto_generated--proc--proxy.up--recipe1--levantar_proxy.md)
 * [Modificar y/o crear certificados](docs/auto_generated--proc--proxy.up--recipe2--modificar_y_o_crear_certificados.md)
+* [Depurar con XDebug y Visual Studio Code](docs/auto_generated--proc--up--recipe1--depurar_con_xdebug_y_visual_studio_code.md)

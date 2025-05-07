@@ -1,7 +1,6 @@
 ### up
 
 ```yml
-help: "Levanta servicios"
 example:
  - (({}.tmp.proc.sig))
 task:
