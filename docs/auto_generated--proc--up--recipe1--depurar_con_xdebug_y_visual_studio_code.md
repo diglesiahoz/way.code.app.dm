@@ -1,8 +1,13 @@
 ### Depurar con XDebug y Visual Studio Code
 
-1. Instalar extensiones de Visual Studio Code
+1. Levantar aplicación
+2. Establecer "info.php" en raiz del proyecto (para comprobar que XDebug está activo)
+```console
+<?php xdebug_info(); ?>
+```
+3. Instalar extensiones de Visual Studio Code
    - PHP Debug (https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug)
-2. Establecer el fichero de configuración (launch.json) en Visual Studio Code
+4. Establecer el fichero de configuración (launch.json) en Visual Studio Code
 ```console
 {
   "version": "0.2.0",
@@ -25,4 +30,4 @@
   ]
 }
 ```
-3. En Visual Studio Code iniciar depuración
+5. En Visual Studio Code iniciar depuración
