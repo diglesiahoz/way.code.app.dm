@@ -1,0 +1,132 @@
+# check=skip=InvalidDefaultArgInFrom
+
+ARG APPSETTING_SERVICE_WWW_BASE_IMAGE
+FROM $APPSETTING_SERVICE_WWW_BASE_IMAGE
+
+# arg:
+ARG APPSETTING_USER
+ARG APPSETTING_GID
+ARG APPSETTING_UID
+ARG APPSETTING_SERVICE_WWW_WEBSERVER
+ARG APPSETTING_SERVICE_WWW_PHP_RELEASE
+ARG APPSETTING_SERVICE_WWW_COMPOSER_RELEASE
+
+# env:
+ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Madrid"
+
+# user:
+USER root
+
+# packages:
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN apt-get install -y --no-install-recommends
+RUN apt-get install -y sudo
+RUN apt-get install -y nano
+RUN apt-get install -y patch
+RUN apt-get install -y apt-utils
+RUN apt-get install -y iputils-ping
+RUN apt-get install -y apt-transport-https
+RUN apt-get install -y ca-certificates
+RUN update-ca-certificates
+RUN apt-get install -y curl
+RUN apt-get install -y net-tools
+RUN apt-get install -y git
+RUN apt-get install -y zip
+RUN apt-get install -y unzip
+RUN apt-get install -y mysql-client
+RUN apt-get install -y swaks
+RUN apt-get install -y sshpass
+RUN apt-get install -y rsync
+RUN apt-get install -y htop
+RUN apt-get install -y wget
+RUN apt-get install -y cron
+# RUN apt-get install -y npm
+
+# php:
+RUN LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+RUN apt-get install -y \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE} \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-fpm \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-cli \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-gd \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-xml \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-xmlrpc \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-soap \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-opcache \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-zip \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-simplexml \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-mbstring \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-mysql \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-common \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-gmp \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-ldap \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-curl \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-intl \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-bcmath \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-memcached \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-apcu \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-xdebug \
+    libapache2-mod-php${APPSETTING_SERVICE_WWW_PHP_RELEASE}
+
+ADD ./templates/php.ini.conf /tmp/php.ini.conf
+RUN cat /tmp/php.ini.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini
+RUN rm /tmp/php.ini.conf
+
+ADD ./templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf
+RUN cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/pool.d/www.conf
+RUN rm /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf
+
+# web-server:
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then apt-get install -y nginx; fi
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then apt-get install -y apache2; fi
+
+ADD ./templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf > /etc/nginx/sites-available/default; fi
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf > /etc/apache2/sites-available/000-default.conf; fi
+RUN rm /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf
+
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then a2enmod proxy_fcgi rewrite expires headers; fi
+
+# composer:
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN /usr/local/bin/composer self-update --${APPSETTING_SERVICE_WWW_COMPOSER_RELEASE}
+
+# ngrok:
+RUN curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | \
+  sudo gpg --dearmor -o /etc/apt/keyrings/ngrok.gpg && \
+  echo "deb [signed-by=/etc/apt/keyrings/ngrok.gpg] https://ngrok-agent.s3.amazonaws.com buster main" | \
+  sudo tee /etc/apt/sources.list.d/ngrok.list && \
+  sudo apt update && sudo apt install ngrok
+
+# user:
+RUN if [ "$(grep -c '^ubuntu:' /etc/passwd)" = 1 ] ; then deluser --remove-home ubuntu; fi
+RUN addgroup $APPSETTING_USER
+RUN useradd -m -u $APPSETTING_UID -g $APPSETTING_GID -s /bin/bash -d /home/$APPSETTING_USER $APPSETTING_USER
+RUN usermod -aG www-data $APPSETTING_USER
+RUN usermod -aG sudo $APPSETTING_USER
+RUN echo "" >> /etc/sudoers
+RUN echo "${APPSETTING_USER} ALL=NOPASSWD: ALL" >> /etc/sudoers
+ADD ./templates/bashrc /home/$APPSETTING_USER/.bashrc
+ADD ./templates/bashrc /root/.bashrc
+
+# cron
+ADD ./templates/cron_jobs /etc/cron.d/cron_jobs
+RUN chmod 0644 /etc/cron.d/cron_jobs
+RUN crontab -u $APPSETTING_USER /etc/cron.d/cron_jobs
+RUN touch /var/log/cron_jobs.log
+RUN chown $APPSETTING_USER:$APPSETTING_USER /var/log/cron_jobs.log
+
+# extra commands
+(({}.var.extra_commands))
+
+# build info:
+RUN echo "Built on $(date)" > /build.log
+
+# stopsignal:
+STOPSIGNAL SIGQUIT
+
+# entrypoint:
+COPY ./templates/entrypoint/www.sh /docker-entrypoint.www.sh
+RUN chmod +x /docker-entrypoint.www.sh
+ENTRYPOINT [ "/docker-entrypoint.www.sh" ]

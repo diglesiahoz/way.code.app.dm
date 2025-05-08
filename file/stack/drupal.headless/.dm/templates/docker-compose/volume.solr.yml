@@ -1,0 +1,2 @@
+solr_data:
+  name: ${COMPOSE_PROJECT_NAME}-solr_data

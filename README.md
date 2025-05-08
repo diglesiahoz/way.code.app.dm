@@ -7,6 +7,7 @@
 #### Perfiles
 
 * [@proxy.local](docs/auto_generated--proxy--@proxy.local.md)
+* [@test.drupal.headless.local](docs/auto_generated--test--@test.drupal.headless.local.md)
 * [@test.drupal.local](docs/auto_generated--test--@test.drupal.local.md)
 
 #### Procedimientos

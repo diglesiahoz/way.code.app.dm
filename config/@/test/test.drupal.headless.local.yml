@@ -1,0 +1,163 @@
+_pwd: ~/project/((_key))
+
+appsetting:
+  env: ((_env))
+  tag: ((_tag))
+  key: ((_key))
+  root: ((_pwd))
+  stack: drupal.headless
+  wildcard_host: ((_key))
+  path:
+    backup_db: ((_pwd))/private/db
+  service:
+    db:
+      base_image: mariadb:11 # [ mariadb:10.3 | mariadb:11 | mysql:8.0.0 ]
+      extra_commands: []
+      host:
+        sv: ((_tag))-db
+        ui: ''
+      name: ((_tag))
+      user: ((_tag))_user
+      pass: ((_tag))_pass
+      conf:
+        db-export:
+          excluded-tables: []
+          # excluded-tables:
+          #   - "batch" 
+          #   - "cache_" 
+          #   - "flood" 
+          #   - "queue" 
+          #   - "search_dataset" 
+          #   - "search_index" 
+          #   - "search_total" 
+          #   - "semaphore" 
+          #   - "sessions" 
+          #   - "watchdog"
+    pma:
+      base_image: phpmyadmin/phpmyadmin
+      extra_commands: []
+      host:
+        sv: ''
+        ui: ((_env))-pma.((appsetting.wildcard_host))
+    mailhog:
+      base_image: mailhog/mailhog
+      extra_commands: []
+      host:
+        sv: ((_tag))-mailhog
+        ui: ((_env))-mailhog.((appsetting.wildcard_host))
+    # memcached:
+    #   base_image: memcached
+    #   extra_commands: []
+    # redis:
+    #   base_image: redis:6.2-alpine
+    #   extra_commands: []
+    solr:
+      base_image: solr
+      extra_commands: []
+      host:
+        sv: ((_tag))-solr
+        ui: ((_env))-solr.((appsetting.wildcard_host))
+    www:
+      base_image: ubuntu:24.04
+      extra_commands: []
+      host:
+        sv: ''
+        ui: ((_env)).((appsetting.wildcard_host))
+      # Establece el directorio de origen, desde el cual se monta el volumen. Ej: [ ../ | ../drupal | ../web ]
+      source: "../drupal"
+      # Establece el directorio de destino en el contenedor. Ej: [ /var/www/html ]
+      target: "/var/www/html"
+      # Establece el tipo de servidor web. Ej: [ nginx | apache2 ]
+      webserver: nginx 
+      # Establece el nombre del directorio al que accede las peticiones del servidor web. 
+      # Deja en blanco para no añadir ninguna ruta relativa y que el directorio raíz sea /var/www/html.
+      # Ej: [ /web ]
+      webserver_docroot: "/web"
+      # Pemite compartir aplicación a través de Ngrok.
+      # Ver: https://ngrok.com/docs/guides/developer-preview/getting-started/
+      # Panel de control: https://dashboard.ngrok.com/get-started/setup/linux
+      ngrok:
+        token: ""
+      php:
+        release: 8.3 # [ 8.1 | 8.3 ]
+      composer:
+        release: 2
+      drupal:
+        release: ^11 # [ ^10 | ^11 ]
+        target: drupal
+        error_level: verbose
+        file_system:
+          config_path: ../config
+          public_path: sites/default/files
+          private_path: ../private
+          temp_path: /tmp
+  env_dockerfile:
+    - APPSETTING_DEV=true
+    
+hook:
+  args: {}
+  call: {}
+  event:
+    dm.make.drupal:
+      startup:
+        - 
+          call: var
+          args:
+            allow_merge: true
+            key: composer.run
+            value:
+              - config extra.enable-patching true
+              - config extra.patches-file composer.patches.json
+              - config --no-plugins allow-plugins.cweagans/composer-patches true
+              - require cweagans/composer-patches
+              - require drupal/admin_toolbar
+             #- require drupal/ckeditor5_plugin_pack
+              - require drupal/devel
+              - require drupal/devel_kint_extras
+              - require drupal/environment_indicator
+              - require drupal/gin_toolbar
+              - require drupal/gin
+              - require drupal/next
+             #- require drupal/metatag
+             #- require drupal/masquerade:^2.0@RC
+             #- require drupal/paragraphs
+             #- require drupal/pathauto
+             #- require drupal/redirect
+             #- require drupal/search_api_solr
+             #- require drupal/symfony_mailer_lite
+             #- require drupal/twig_tweak
+             #- require drupal/viewsreference:^2.0@beta
+        - 
+          call: var
+          args:
+            allow_merge: true
+            key: drush.run
+            value:
+              - pm:enable admin_toolbar
+              - pm:enable admin_toolbar_tools
+             #- pm:enable ckeditor5_plugin_pack
+              - pm:enable devel
+              - pm:enable devel_kint_extras
+              - pm:enable environment_indicator
+             #- pm:enable masquerade
+             #- pm:enable metatag
+              - pm:enable next
+              - pm:enable next_jsonapi
+             #- pm:enable paragraphs
+             #- pm:enable pathauto
+             #- pm:enable redirect
+             #- pm:enable search_api_solr
+             #- pm:enable symfony_mailer_lite
+             #- pm:enable twig_tweak
+             #- pm:enable viewsreference
+             #- config-set system.performance css.preprocess 1
+             #- config-set system.performance js.preprocess 1
+             #- user:create admin.editor --password admin
+             #- user:role:add content_editor admin.editor
+              - theme:enable gin
+              - pm:enable gin_toolbar
+              - config-set system.theme admin gin
+              - config-set gin.settings enable_darkmode 0
+              - config-set gin.settings classic_toolbar horizontal
+             #- cset locale.settings translation.import_enabled false -y
+      windup: {}

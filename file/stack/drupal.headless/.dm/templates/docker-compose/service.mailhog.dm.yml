@@ -1,0 +1,18 @@
+mailhog:
+  container_name: ${COMPOSE_PROJECT_NAME}-mailhog
+  build:
+    context: .
+    dockerfile: ./templates/dockerfile/mailhog
+    args:
+      APPSETTING_SERVICE_MAILHOG_BASE_IMAGE: ${APPSETTING_SERVICE_MAILHOG_BASE_IMAGE}
+  restart: unless-stopped
+  labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_mailhog.tls=true"
+    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_mailhog.rule=Host(`${APPSETTING_SERVICE_MAILHOG_HOST_UI}`)"
+    # SMTP Server
+    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_mailhog.loadbalancer.server.port=1025"
+    # Web UI
+    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_mailhog.loadbalancer.server.port=8025"
+  networks:
+    - dm_proxy

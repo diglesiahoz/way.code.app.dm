@@ -1,0 +1,22 @@
+db:
+  container_name: ${COMPOSE_PROJECT_NAME}-db
+  build:
+    context: .
+    dockerfile: ./templates/dockerfile/db
+    args:
+      APPSETTING_SERVICE_DB_BASE_IMAGE: ${APPSETTING_SERVICE_DB_BASE_IMAGE}
+  environment:
+    MYSQL_ROOT_PASSWORD: rootpass
+    MYSQL_DATABASE: ${APPSETTING_SERVICE_DB_NAME}
+    MYSQL_USER: ${APPSETTING_SERVICE_DB_USER}
+    MYSQL_PASSWORD: ${APPSETTING_SERVICE_DB_PASS}
+    MARIADB_AUTO_UPGRADE: true
+  command: [
+      '--wait_timeout=28800',
+      '--max_allowed_packet=1024M'
+  ]
+  restart: unless-stopped
+  volumes:
+    - ./templates/entrypoint/db.init.sql:/docker-entrypoint-initdb.d/docker-entrypoint.db.init.sql
+    - db_data:/var/lib/mysql
+  ports: [ "3307:3306" ]

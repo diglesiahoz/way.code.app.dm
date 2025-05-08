@@ -1,0 +1,11 @@
+# check=skip=InvalidDefaultArgInFrom
+
+ARG APPSETTING_SERVICE_DB_BASE_IMAGE
+FROM $APPSETTING_SERVICE_DB_BASE_IMAGE
+
+# user:
+USER root
+ADD ./templates/bashrc /root/.bashrc
+ADD ./templates/my.cnf /root/.my.cnf
+
+(({}.var.extra_commands))

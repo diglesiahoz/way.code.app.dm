@@ -1,0 +1,9 @@
+# check=skip=InvalidDefaultArgInFrom
+
+ARG APPSETTING_SERVICE_MAILHOG_BASE_IMAGE
+FROM $APPSETTING_SERVICE_MAILHOG_BASE_IMAGE
+
+# user:
+USER root
+
+(({}.var.extra_commands))

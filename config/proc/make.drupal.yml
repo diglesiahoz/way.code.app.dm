@@ -112,7 +112,14 @@ task:
                 args:
                   cd: (({origin}.appsetting.root))
                   cmd: (({}.exec)) dm.composer -n (())
-    
+
+    # Actualiza dependencias
+    - label: Actualiza
+      call: exec
+      args:
+        cd: (({origin}.appsetting.root))
+        cmd: (({}.exec)) dm.composer install
+
     # Despliega estrutura de pila
     - label: Desplegando código
       call: dm.init
@@ -142,7 +149,7 @@ task:
       args:
         cd: (({origin}.appsetting.root))
         cmd: (({}.exec)) dm.drush site:install -y --site-name=(({origin}._name)) --account-name=admin --account-pass=(({}.var.password))
-        
+
     # Configura Drupal
     - check:
         data: 
@@ -160,12 +167,19 @@ task:
                   cd: (({origin}.appsetting.root))
                   cmd: (({}.exec)) dm.drush -y (())
 
+    # Importa configuración (Necesario para aplicar cambios desde plantillas)
+    - label: Importando configuración
+      call: exec
+      args:
+        cd: (({origin}.appsetting.root))
+        cmd: (({}.exec)) dm.drush cim --partial --source=/var/www/html/config -y
+
     # Exporta configuración
     - label: Exportando configuración
       call: exec
       args:
         cd: (({origin}.appsetting.root))
-        cmd: (({}.exec)) dm.drush cex
+        cmd: (({}.exec)) dm.drush cex -y
         
     # Establece propietario
     - label: Estableciendo propietario y permisos
@@ -187,7 +201,21 @@ task:
       args:
         cd: (({origin}.appsetting.root))
         cmd: sudo chmod 777 (({origin}.appsetting.service.www.drupal.target))/private
-    
+
+    - label: Estableciendo propietario y permisos para "private"
+      call: exec
+      args:
+        cd: (({origin}.appsetting.root))
+        cmd: sudo chmod 777 (({origin}.appsetting.service.www.drupal.target))/private
+
+    # Establece proyecto Git
+    - label: Estableciendo proyecto Git
+      call: exec
+      args:
+        cd: (({origin}.appsetting.root))
+        cmd: git init 2>/dev/null && git checkout -b develop && git add . && git config user.name 'dummy' && git config user.email 'dummy@dummy.org' && git commit -m "Initial commit" && git config --unset user.name && git config --unset user.email
+        out: false
+
     # Obtiene acceso a sitio web
     - label: Obteniendo acceso a sitio web
       call: exec
