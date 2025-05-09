@@ -100,6 +100,10 @@ log "Fix perm: $REL_PATH_SITES/*/private -type d -not -perm 770"
 cmd "cd $DRUPAL_ROOT && sudo find $REL_PATH_SITES/*/private -type d -not -perm 770 -exec chmod 770 '{}' \;"
 checkError
 
+log "Fix perm: $REL_PATH_SITES/*/files/ \( -not -user $SERVER_USER -o -not -group $SERVER_USER \)"
+cmd "cd $DRUPAL_ROOT && sudo find $REL_PATH_SITES/*/files/ \( -not -user $SERVER_USER -o -not -group $SERVER_USER \) -exec chown $SERVER_USER:$SERVER_USER '{}' \;"
+checkError
+
 log "Fix drush perm..."
 cmd "cd $DRUPAL_ROOT && sudo chmod u+x,g+x vendor/bin/drush"
 checkError
