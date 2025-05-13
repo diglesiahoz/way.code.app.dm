@@ -52,6 +52,8 @@
 * [trace.error](docs/auto_generated--proc--trace.error.md)
 * [trace.ps](docs/auto_generated--proc--trace.ps.md)
 * [up](docs/auto_generated--proc--up.md)
+* [xdebug.down](docs/auto_generated--proc--xdebug.down.md)
+* [xdebug.up](docs/auto_generated--proc--xdebug.up.md)
 ## Recetas
 
 * [Instalar Drupal](docs/auto_generated--proc--make.drupal--recipe1--instalar_drupal.md)

@@ -17,7 +17,7 @@ task:
       file:
         type: String
         default: 
-      truncate:
+      drop:
         type: Boolean
         default: false
   do:

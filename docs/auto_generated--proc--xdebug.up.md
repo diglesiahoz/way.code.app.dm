@@ -1,0 +1,15 @@
+### xdebug.up
+
+```yml
+example:
+ - (({}.tmp.proc.sig))
+task:
+  require:
+    config:
+      - .*(\.local) origin
+  do:
+    - { event: 'origin startup' }
+    - { call: exec, args: { cmd: 'docker exec -it (({origin}.appsetting.tag))-www sudo phpenmod xdebug', out: true } }
+    - { event: 'origin windup' }
+```
+[```config/proc/xdebug.up.yml```](../config/proc/xdebug.up.yml)
