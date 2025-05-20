@@ -50,9 +50,15 @@ appsetting:
     # memcached:
     #   base_image: memcached
     #   extra_commands: []
+    #   host:
+    #     sv: ((_key))-memcached
+    #     ui: ''
     # redis:
     #   base_image: redis:6.2-alpine
     #   extra_commands: []
+    #   host:
+    #     sv: ((_key))-redis
+    #     ui: ''
     solr:
       base_image: solr
       extra_commands: []
@@ -93,6 +99,8 @@ appsetting:
           public_path: sites/default/files
           private_path: ../private
           temp_path: /tmp
+      domain: ((appsetting.service.www.host.ui))
+      curl: http://((_key))-www
   env_dockerfile:
     - APPSETTING_DEV=true
 hook:

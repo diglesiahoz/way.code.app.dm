@@ -10,6 +10,7 @@ task:
   do:
     - { event: 'origin startup' }
     - { call: exec, args: { cmd: 'docker exec -it (({origin}.appsetting.tag))-www sudo phpdismod xdebug', out: true } }
+    - { call: log, args: { message: 'Done!', type: success } }
     - { event: 'origin windup' }
 ```
 [```config/proc/xdebug.down.yml```](../config/proc/xdebug.down.yml)

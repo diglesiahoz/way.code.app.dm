@@ -41,6 +41,7 @@ RUN apt-get install -y rsync
 RUN apt-get install -y htop
 RUN apt-get install -y wget
 RUN apt-get install -y cron
+RUN apt-get install -y telnet
 # RUN apt-get install -y npm
 
 # php:

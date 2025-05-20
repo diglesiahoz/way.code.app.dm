@@ -1,0 +1,26 @@
+### curl
+
+```yml
+help: Ejecuta comando curl
+example:
+- (({}.tmp.proc.sig)) /my-url
+task:
+  require:
+    config:
+      - .*(\.local|\.dev|\.test|\.pre|\.prod) origin
+    args:
+      rel_url:
+        required: false
+        type: .*
+        default: "/"
+    settings: {}
+  do:
+    - { event: 'origin startup' }
+    -
+      call: exec
+      args:
+        cmd: docker exec --user (({}.user.username)) -it (({origin}._parent_key))-www curl -kIs (({origin}.appsetting.service.www.curl))(({}.args.rel_url))
+        out: true
+    - { event: 'origin windup' }
+```
+[```config/proc/curl.yml```](../config/proc/curl.yml)
