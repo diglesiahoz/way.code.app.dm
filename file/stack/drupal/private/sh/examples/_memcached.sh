@@ -17,14 +17,14 @@ else
   fi
   MEMCACHED_PORT="11211"
 
+  # See: https://docs.memcached.org/protocols/basic/
   MEMCACHED_NUM_CMD=$(echo $ARGS | xargs -n1 | grep -v '^-' | wc -w)
   if [ "$MEMCACHED_NUM_CMD" != "1" ]
   then
-    error "Memcache require only one command to execute (detected: $MEMCACHED_NUM_CMD)"
-    exit 1
+    MEMCACHED_CMD="stats"
+  else
+    MEMCACHED_CMD=$(echo $ARGS | xargs | awk -F' ' '{print $1}')
   fi
-  # See: https://docs.memcached.org/protocols/basic/
-  MEMCACHED_CMD=$(echo $ARGS | xargs | awk -F' ' '{print $1}')
 
   log "Running \"$MEMCACHED_CMD\" on \"$MEMCACHED_HOST:$MEMCACHED_PORT\""
   cmd "(sleep 0.1; echo \"$MEMCACHED_CMD\"; sleep 0.1; echo \"quit\";) | telnet $MEMCACHED_HOST $MEMCACHED_PORT"
