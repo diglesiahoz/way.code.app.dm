@@ -27,6 +27,7 @@
 * [db.sync](docs/auto_generated--proc--db.sync.md)
 * [down](docs/auto_generated--proc--down.md)
 * [drush](docs/auto_generated--proc--drush.md)
+* [env](docs/auto_generated--proc--env.md)
 * [exec](docs/auto_generated--proc--exec.md)
 * [init](docs/auto_generated--proc--init.md)
 * [ls.network](docs/auto_generated--proc--ls.network.md)
