@@ -6,7 +6,7 @@
 
 if [ "$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")" != "common.sh" ]
 then
-  echo  "Usage: /opt/sh/common.sh fix_perm [--dry-run|--log|--force]"
+  echo  "Usage: /opt/sh/common.sh compile [--watch|--dry-run|--log|--force]"
   exit 1
 else
   if [ "$APPSETTING_ENV" = "local" ]

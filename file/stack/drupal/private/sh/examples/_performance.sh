@@ -5,7 +5,7 @@
 
 if [ "$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")" != "common.sh" ]
 then
-  echo  "Usage: /opt/sh/common.sh fix_perm [--dry-run|--log|--force]"
+  echo  "Usage: watch -n 0.2 /opt/sh/common.sh performance [--dry-run|--log|--force]"
   exit 1
 else
   CORES=$(nproc)
