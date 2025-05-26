@@ -36,13 +36,38 @@ task:
       args:
         key: deploy_all_stack
         value: true
-
-    - label: Desplegando configuración
-      call: dm.init
-      args:
-        remove_all: true
-        name: "(({origin}.appsetting.stack))"
-        include: []
+    - check:
+        data: 
+          -
+            key: (({}.opt.f))
+            is: true
+        true:
+          - call: exec
+            args:
+              cmd: (({}.exec)) (({origin}._config_name)) dm.down 2>/dev/null
+              out: false
+          - call: exec
+            args:
+              cmd: docker volume rm "(({origin}.appsetting.tag))-db_data" 2>/dev/null
+              out: false
+          - label: Estableciendo propietario y permisos para "private"
+            call: exec
+            args:
+              cd: (({origin}.appsetting.root))
+              cmd: sudo chmod 777 -R (({origin}.appsetting.service.www.drupal.target))
+          - label: Desplegando configuración
+            call: dm.init
+            args:
+              remove_all: true
+              name: "(({origin}.appsetting.stack))"
+              include: []
+        false:
+          - label: Desplegando configuración
+            call: dm.init
+            args:
+              remove_all: false
+              name: "(({origin}.appsetting.stack))"
+              include: []
 
     # Levanta servicios
     -
