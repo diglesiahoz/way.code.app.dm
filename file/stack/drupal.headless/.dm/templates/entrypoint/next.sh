@@ -8,8 +8,11 @@ echo "NPX version: $(npx -v)"
 echo ======================== Print environment
 printenv | sort
 echo ======================== Install packages
-npx --yes create-next-app -e https://github.com/chapter-three/next-drupal-basic-starter tmp
-cp -r $(pwd)/tmp/* $(pwd) && rm -r $(pwd)/tmp
+if [ ! -f $(pwd)/.env ]
+then
+  npx --yes create-next-app -e https://github.com/chapter-three/next-drupal-basic-starter next-drupal-basic-starter
+  cp -r $(pwd)/next-drupal-basic-starter/* $(pwd) && rm -r $(pwd)/next-drupal-basic-starter
+fi
 npm install
 echo ======================== Run app
 npm run dev
