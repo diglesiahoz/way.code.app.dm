@@ -1,3 +1,4 @@
 # Ignore databases
 /db/*.sql
 /db/*.sql.gz
+/log/*.log

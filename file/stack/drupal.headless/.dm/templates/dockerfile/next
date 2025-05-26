@@ -1,0 +1,19 @@
+# check=skip=InvalidDefaultArgInFrom
+
+ARG APPSETTING_SERVICE_NEXT_BASE_IMAGE
+FROM $APPSETTING_SERVICE_NEXT_BASE_IMAGE
+
+# user:
+USER root
+
+ADD ./templates/bashrc /root/.bashrc
+
+(({}.var.extra_commands))
+
+# entrypoint:
+COPY ./templates/entrypoint/next.sh /docker-entrypoint.next.sh
+RUN chmod +x /docker-entrypoint.next.sh
+ENTRYPOINT [ "/docker-entrypoint.next.sh" ]
+
+# user:
+USER node

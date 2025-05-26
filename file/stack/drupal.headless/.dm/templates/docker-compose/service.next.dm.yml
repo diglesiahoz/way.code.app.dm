@@ -1,0 +1,34 @@
+next:
+  container_name: ${COMPOSE_PROJECT_NAME}-next
+  hostname: ${COMPOSE_PROJECT_NAME}-next
+  build:
+    context: .
+    dockerfile: ./templates/dockerfile/next
+    args:
+      APPSETTING_USER: ${APPSETTING_USER}
+      APPSETTING_GID: ${APPSETTING_GID}
+      APPSETTING_UID: ${APPSETTING_UID}
+      APPSETTING_SERVICE_NEXT_BASE_IMAGE: ${APPSETTING_SERVICE_NEXT_BASE_IMAGE}
+  env_file: .env
+  working_dir: ${APPSETTING_SERVICE_NEXT_TARGET}
+  volumes:
+    - 
+      consistency: cached
+      source: ${APPSETTING_SERVICE_NEXT_SOURCE}
+      target: ${APPSETTING_SERVICE_NEXT_TARGET}
+      type: bind
+  healthcheck:
+    interval: 1s
+    retries: 120
+    start_period: 2m0s
+    timeout: 2m0s
+  restart: unless-stopped
+  labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_react.tls=true"
+    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_react.rule=Host(`${APPSETTING_SERVICE_NEXT_HOST_UI}`)"
+    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_react.loadbalancer.server.port=3000"
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  networks:
+    - dm_proxy

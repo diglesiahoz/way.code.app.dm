@@ -23,8 +23,13 @@ www:
       type: bind
     - 
       consistency: cached
-      source: ./templates/sh
-      target: /home/${APPSETTING_USER}/sh
+      source: ../private/sh
+      target: /opt/sh
+      type: bind
+    - 
+      consistency: cached
+      source: ../private/log
+      target: /opt/log
       type: bind
   healthcheck:
     interval: 1s

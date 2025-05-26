@@ -13,7 +13,7 @@ task:
         default: false
   do:
     - { event: 'origin startup' }
-    - call: dm.purgeAll
+    - call: dm.powerOff
     - { event: 'origin windup' }
 ```
 [```config/proc/poweroff.yml```](../config/proc/poweroff.yml)

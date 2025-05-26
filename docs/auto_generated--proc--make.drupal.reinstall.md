@@ -1,4 +1,4 @@
-### make.reinstall.drupal
+### make.drupal.reinstall
 
 ```yml
 help: Re-instalar sitio Drupal
@@ -98,4 +98,4 @@ task:
     # Lanza evento de fin
     - event: 'origin windup'
 ```
-[```config/proc/make.reinstall.drupal.yml```](../config/proc/make.reinstall.drupal.yml)
+[```config/proc/make.drupal.reinstall.yml```](../config/proc/make.drupal.reinstall.yml)

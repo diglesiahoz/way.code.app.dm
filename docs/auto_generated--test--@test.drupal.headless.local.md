@@ -59,18 +59,28 @@ appsetting:
     #   host:
     #     sv: ((_key))-redis
     #     ui: ''
-    solr:
-      base_image: solr
-      extra_commands: []
-      host:
-        sv: ((_tag))-solr
-        ui: ((_env))-solr.((appsetting.wildcard_host))
-    www:
-      base_image: ubuntu:24.04
+    # solr:
+    #   base_image: solr
+    #   extra_commands: []
+    #   host:
+    #     sv: ((_tag))-solr
+    #     ui: ((_env))-solr.((appsetting.wildcard_host))
+    next:
+      base_image: node:20.9.0
       extra_commands: []
       host:
         sv: ''
         ui: ((_env)).((appsetting.wildcard_host))
+      # Establece el directorio de origen, desde el cual se monta el volumen. Ej: [ ../ | ../drupal | ../web ]
+      source: "../next"
+      # Establece el directorio de destino en el contenedor. Ej: [ /var/www/html ]
+      target: "/next"
+    www:
+      base_image: ubuntu:24.04
+      extra_commands: []
+      host:
+        sv: ((_tag))-www
+        ui: ((_env))-drupal.((appsetting.wildcard_host))
       # Establece el directorio de origen, desde el cual se monta el volumen. Ej: [ ../ | ../drupal | ../web ]
       source: "../drupal"
       # Establece el directorio de destino en el contenedor. Ej: [ /var/www/html ]
@@ -107,6 +117,9 @@ hook:
   args: {}
   call: {}
   event:
+    #dm.init:
+    #  startup:
+    #    - { call: var, args: { key: deploy_all_stack, value: true } }
     dm.make.drupal:
       startup:
         - 
@@ -119,6 +132,7 @@ hook:
               - config extra.patches-file composer.patches.json
               - config --no-plugins allow-plugins.cweagans/composer-patches true
               - require cweagans/composer-patches
+              - require drush/drush
               - require drupal/admin_toolbar
              #- require drupal/ckeditor5_plugin_pack
               - require drupal/devel

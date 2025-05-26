@@ -1,7 +1,7 @@
-### make.drupal
+### make.drupal.install
 
 ```yml
-help: Crear nuevo sitio Drupal
+help: Instala sitio Drupal (básico)
 example:
  - (({}.tmp.proc.sig))
 task:
@@ -15,49 +15,11 @@ task:
   do:
     # Lanza evento de inicio
     - event: 'origin startup'
-    # Establece variable que permite desplegar todo el "stack"
-    - call: var
-      args:
-        key: deploy_all_stack
-        value: true
     # Pregunta de control
     - call: ask
       args:
         message: "¿Deseas instalar Drupal? (Sobreescribe datos)"
         exitIfNegative: true
-    # Inicializa código
-    - check:
-        data: 
-          -
-            key: (({}.opt.f))
-            is: true
-        true:
-          - call: exec
-            args:
-              cmd: (({}.exec)) (({origin}._config_name)) dm.down 2>/dev/null
-              out: false
-          - call: exec
-            args:
-              cmd: docker volume rm "(({origin}.appsetting.tag))-db_data" 2>/dev/null
-              out: false
-          - label: Estableciendo propietario y permisos para "private"
-            call: exec
-            args:
-              cd: (({origin}.appsetting.root))
-              cmd: sudo chmod 777 -R (({origin}.appsetting.service.www.drupal.target))
-          - label: Desplegando configuración
-            call: dm.init
-            args:
-              remove_all: true
-              name: "(({origin}.appsetting.stack))"
-              include: []
-        false:
-          - label: Desplegando configuración
-            call: dm.init
-            args:
-              remove_all: false
-              name: "(({origin}.appsetting.stack))"
-              include: []
     # Establece directorios de destino drupal
     - loop:
         - (({origin}.appsetting.root))/(({origin}.appsetting.service.www.drupal.target))/recommended-project
@@ -66,12 +28,6 @@ task:
           call: exec
           args:
             cmd: mkdir -p (())
-    # Reinicia servicios
-    - label: Levantando servicios
-      call: exec
-      args:
-        cd: (({origin}.appsetting.root))
-        cmd: (({}.exec)) dm.restart
     # Crea proyecto Drupal mediante Composer
     - label: Creando proyecto Drupal
       call: exec
@@ -183,13 +139,6 @@ task:
       args:
         cd: (({origin}.appsetting.root))
         cmd: sudo chmod 777 (({origin}.appsetting.service.www.drupal.target))/private
-    # Establece proyecto Git
-    - label: Estableciendo proyecto Git
-      call: exec
-      args:
-        cd: (({origin}.appsetting.root))
-        cmd: git init 2>/dev/null && git checkout -b develop && git add . && git config user.name 'dummy' && git config user.email 'dummy@dummy.org' && git commit -m "Initial commit" && git config --unset user.name && git config --unset user.email
-        out: false
     # Obtiene acceso a sitio web
     - label: Obteniendo acceso a sitio web
       call: exec
@@ -206,4 +155,4 @@ task:
     # Lanza evento de fin
     - event: 'origin windup'
 ```
-[```config/proc/make.drupal.yml```](../config/proc/make.drupal.yml)
+[```config/proc/make.drupal.install.yml```](../config/proc/make.drupal.install.yml)

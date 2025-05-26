@@ -7,6 +7,11 @@ task:
   require:
     config:
       - .*(\.local) origin
+    args: {}
+    opt:
+      keep:
+        type: Boolean
+        default: false
   do:
     - { event: 'origin startup' }
     - 

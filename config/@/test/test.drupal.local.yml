@@ -114,6 +114,7 @@ hook:
             allow_merge: true
             key: composer.run
             value:
+              - require drush/drush
               - require drupal/admin_toolbar
               - require drupal/ckeditor5_plugin_pack
               - require drupal/devel

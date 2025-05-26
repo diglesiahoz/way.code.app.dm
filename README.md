@@ -35,8 +35,10 @@
 * [ls.php.fpm.pool](docs/auto_generated--proc--ls.php.fpm.pool.md)
 * [ls.php.ini](docs/auto_generated--proc--ls.php.ini.md)
 * [ls.site.headers](docs/auto_generated--proc--ls.site.headers.md)
-* [make.drupal](docs/auto_generated--proc--make.drupal.md)
-* [make.reinstall.drupal](docs/auto_generated--proc--make.reinstall.drupal.md)
+* [make.drupal.install](docs/auto_generated--proc--make.drupal.install.md)
+* [make.drupal.reinstall](docs/auto_generated--proc--make.drupal.reinstall.md)
+* [make.stack.drupal.basic](docs/auto_generated--proc--make.stack.drupal.basic.md)
+* [make.stack.drupal.headless](docs/auto_generated--proc--make.stack.drupal.headless.md)
 * [memcached.flush_all](docs/auto_generated--proc--memcached.flush_all.md)
 * [memcached.stats](docs/auto_generated--proc--memcached.stats.md)
 * [poweroff](docs/auto_generated--proc--poweroff.md)
@@ -60,7 +62,8 @@
 * [xdebug.up](docs/auto_generated--proc--xdebug.up.md)
 ## Recetas
 
-* [Instalar Drupal](docs/auto_generated--proc--make.drupal--recipe1--instalar_drupal.md)
+* [Instalar Drupal (básico)](docs/auto_generated--proc--make.stack.drupal.basic--recipe1--instalar_drupal__b_sico_.md)
+* [Instalar Drupal (desacoplado)](docs/auto_generated--proc--make.stack.drupal.headless--recipe1--instalar_drupal__desacoplado_.md)
 * [Apagar proxy](docs/auto_generated--proc--proxy.down--recipe1--apagar_proxy.md)
 * [Levantar proxy](docs/auto_generated--proc--proxy.up--recipe1--levantar_proxy.md)
 * [Modificar y/o crear certificados](docs/auto_generated--proc--proxy.up--recipe2--modificar_y_o_crear_certificados.md)

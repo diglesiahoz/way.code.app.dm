@@ -184,7 +184,7 @@ dm:
         required: false
         type: String
         defaultValue: "-O -avzc --no-o --no-g --no-perms"
-  purgeAll:
+  powerOff:
   setDbExec:
     collection: false
     args:

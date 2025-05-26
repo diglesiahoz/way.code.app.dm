@@ -42,6 +42,7 @@ RUN apt-get install -y htop
 RUN apt-get install -y wget
 RUN apt-get install -y cron
 RUN apt-get install -y telnet
+RUN apt-get install -y bsdmainutils
 # RUN apt-get install -y npm
 
 # php:
@@ -115,8 +116,8 @@ ADD ./templates/bashrc /root/.bashrc
 ADD ./templates/cron_jobs /etc/cron.d/cron_jobs
 RUN chmod 0644 /etc/cron.d/cron_jobs
 RUN crontab -u $APPSETTING_USER /etc/cron.d/cron_jobs
-RUN touch /var/log/cron_jobs.log
-RUN chown $APPSETTING_USER:$APPSETTING_USER /var/log/cron_jobs.log
+# RUN touch /var/log/cron_jobs.log
+# RUN chown $APPSETTING_USER:$APPSETTING_USER /var/log/cron_jobs.log
 
 # extra commands
 (({}.var.extra_commands))
