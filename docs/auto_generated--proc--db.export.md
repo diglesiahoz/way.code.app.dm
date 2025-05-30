@@ -14,7 +14,7 @@ task:
       tag:
         type: String
         default:
-      lock-tables:
+      lock:
         type: Boolean
         default: false
   do: 

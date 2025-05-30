@@ -5,7 +5,7 @@ example:
 task:
   require:
     config:
-      - .*(\.dev|\.test|\.pre|\.prod) origin
+      - .*(\.dev|\.test|\.pre|\.stage|\.prod) origin
     args: {}
     opt:
       user:

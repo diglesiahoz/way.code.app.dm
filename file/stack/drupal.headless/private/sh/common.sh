@@ -39,17 +39,13 @@ function cmd() {
   if [ "$OPT_DRYRUN" = false ]
   then
     log "$CMD"
-    EVAL_OUTPUT=$(eval $CMD 2>&1)
-    EXIT_CODE=$?
-    if [ "$EVAL_OUTPUT" != "" ]
+    if [ "$OPT_LOG" = true ]
     then
-      if [ "$OPT_LOG" = true ]
-      then
-        echo "$EVAL_OUTPUT" >> $LOG_FILE
-      else
-        echo "$EVAL_OUTPUT"
-      fi
+      eval $CMD >> $LOG_FILE 2>&1 
+    else
+      eval $CMD 2>&1
     fi
+    EXIT_CODE=$?
   else 
     echo -e "\033[0;34m[DRY-RUN]\033[0m $CMD"
   fi
@@ -156,6 +152,7 @@ log "**********************************"
 
 if [ -f $CURRENT_SCRIPT_PATH/_$TO_RUN.sh ]
 then
+  START_TIME=$(date +%s)
   log "[$(date +"%Y-%m-%d %H:%M:%S")] Execution started"
   log "Running: $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS"
   . $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS
@@ -163,7 +160,10 @@ then
   then
     echo -e "\xe2\x9c\xa8 $TO_RUN executed successfully!"
   fi
+  FINISH_TIME=$(date +%s)
+  SEC=$((FINISH_TIME - START_TIME))
   log "[$(date +"%Y-%m-%d %H:%M:%S")] Execution completed"
+  log "Execution time: $(printf '%02dm:%02ds\n' $((SEC%3600/60)) $((SEC%60)))"
 else 
   error "Not found script $CURRENT_SCRIPT_PATH/$TO_RUN.sh"
 fi 

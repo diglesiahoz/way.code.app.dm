@@ -7,7 +7,7 @@ example:
 task:
   require:
     config:
-      - .*(\.local|\.dev|\.test|\.pre|\.prod) origin
+      - .*(\.local|\.dev|\.test|\.pre|\.stage|\.prod) origin
     args:
       rel_url:
         required: false

@@ -4,16 +4,23 @@
 help: Sincroniza base de datos
 example:
 - (({}.tmp.proc.sig))
+- (({}.tmp.proc.sig)) --lock --drop
 task:
   require:
     config:
-      - .*(\.local|\.dev|\.test|\.pre|.prod) origin
-      - .*(\.local|\.dev|\.test|\.pre) target
+      - .*(\.local|\.dev|\.test|\.pre|\.stage|\.prod) origin
+      - .*(\.local|\.dev|\.test|\.pre|\.stage) target
     args: {}
     opt:
       tag:
         type: String
         default:
+      lock:
+        type: Boolean
+        default: false
+      drop:
+        type: Boolean
+        default: false
   do:
     - { event: 'origin startup' }
     - { event: 'target startup' }

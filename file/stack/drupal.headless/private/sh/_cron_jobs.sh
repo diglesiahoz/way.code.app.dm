@@ -16,7 +16,7 @@ else
   fi
   if [ -f "$DRUPAL_ROOT/vendor/bin/drush" ]
   then
-    cmd "$DRUPAL_ROOT/vendor/bin/drush cron --uri $DOMAIN -v"
+    cmd "$DRUPAL_ROOT/vendor/bin/drush cron -v --uri $DOMAIN"
     checkError "Could not execute Drupal cron"
     . $CURRENT_SCRIPT_PATH/_fix_perm.sh
   else 
