@@ -117,6 +117,11 @@ if [ "$(echo $* | xargs -n1 | grep -E '^--force$')" != "" ]
 then
   OPT_FORCE=true
 fi
+OPT_FAST=false
+if [ "$(echo $* | xargs -n1 | grep -E '^--fast$')" != "" ]
+then
+  OPT_FAST=true
+fi
 
 #column -t -s "|" <<EOF
 #**********************
