@@ -11,6 +11,9 @@ then
 else
   if [ "$OPT_FAST" = true ]
   then
+    log "Fix drush perm..."
+    cmd "cd $DRUPAL_ROOT && sudo chmod u+x,g+x vendor/bin/drush"
+    checkError
     log "Downloading code from repository..."
     DEPLOY_BRANCH=$(cd $DRUPAL_ROOT && git rev-parse --abbrev-ref HEAD)
     cmd "cd $DRUPAL_ROOT && git pull origin $DEPLOY_BRANCH"
@@ -19,6 +22,9 @@ else
       error "Aborted"
     fi
     $CURRENT_SCRIPT_PATH/common.sh compile $ARGS
+    log "Rebuilding cache..."
+    cmd "cd $DRUPAL_ROOT && vendor/bin/drush cr -y"
+    checkError
   else
     log "Fix drush perm..."
     cmd "cd $DRUPAL_ROOT && sudo chmod u+x,g+x vendor/bin/drush"
