@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Examples:
-# /opt/sh/common.sh deploy
-# /opt/sh/common.sh deploy --force
+# ./common.sh deploy
+# ./common.sh deploy --force
 
 if [ "$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")" != "common.sh" ]
 then
-  echo  "Usage: /opt/sh/common.sh deploy [--dry-run|--log|--force|--fast]"
+  echo  "Usage: $(dirname $(test -L "$0" && readlink "$0" || echo "$0"))/common.sh deploy [--dry-run|--log|--force|--fast]"
   exit 1
 else
   if [ "$OPT_FAST" = true ]

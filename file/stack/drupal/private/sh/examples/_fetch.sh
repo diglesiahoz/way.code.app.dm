@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Examples:
-# /opt/sh/common.sh fetch <domain>
+# ./common.sh fetch <domain>
 
 if [ "$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")" != "common.sh" ]
 then
-  echo  "Usage: /opt/sh/common.sh fetch <domain> [--dry-run|--log|--force]"
+  echo  "Usage: $(dirname $(test -L "$0" && readlink "$0" || echo "$0"))/common.sh fetch <domain> [--dry-run|--log|--force]"
   exit 1
 else
   DOMAIN="$(echo "$ARGS" | awk '{ print $1 }')"

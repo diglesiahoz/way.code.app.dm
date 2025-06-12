@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Examples:
-# /opt/sh/common.sh memcached stats
-# /opt/sh/common.sh memcached flush_all
+# ./common.sh memcached stats
+# ./common.sh memcached flush_all
 
 if [ "$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")" != "common.sh" ]
 then
-  echo  "Usage: /opt/sh/common.sh memcached [command] [--dry-run|--log|--force]"
+  echo  "Usage: $(dirname $(test -L "$0" && readlink "$0" || echo "$0"))/common.sh memcached [command] [--dry-run|--log|--force]"
   exit 1
 else
   if [ "$APPSETTING_SERVICE_MEMCACHED_HOST_SV" != "" ]

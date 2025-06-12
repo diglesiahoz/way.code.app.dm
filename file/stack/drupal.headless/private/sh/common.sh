@@ -77,7 +77,7 @@ SERVER_USER="www-data"
 CURRENT_SCRIPT_PATH="$( cd -- "$(dirname "$BASH_SOURCE")" >/dev/null 2>&1 ; pwd -P )"
 # CURRENT_SCRIPT_LOG_NAME="$(basename "$(test -L "$BASH_SOURCE" && readlink "$BASH_SOURCE" || echo "$BASH_SOURCE")").log"
 ARGS=$(echo $* | xargs -n1 | grep -v '^-' | xargs)
-TO_RUN=$(echo $ARGS | xargs -n1 | head -1)
+TO_RUN=$1
 if [ "$TO_RUN" = "" ]
 then
   for SCRIPT in $(find $CURRENT_SCRIPT_PATH -maxdepth 1 -type f -name '*.sh' | sort)
@@ -183,7 +183,7 @@ fi
 if [ -f $CURRENT_SCRIPT_PATH/_$TO_RUN.sh ]
 then
   START_TIME=$(date +%s)
-  log_running "[$(date +"%Y-%m-%d %H:%M:%S")] Running: $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS"
+  log_running "[$(date +"%Y-%m-%d %H:%M:%S")] Running: $CURRENT_SCRIPT_PATH/common.sh $TO_RUN $ARGS"
   . $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS
   EXIT_CODE=$?
   FINISH_TIME=$(date +%s)

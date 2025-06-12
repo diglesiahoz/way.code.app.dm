@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Examples:
-# watch -n 0.2 /opt/sh/common.sh performance
+# watch -n 0.2 ./common.sh performance
 
 if [ "$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")" != "common.sh" ]
 then
-  echo  "Usage: watch -n 0.2 /opt/sh/common.sh performance [--dry-run|--log|--force]"
+  echo  "Usage: watch -n 0.2 $(dirname $(test -L "$0" && readlink "$0" || echo "$0"))/common.sh performance [--dry-run|--log|--force]"
   exit 1
 else
   CORES=$(nproc)

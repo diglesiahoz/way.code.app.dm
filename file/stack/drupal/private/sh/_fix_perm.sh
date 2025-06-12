@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Examples:
-# /opt/sh/common.sh fix_perm
+# ./common.sh fix_perm
 
 if [ "$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")" != "common.sh" ]
 then
-  echo  "Usage: /opt/sh/common.sh fix_perm [--dry-run|--log|--force]"
+  echo  echo  "Usage: $(dirname $(test -L "$0" && readlink "$0" || echo "$0"))/common.sh fix_perm [--dry-run|--log|--force]"
   exit 1
 else
   log "Fix perm: ./ \( -not -user $DEPLOY_USER -o -not -group $SERVER_USER \) -not -path '$REL_PATH_SITES/*/files/*' -not -path '$REL_PATH_SITES/*/files'"
