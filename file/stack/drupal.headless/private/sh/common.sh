@@ -2,6 +2,14 @@
 
 # REF: https://utf8-chartable.de/unicode-utf8-table.pl?start=9984&names=-&utf8=string-literal
 
+function log_start_exec() {
+  if [ "$OPT_LOG" = true ]
+  then
+    echo -e "\033[0;33m\xe2\x9c\xb6\033[0m $*" >> $LOG_FILE
+  else
+    echo -e "\033[0;33m\xe2\x9c\xb6\033[0m $*"
+  fi
+}
 function log() {
   if [ "$OPT_LOG" = true ]
   then
@@ -21,6 +29,15 @@ function success() {
   else
     echo -e "\033[0;32m\xe2\x9c\x94\033[0m $MESSAGE"
   fi
+}
+function successfully() {
+  [ "$*" = "" ] && MESSAGE="OK!" || MESSAGE="$*"
+  if [ "$OPT_LOG" = true ]
+  then
+    echo -e "\xe2\x9c\xa8 $MESSAGE" >> $LOG_FILE
+  else
+    echo -e "\xe2\x9c\xa8 $MESSAGE"
+  fi  
 }
 function checkError() {
   if [ "$OPT_DRYRUN" = false ]
@@ -102,6 +119,11 @@ then
 fi
 
 # Check options
+OPT_V=false
+if [ "$(echo $* | xargs -n1 | grep -E '^--v$')" != "" ]
+then
+  OPT_V=true
+fi
 OPT_LOG=false
 if [ "$(echo $* | xargs -n1 | grep -E '^--log$')" != "" ]
 then
@@ -141,34 +163,37 @@ fi
 
 [ -f $LOG_FILE ] && rm $LOG_FILE
 
-log "**********************************"
-log "DEPLOY_USER: $DEPLOY_USER"
-log "SERVER_USER: $SERVER_USER"
-log "CURRENT_SCRIPT_PATH: $CURRENT_SCRIPT_PATH"
-log "LOG_FILE: $LOG_FILE"
-log "TO_RUN: $TO_RUN"
-log "ARGS: $ARGS"
-log "DRUPAL_ROOT: $DRUPAL_ROOT"
-log "REL_PATH_SITES: $REL_PATH_SITES"
-log "OPT_LOG: $OPT_LOG"
-log "OPT_DRYRUN: $OPT_DRYRUN"
-log "OPT_FORCE: $OPT_FORCE"
-log "**********************************"
+if [ $OPT_V = true ]
+then
+  log "**********************************"
+  log "DEPLOY_USER: $DEPLOY_USER"
+  log "SERVER_USER: $SERVER_USER"
+  log "CURRENT_SCRIPT_PATH: $CURRENT_SCRIPT_PATH"
+  log "LOG_FILE: $LOG_FILE"
+  log "TO_RUN: $TO_RUN"
+  log "ARGS: $ARGS"
+  log "DRUPAL_ROOT: $DRUPAL_ROOT"
+  log "REL_PATH_SITES: $REL_PATH_SITES"
+  log "OPT_LOG: $OPT_LOG"
+  log "OPT_DRYRUN: $OPT_DRYRUN"
+  log "OPT_FORCE: $OPT_FORCE"
+  log "**********************************"
+fi
 
 if [ -f $CURRENT_SCRIPT_PATH/_$TO_RUN.sh ]
 then
   START_TIME=$(date +%s)
-  log "[$(date +"%Y-%m-%d %H:%M:%S")] Execution started"
-  log "Running: $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS"
+  log_start_exec "[$(date +"%Y-%m-%d %H:%M:%S")] Execution started: $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS"
   . $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS
-  if [ $? = 0 ]
-  then
-    echo -e "\xe2\x9c\xa8 $TO_RUN executed successfully!"
-  fi
+  EXIT_CODE=$?
   FINISH_TIME=$(date +%s)
   SEC=$((FINISH_TIME - START_TIME))
-  log "[$(date +"%Y-%m-%d %H:%M:%S")] Execution completed"
-  log "Execution time: $(printf '%02dm:%02ds\n' $((SEC%3600/60)) $((SEC%60)))"
+  if [ $EXIT_CODE = 0 ]
+  then
+    successfully "[$(date +"%Y-%m-%d %H:%M:%S")] ${TO_RUN^} executed successfully! ($(printf '%02dm:%02ds\n' $((SEC%3600/60)) $((SEC%60))))"
+  else
+    error "[$(date +"%Y-%m-%d %H:%M:%S")] ${TO_RUN^} executed with errors ($(printf '%02dm:%02ds\n' $((SEC%3600/60)) $((SEC%60))))"
+  fi
 else 
   error "Not found script $CURRENT_SCRIPT_PATH/$TO_RUN.sh"
 fi 
