@@ -2,7 +2,7 @@
 
 # REF: https://utf8-chartable.de/unicode-utf8-table.pl?start=9984&names=-&utf8=string-literal
 
-function log_start_exec() {
+function log_running() {
   if [ "$OPT_LOG" = true ]
   then
     echo -e "\033[0;33m\xe2\x9c\xb6\033[0m $*" >> $LOG_FILE
@@ -183,7 +183,7 @@ fi
 if [ -f $CURRENT_SCRIPT_PATH/_$TO_RUN.sh ]
 then
   START_TIME=$(date +%s)
-  log_start_exec "[$(date +"%Y-%m-%d %H:%M:%S")] Execution started: $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS"
+  log_running "[$(date +"%Y-%m-%d %H:%M:%S")] Running: $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS"
   . $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS
   EXIT_CODE=$?
   FINISH_TIME=$(date +%s)
