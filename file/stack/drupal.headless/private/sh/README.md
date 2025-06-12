@@ -1,13 +1,13 @@
 ## Examples
 
 ```
-/opt/sh/common.sh compile
-/opt/sh/common.sh compile --watch
+/opt/sh/common.sh compile themes/custom/memora/sass:themes/custom/memora/css
+/opt/sh/common.sh compile themes/custom/memora/sass:themes/custom/memora/css --watch
 
 /opt/sh/common.sh cron_jobs
 
-/opt/sh/common.sh deploy
-/opt/sh/common.sh deploy --force
+/opt/sh/common.sh deploy themes/custom/memora/sass:themes/custom/memora/css
+/opt/sh/common.sh deploy themes/custom/memora/sass:themes/custom/memora/css --force
 
 /opt/sh/common.sh fix_perm
 
