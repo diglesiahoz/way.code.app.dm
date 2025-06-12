@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Examples:
-# ./common.sh deploy
-# ./common.sh deploy --force
+# ./common.sh deploy themes/custom/memora/sass:themes/custom/memora/css
+# ./common.sh deploy themes/custom/memora/sass:themes/custom/memora/css --force
 
-if [ "$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")" != "common.sh" ]
+if [ "$(basename "$(test -L "$0" && readlink "$0" || echo "$0")")" != "common.sh" ] || [ "$(echo $ARGS | awk '{ print $1 }')" = "" ]
 then
-  echo  "Usage: $(dirname $(test -L "$0" && readlink "$0" || echo "$0"))/common.sh deploy [--dry-run|--log|--force|--fast]"
+  echo  "Usage: $(dirname $(test -L "$0" && readlink "$0" || echo "$0"))/common.sh deploy <sass-mapping> [--dry-run|--log|--force|--fast]"
   exit 1
 else
   if [ "$OPT_FAST" = true ]
@@ -21,7 +21,7 @@ else
     then
       error "Aborted"
     fi
-    $CURRENT_SCRIPT_PATH/common.sh compile $ARGS
+    $CURRENT_SCRIPT_PATH/common.sh compile $(echo $ARGS | awk '{ print $1 }')
     log "Rebuilding cache..."
     cmd "cd $DRUPAL_ROOT && vendor/bin/drush cr -y"
     checkError
@@ -63,9 +63,9 @@ else
     cmd "cd $DRUPAL_ROOT && composer install"
     checkError
 
-    $CURRENT_SCRIPT_PATH/common.sh compile $ARGS
+    $CURRENT_SCRIPT_PATH/common.sh compile $(echo $ARGS | awk '{ print $1 }')
 
-    $CURRENT_SCRIPT_PATH/common.sh fix_perm $ARGS
+    $CURRENT_SCRIPT_PATH/common.sh fix_perm
 
     log "Updating database..."
     cmd "cd $DRUPAL_ROOT && vendor/bin/drush updb -y"
