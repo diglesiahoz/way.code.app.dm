@@ -13,9 +13,9 @@ function log_start_exec() {
 function log() {
   if [ "$OPT_LOG" = true ]
   then
-    echo -e "\033[0;34m\xe2\x9e\xa4\033[0m $*" >> $LOG_FILE
+    echo -e "\033[0;34m\xe2\x9e\x9f\033[0m $*" >> $LOG_FILE
   else
-    echo -e "\033[0;34m\xe2\x9e\xa4\033[0m $*"
+    echo -e "\033[0;34m\xe2\x9e\x9f\033[0m $*"
   fi
 }
 function error() {
