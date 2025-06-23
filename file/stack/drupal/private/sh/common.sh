@@ -10,6 +10,14 @@ function log_running() {
     echo -e "\033[0;33m\xe2\x9c\xb6\033[0m $*"
   fi
 }
+function log_hook() {
+  if [ "$OPT_LOG" = true ]
+  then
+    echo -e "\033[0;35m\xe2\x9c\xb8\033[0m $*" >> $LOG_FILE
+  else
+    echo -e "\033[0;35m\xe2\x9c\xb8\033[0m $*"
+  fi
+}
 function log() {
   if [ "$OPT_LOG" = true ]
   then
@@ -19,7 +27,12 @@ function log() {
   fi
 }
 function error() {
-  echo -e "\033[0;31m\xe2\x9c\x96\033[0m $*" && exit 1
+  if [ "$2" = "NO_EXIT" ]
+  then
+    echo -e "\033[0;31m\xe2\x9c\x96\033[0m $1"
+  else
+    echo -e "\033[0;31m\xe2\x9c\x96\033[0m $1" && exit 1
+  fi;
 }
 function success() {
   [ "$*" = "" ] && MESSAGE="OK!" || MESSAGE="$*"
@@ -45,14 +58,14 @@ function checkError() {
     if [ $EXIT_CODE != 0 ]
     then
       [ "$*" = "" ] && MESSAGE="Error" || MESSAGE="$*"
-      error $MESSAGE
+      error "$MESSAGE"
     else
       success "OK"
     fi
   fi
 }
 function cmd() {
-  CMD=$*
+  CMD=$1
   if [ "$OPT_DRYRUN" = false ]
   then
     log "$CMD"
@@ -67,6 +80,24 @@ function cmd() {
     echo -e "\033[0;34m[DRY-RUN]\033[0m $CMD"
   fi
 }
+function hook() {
+  HOOK_FILE=$CURRENT_SCRIPT_PATH/hook/env/$APPSETTING_ENV/$TO_RUN/$1.sh
+  # log "--Checking $HOOK_FILE"
+  if [ -f $HOOK_FILE ] && [ "$(cat $HOOK_FILE | grep -Ev '^#' | sed -r '/^\s*$/d')" != "" ]
+  then
+    log_hook "$1 hook started from: $HOOK_FILE"
+    . $HOOK_FILE $ARGS
+    log_hook "$1 hook finished!"
+  fi
+  HOOK_FILE=$CURRENT_SCRIPT_PATH/hook/env/all/$TO_RUN/$1.sh
+  # log "--Checking $HOOK_FILE"
+  if [ -f $HOOK_FILE ] && [ "$(cat $HOOK_FILE | grep -Ev '^#' | sed -r '/^\s*$/d')" != "" ]
+  then
+    log_hook "$1 hook started from: $HOOK_FILE"
+    . $HOOK_FILE $ARGS
+    log_hook "$1 hook finished!"
+  fi
+}
 
 # Set variables
 DEPLOY_USER="opentrends"
@@ -77,6 +108,7 @@ SERVER_USER="www-data"
 CURRENT_SCRIPT_PATH="$( cd -- "$(dirname "$BASH_SOURCE")" >/dev/null 2>&1 ; pwd -P )"
 # CURRENT_SCRIPT_LOG_NAME="$(basename "$(test -L "$BASH_SOURCE" && readlink "$BASH_SOURCE" || echo "$BASH_SOURCE")").log"
 ARGS=$(echo $* | xargs -n1 | grep -v '^-' | xargs)
+OPTS=$(echo $* | xargs -n1 | grep '^-' | xargs)
 TO_RUN=$1
 if [ "$TO_RUN" = "" ]
 then
@@ -184,15 +216,29 @@ if [ -f $CURRENT_SCRIPT_PATH/_$TO_RUN.sh ]
 then
   START_TIME=$(date +%s)
   log_running "[$(date +"%Y-%m-%d %H:%M:%S")] Running: $CURRENT_SCRIPT_PATH/common.sh $TO_RUN $ARGS"
+  if [ -f $CURRENT_SCRIPT_PATH/.env ]
+  then
+    set -a            
+    source $CURRENT_SCRIPT_PATH/.env
+    set +a
+    log "Loaded env file: $CURRENT_SCRIPT_PATH/.env"
+  fi
+  hook "startup"
   . $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS
   EXIT_CODE=$?
   FINISH_TIME=$(date +%s)
   SEC=$((FINISH_TIME - START_TIME))
   if [ $EXIT_CODE = 0 ]
   then
-    successfully "[$(date +"%Y-%m-%d %H:%M:%S")] ${TO_RUN^} executed successfully! ($(printf '%02dm:%02ds\n' $((SEC%3600/60)) $((SEC%60))))"
+    EXIT_STATUS="success"
+    EXIT_MESSAGE="[$(date +"%Y-%m-%d %H:%M:%S")] ${TO_RUN^} executed successfully from $(hostname)! ($(printf '%02dm:%02ds\n' $((SEC%3600/60)) $((SEC%60))))"
+    successfully "$EXIT_MESSAGE"
+    hook "windup"
   else
-    error "[$(date +"%Y-%m-%d %H:%M:%S")] ${TO_RUN^} executed with errors ($(printf '%02dm:%02ds\n' $((SEC%3600/60)) $((SEC%60))))"
+    EXIT_STATUS="error"
+    EXIT_MESSAGE="[$(date +"%Y-%m-%d %H:%M:%S")] ${TO_RUN^} executed with errors from $(hostname)! ($(printf '%02dm:%02ds\n' $((SEC%3600/60)) $((SEC%60))))"
+    error "$EXIT_MESSAGE" "NO_EXIT"
+    hook "windup"
   fi
 else 
   error "Not found script $CURRENT_SCRIPT_PATH/$TO_RUN.sh"
