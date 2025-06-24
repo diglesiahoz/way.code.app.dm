@@ -43,6 +43,7 @@ RUN apt-get install -y wget
 RUN apt-get install -y cron
 RUN apt-get install -y telnet
 RUN apt-get install -y bsdmainutils
+RUN apt-get install -y jq
 # RUN apt-get install -y npm
 
 # php:
@@ -95,11 +96,12 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 RUN /usr/local/bin/composer self-update --${APPSETTING_SERVICE_WWW_COMPOSER_RELEASE}
 
 # ngrok:
-RUN curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc | \
-  sudo gpg --dearmor -o /etc/apt/keyrings/ngrok.gpg && \
-  echo "deb [signed-by=/etc/apt/keyrings/ngrok.gpg] https://ngrok-agent.s3.amazonaws.com buster main" | \
-  sudo tee /etc/apt/sources.list.d/ngrok.list && \
-  sudo apt update && sudo apt install ngrok
+RUN curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
+  | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \
+  && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" \
+  | sudo tee /etc/apt/sources.list.d/ngrok.list \
+  && sudo apt update \
+  && sudo apt install ngrok
 
 # user:
 RUN if [ "$(grep -c '^ubuntu:' /etc/passwd)" = 1 ] ; then deluser --remove-home ubuntu; fi
@@ -113,11 +115,11 @@ ADD ./templates/bashrc /home/$APPSETTING_USER/.bashrc
 ADD ./templates/bashrc /root/.bashrc
 
 # cron
+RUN /etc/init.d/cron stop
 ADD ./templates/cron_jobs /etc/cron.d/cron_jobs
 RUN chmod 0644 /etc/cron.d/cron_jobs
 RUN crontab -u $APPSETTING_USER /etc/cron.d/cron_jobs
-# RUN touch /var/log/cron_jobs.log
-# RUN chown $APPSETTING_USER:$APPSETTING_USER /var/log/cron_jobs.log
+RUN /etc/init.d/cron start
 
 # extra commands
 (({}.var.extra_commands))

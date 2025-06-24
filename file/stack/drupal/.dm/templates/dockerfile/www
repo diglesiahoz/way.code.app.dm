@@ -115,11 +115,11 @@ ADD ./templates/bashrc /home/$APPSETTING_USER/.bashrc
 ADD ./templates/bashrc /root/.bashrc
 
 # cron
+RUN /etc/init.d/cron stop
 ADD ./templates/cron_jobs /etc/cron.d/cron_jobs
 RUN chmod 0644 /etc/cron.d/cron_jobs
 RUN crontab -u $APPSETTING_USER /etc/cron.d/cron_jobs
-# RUN touch /var/log/cron_jobs.log
-# RUN chown $APPSETTING_USER:$APPSETTING_USER /var/log/cron_jobs.log
+RUN /etc/init.d/cron start
 
 # extra commands
 (({}.var.extra_commands))
