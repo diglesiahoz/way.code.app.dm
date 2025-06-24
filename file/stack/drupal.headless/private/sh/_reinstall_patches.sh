@@ -9,7 +9,7 @@ then
   exit 1
 else  
   if command -v jq >/dev/null 2>&1; then
-    REINSTALL_PACKAGES=$(jq -r '.extra.patches | keys[]' composer.json | xargs)
+    REINSTALL_PACKAGES=$(jq -r '.extra.patches | keys[]' $DRUPAL_ROOT/composer.json | xargs)
     if [ "$REINSTALL_PACKAGES" != "" ]
     then
       cmd "cd $DRUPAL_ROOT && composer reinstall $REINSTALL_PACKAGES"
