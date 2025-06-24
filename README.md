@@ -45,6 +45,7 @@
 * [proxy.down](docs/auto_generated--proc--proxy.down.md)
 * [proxy.up](docs/auto_generated--proc--proxy.up.md)
 * [ps](docs/auto_generated--proc--ps.md)
+* [reinstall.patches](docs/auto_generated--proc--reinstall.patches.md)
 * [restart](docs/auto_generated--proc--restart.md)
 * [run](docs/auto_generated--proc--run.md)
 * [send.mail.test](docs/auto_generated--proc--send.mail.test.md)
