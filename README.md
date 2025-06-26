@@ -16,6 +16,7 @@
 * [composer](docs/auto_generated--proc--composer.md)
 * [curl](docs/auto_generated--proc--curl.md)
 * [db.access](docs/auto_generated--proc--db.access.md)
+* [db.clean](docs/auto_generated--proc--db.clean.md)
 * [db.export](docs/auto_generated--proc--db.export.md)
 * [db.import](docs/auto_generated--proc--db.import.md)
 * [db.ls.conf](docs/auto_generated--proc--db.ls.conf.md)

@@ -10,7 +10,6 @@ solr:
   command:
     - solr-precreate
     - ${APPSETTING_SERVICE_SOLR_HOST_SV}
-  restart: unless-stopped
   labels:
     - "traefik.enable=true"
     - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_solr.tls=true"

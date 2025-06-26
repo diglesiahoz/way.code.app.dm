@@ -5,5 +5,4 @@ memcached:
     dockerfile: ./templates/dockerfile/memcached
     args:
       APPSETTING_SERVICE_MEMCACHED_BASE_IMAGE: ${APPSETTING_SERVICE_MEMCACHED_BASE_IMAGE}
-  restart: unless-stopped
   ports: [ "11311:11211" ]

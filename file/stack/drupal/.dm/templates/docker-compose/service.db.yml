@@ -15,7 +15,6 @@ db:
       '--wait_timeout=28800',
       '--max_allowed_packet=1024M'
   ]
-  restart: unless-stopped
   volumes:
     - ./templates/entrypoint/db.init.sql:/docker-entrypoint-initdb.d/docker-entrypoint.db.init.sql
     - db_data:/var/lib/mysql

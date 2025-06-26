@@ -12,7 +12,6 @@ pma:
     PMA_HOST: ${COMPOSE_PROJECT_NAME}-db
     PMA_USER: ${APPSETTING_SERVICE_DB_USER}
     PMA_PASSWORD: ${APPSETTING_SERVICE_DB_PASS}
-  restart: unless-stopped
   labels:
     - "traefik.enable=true"
     - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_pma.rule=Host(`${APPSETTING_SERVICE_PMA_HOST_UI}`)"

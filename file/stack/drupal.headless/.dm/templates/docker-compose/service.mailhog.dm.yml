@@ -5,7 +5,6 @@ mailhog:
     dockerfile: ./templates/dockerfile/mailhog
     args:
       APPSETTING_SERVICE_MAILHOG_BASE_IMAGE: ${APPSETTING_SERVICE_MAILHOG_BASE_IMAGE}
-  restart: unless-stopped
   labels:
     - "traefik.enable=true"
     - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_mailhog.tls=true"

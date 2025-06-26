@@ -10,5 +10,4 @@ solr:
   command:
     - solr-precreate
     - ${APPSETTING_SERVICE_SOLR_HOST_SV}
-  restart: unless-stopped
   ports: [ "8983:8983" ]

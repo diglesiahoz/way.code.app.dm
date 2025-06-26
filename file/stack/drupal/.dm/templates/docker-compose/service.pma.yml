@@ -12,7 +12,6 @@ pma:
     PMA_HOST: ${COMPOSE_PROJECT_NAME}-db
     PMA_USER: ${APPSETTING_SERVICE_DB_USER}
     PMA_PASSWORD: ${APPSETTING_SERVICE_DB_PASS}
-  restart: unless-stopped
   depends_on:
     - db
   ports: [ "8080:80" ]

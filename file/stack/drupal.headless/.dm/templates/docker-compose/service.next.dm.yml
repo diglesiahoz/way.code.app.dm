@@ -22,7 +22,6 @@ next:
     retries: 120
     start_period: 2m0s
     timeout: 2m0s
-  restart: unless-stopped
   labels:
     - "traefik.enable=true"
     - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_react.tls=true"

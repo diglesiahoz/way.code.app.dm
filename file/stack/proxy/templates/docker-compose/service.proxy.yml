@@ -5,7 +5,6 @@ proxy:
     dockerfile: ./templates/dockerfile/proxy
     args:
       APPSETTING_SERVICE_PROXY_BASE_IMAGE: ${APPSETTING_SERVICE_PROXY_BASE_IMAGE}
-  restart: always
   ports:
     - 80:80
     - 8080

@@ -5,5 +5,4 @@ mailhog:
     dockerfile: ./templates/dockerfile/mailhog
     args:
       APPSETTING_SERVICE_MAILHOG_BASE_IMAGE: ${APPSETTING_SERVICE_MAILHOG_BASE_IMAGE}
-  restart: unless-stopped
   ports: [ "1025:8025" ]

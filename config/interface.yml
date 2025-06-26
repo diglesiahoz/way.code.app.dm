@@ -3,6 +3,7 @@ dm:
   getEnvKeys:
   getHookEventKeys:
   getCustomScriptNames:
+  getNetworks:
   init:
     collection: false
     args:

@@ -7,7 +7,7 @@ example:
 task:
   require:
     config:
-      - .*(\.local|\.dev|\.test|\.pre) origin
+      - .*(\.local|\.dev|\.test|\.pre|\.stage) origin
   do:
     - { event: 'origin startup' }
     -

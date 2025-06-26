@@ -5,7 +5,6 @@ redis:
     dockerfile: ./templates/dockerfile/redis
     args:
       APPSETTING_SERVICE_REDIS_BASE_IMAGE: ${APPSETTING_SERVICE_REDIS_BASE_IMAGE}
-  restart: unless-stopped
   labels:
     - "traefik.http.services.${COMPOSE_PROJECT_NAME}_db.loadbalancer.server.port=6379"
   networks:
