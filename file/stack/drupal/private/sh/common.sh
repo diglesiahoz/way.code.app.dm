@@ -217,12 +217,18 @@ then
   START_TIME=$(date +%s)
   if [ -f $CURRENT_SCRIPT_PATH/.env ]
   then
-    set -a            
-    source $CURRENT_SCRIPT_PATH/.env
-    set +a
-    log "Loaded env file: $CURRENT_SCRIPT_PATH/.env"
+    ENV_SOURCE_DIR=$CURRENT_SCRIPT_PATH/.env
   else
-    error "Could not load env file from: $CURRENT_SCRIPT_PATH/.env"
+    ENV_SOURCE_DIR=$(dirname $(dirname $CURRENT_SCRIPT_PATH))
+  fi
+  if [ -f $ENV_SOURCE_DIR/.env ]
+  then
+    set -a            
+    source $ENV_SOURCE_DIR/.env
+    set +a
+    log "Loaded env file: $ENV_SOURCE_DIR/.env"
+  else
+    error "Could not load env file from: $ENV_SOURCE_DIR/.env"
   fi
   log_running "[$(date +"%Y-%m-%d %H:%M:%S")] Running: $CURRENT_SCRIPT_PATH/common.sh $TO_RUN $ARGS"
   hook "startup"
