@@ -215,14 +215,16 @@ fi
 if [ -f $CURRENT_SCRIPT_PATH/_$TO_RUN.sh ]
 then
   START_TIME=$(date +%s)
-  log_running "[$(date +"%Y-%m-%d %H:%M:%S")] Running: $CURRENT_SCRIPT_PATH/common.sh $TO_RUN $ARGS"
   if [ -f $CURRENT_SCRIPT_PATH/.env ]
   then
     set -a            
     source $CURRENT_SCRIPT_PATH/.env
     set +a
     log "Loaded env file: $CURRENT_SCRIPT_PATH/.env"
+  else
+    error "Could not load env file from: $CURRENT_SCRIPT_PATH/.env"
   fi
+  log_running "[$(date +"%Y-%m-%d %H:%M:%S")] Running: $CURRENT_SCRIPT_PATH/common.sh $TO_RUN $ARGS"
   hook "startup"
   . $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS
   EXIT_CODE=$?

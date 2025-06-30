@@ -13,7 +13,9 @@ www:
       APPSETTING_SERVICE_WWW_COMPOSER_RELEASE: ${APPSETTING_SERVICE_WWW_COMPOSER_RELEASE}
       APPSETTING_SERVICE_WWW_WEBSERVER: ${APPSETTING_SERVICE_WWW_WEBSERVER}
   #environment: (({}.var.env_docker_compose))
-  env_file: .env
+  env_file:
+    - ../.env
+    - .env
   working_dir: ${APPSETTING_SERVICE_WWW_TARGET}
   volumes:
     - 
@@ -25,6 +27,11 @@ www:
       consistency: cached
       source: ../private/sh
       target: /opt/sh
+      type: bind
+    - 
+      consistency: cached
+      source: ../.env
+      target: /opt/sh/.env
       type: bind
     - 
       consistency: cached

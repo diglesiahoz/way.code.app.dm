@@ -16,6 +16,8 @@ task:
     opt: {}
     settings: {}
   do:
+    - { call: log, args: { message: '(({}.optAll))', type: console }}
+    - { call: log, args: { message: '(({}.args.run_name))', type: console }}
     - { event: 'origin (({}.args.run_name))' }
 ```
 [```config/proc/run.yml```](../config/proc/run.yml)

@@ -1,4 +1,4 @@
-# Ignore databases
+/assets/custom/*
 /db/*.sql
 /db/*.sql.gz
 /log/*.log
