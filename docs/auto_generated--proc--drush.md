@@ -11,7 +11,7 @@ task:
   complete: [ cr, uli ]
   require:
     config:
-      - .*(\.local|\.dev|\.test|\.pre) origin
+      - .*(\.local|\.dev|\.test|\.pre|\.stage) origin
     args:
       command:
         required: false
