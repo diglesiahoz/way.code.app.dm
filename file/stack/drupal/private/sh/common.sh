@@ -1,56 +1,47 @@
 #!/bin/bash
 
-# REF: https://utf8-chartable.de/unicode-utf8-table.pl?start=9984&names=-&utf8=string-literal
+# REF: https://getemoji.com/#symbols
 
 function log_running() {
   if [ "$OPT_LOG" = true ]
   then
-    echo -e "\033[0;33m\xe2\x9c\xb6\033[0m $*" >> $LOG_FILE
+    echo -e "🔸 $*" >> $LOG_FILE
   else
-    echo -e "\033[0;33m\xe2\x9c\xb6\033[0m $*"
+    echo -e "🔸 $*"
   fi
 }
 function log_hook() {
   if [ "$OPT_LOG" = true ]
   then
-    echo -e "\033[0;35m\xe2\x9c\xb8\033[0m $*" >> $LOG_FILE
+    echo -e "🔺 $*" >> $LOG_FILE
   else
-    echo -e "\033[0;35m\xe2\x9c\xb8\033[0m $*"
+    echo -e "🔺 $*"
   fi
 }
 function log() {
   if [ "$OPT_LOG" = true ]
   then
-    echo -e "\033[0;34m\xe2\x9e\x9f\033[0m $*" >> $LOG_FILE
+    echo -e "🔹 $*" >> $LOG_FILE
   else
-    echo -e "\033[0;34m\xe2\x9e\x9f\033[0m $*"
+    echo -e "🔹 $*"
   fi
 }
 function error() {
   if [ "$2" = "NO_EXIT" ]
   then
-    echo -e "\033[0;31m\xe2\x9c\x96\033[0m $1"
+    echo -e "❌ $1"
   else
-    echo -e "\033[0;31m\xe2\x9c\x96\033[0m $1" && exit 1
+    echo -e "❌ $1" && exit 1
   fi;
 }
 function success() {
   [ "$*" = "" ] && MESSAGE="OK!" || MESSAGE="$*"
   if [ "$OPT_LOG" = true ]
   then
-    echo -e "\033[0;32m\xe2\x9c\x94\033[0m $MESSAGE" >> $LOG_FILE
+    echo -e "✅ $MESSAGE" >> $LOG_FILE
   else
-    echo -e "\033[0;32m\xe2\x9c\x94\033[0m $MESSAGE"
+    echo -e "✅ $MESSAGE"
   fi
-}
-function successfully() {
-  [ "$*" = "" ] && MESSAGE="OK!" || MESSAGE="$*"
-  if [ "$OPT_LOG" = true ]
-  then
-    echo -e "\xe2\x9c\xa8 $MESSAGE" >> $LOG_FILE
-  else
-    echo -e "\xe2\x9c\xa8 $MESSAGE"
-  fi  
 }
 function checkError() {
   if [ "$OPT_DRYRUN" = false ]
@@ -77,7 +68,7 @@ function cmd() {
     fi
     EXIT_CODE=$?
   else 
-    echo -e "\033[0;34m[DRY-RUN]\033[0m $CMD"
+    echo -e "🔹 [DRY-RUN] $CMD"
   fi
 }
 function hook() {
@@ -217,7 +208,7 @@ then
   START_TIME=$(date +%s)
   if [ -f $CURRENT_SCRIPT_PATH/.env ]
   then
-    ENV_SOURCE_DIR=$CURRENT_SCRIPT_PATH/.env
+    ENV_SOURCE_DIR=$CURRENT_SCRIPT_PATH
   else
     ENV_SOURCE_DIR=$(dirname $(dirname $CURRENT_SCRIPT_PATH))
   fi
@@ -240,7 +231,7 @@ then
   then
     EXIT_STATUS="success"
     EXIT_MESSAGE="[$(date +"%Y-%m-%d %H:%M:%S")] ${TO_RUN^} executed successfully from $(hostname)! ($(printf '%02dm:%02ds\n' $((SEC%3600/60)) $((SEC%60))))"
-    successfully "$EXIT_MESSAGE"
+    success "$EXIT_MESSAGE"
     hook "windup"
   else
     EXIT_STATUS="error"

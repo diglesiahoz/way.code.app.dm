@@ -15,7 +15,7 @@ else
   fi
   if [ "$APPSETTING_ENV" = "local" ]
   then
-    if [ "$2" = "watch" ]
+    if [ "$2" = "--watch" ]
     then
       SASS_CMD="/opt/dart-sass/sass --watch --style expanded --silence-deprecation import,mixed-decls $APPSETTING_COMPILE_MAPPING"
     else 

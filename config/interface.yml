@@ -87,6 +87,10 @@ dm:
   makeDbExport:
     collection: false
     args:
+      env_key:
+        required: true
+        type: String
+        defaultValue:
       from_service:
         required: true
         type: String
@@ -126,6 +130,10 @@ dm:
   makeDbImport:
     collection: false
     args:
+      env_key:
+        required: true
+        type: String
+        defaultValue:
       from_service:
         required: true
         type: String

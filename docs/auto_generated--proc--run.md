@@ -7,7 +7,7 @@ example:
 task:
   require:
     config:
-      - .*(\.local|\.dev|\.test|\.pre|\.stage) origin
+      - .*(\.local|\.dev|\.test|\.pre|\.stage|\.prod) origin
     args:
       run_name:
         type: String

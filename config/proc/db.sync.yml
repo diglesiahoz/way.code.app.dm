@@ -26,6 +26,7 @@ task:
     -
       call: dm.makeDbExport
       args:
+        env_key: (({origin}._env))
         from_service: (({origin}._parent_key))-db
         base_image: (({origin}.appsetting.service.db.base_image))
         host: (({origin}.appsetting.service.db.host.sv))
@@ -37,6 +38,7 @@ task:
     -
       call: dm.makeDbImport
       args:
+        env_key: (({target}._env))
         from_service: (({target}._parent_key))-db
         base_image: (({target}.appsetting.service.db.base_image))
         host: (({target}.appsetting.service.db.host.sv))
