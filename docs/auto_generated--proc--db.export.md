@@ -22,6 +22,8 @@ task:
     -
       call: dm.makeDbExport
       args:
+        leap_from: (({origin}.appsetting.service.db.leap_from))
+        env_key: (({origin}._env))
         from_service: (({origin}._parent_key))-db
         base_image: (({origin}.appsetting.service.db.base_image))
         host: (({origin}.appsetting.service.db.host.sv))
