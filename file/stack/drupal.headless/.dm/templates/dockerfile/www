@@ -114,14 +114,14 @@ RUN addgroup --gid ${APPSETTING_GID} ${APPSETTING_USER} \
 ADD ./templates/bashrc /home/$APPSETTING_USER/.bashrc
 ADD ./templates/bashrc /root/.bashrc
 
-# cron
+# cron:
 RUN /etc/init.d/cron stop
 ADD ./templates/cron_jobs /etc/cron.d/cron_jobs
 RUN chmod 0644 /etc/cron.d/cron_jobs
 RUN crontab -u $APPSETTING_USER /etc/cron.d/cron_jobs
 RUN /etc/init.d/cron start
 
-# extra commands
+# extra commands:
 (({}.var.extra_commands))
 
 # build info:
