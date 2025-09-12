@@ -1,7 +1,7 @@
 ### @proxy.local
 
 ```yml
-_pwd: ~/project/.dm
+_pwd: (({}.process.env.APPSETTING_PROJECTS_PATH))/.dm
 appsetting:
   tag: ((._tag))
   key: ((._key))

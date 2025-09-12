@@ -1,7 +1,7 @@
 ### @test.drupal.local
 
 ```yml
-_pwd: ~/project/((_key))
+_pwd: (({}.process.env.APPSETTING_PROJECTS_PATH))/((_key))
 appsetting:
   env: ((_env))
   tag: ((_tag))
