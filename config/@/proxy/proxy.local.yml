@@ -5,12 +5,13 @@ appsetting:
   key: ((._key))
   root: ((_pwd))
   stack: proxy
-  wildcard_host: ((._key))
+  wildcard_host:
+    - ((._key))
   service:
     proxy:
       base_image: traefik:v3.1
       extra_commands: []
-      host: ((_env)).((appsetting.wildcard_host))
+      host: ((_env)).((appsetting.wildcard_host.0))
 
 hook:
   call: {}

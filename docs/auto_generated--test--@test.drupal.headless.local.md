@@ -8,7 +8,8 @@ appsetting:
   key: ((_key))
   root: ((_pwd))
   stack: drupal.headless
-  wildcard_host: ((_key))
+  wildcard_host:
+    - ((_key))
   path:
     backup_db: ((_pwd))/private/db
   service:
@@ -40,13 +41,13 @@ appsetting:
       extra_commands: []
       host:
         sv: ''
-        ui: ((_env))-pma.((appsetting.wildcard_host))
+        ui: ((_env))-pma.((appsetting.wildcard_host.0))
     mailhog:
       base_image: mailhog/mailhog
       extra_commands: []
       host:
         sv: ((_tag))-mailhog
-        ui: ((_env))-mailhog.((appsetting.wildcard_host))
+        ui: ((_env))-mailhog.((appsetting.wildcard_host.0))
     # memcached:
     #   base_image: memcached
     #   extra_commands: []
@@ -64,13 +65,13 @@ appsetting:
     #   extra_commands: []
     #   host:
     #     sv: ((_tag))-solr
-    #     ui: ((_env))-solr.((appsetting.wildcard_host))
+    #     ui: ((_env))-solr.((appsetting.wildcard_host.0))
     next:
       base_image: node:20.9.0
       extra_commands: []
       host:
         sv: ''
-        ui: ((_env)).((appsetting.wildcard_host))
+        ui: ((_env)).((appsetting.wildcard_host.0))
       # Establece el directorio de origen, desde el cual se monta el volumen. Ej: [ ../ | ../drupal | ../web ]
       source: "../next"
       # Establece el directorio de destino en el contenedor. Ej: [ /var/www/html ]
@@ -80,7 +81,7 @@ appsetting:
       extra_commands: []
       host:
         sv: ((_tag))-www
-        ui: ((_env))-drupal.((appsetting.wildcard_host))
+        ui: ((_env))-drupal.((appsetting.wildcard_host.0))
       # Establece el directorio de origen, desde el cual se monta el volumen. Ej: [ ../ | ../drupal | ../web ]
       source: "../drupal"
       # Establece el directorio de destino en el contenedor. Ej: [ /var/www/html ]
