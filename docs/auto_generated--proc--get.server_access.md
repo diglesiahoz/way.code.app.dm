@@ -1,0 +1,21 @@
+### get.server_access
+
+```yml
+help: Obtiene accesos
+example:
+- (({}.tmp.proc.sig))
+task:
+  require:
+    config: []
+    args: {}
+    settings: {}
+  do:
+    - { event: 'origin startup' }
+    -
+      call: exec
+      args:
+        cmd: (({}.exec)) @*..server.access
+        out: true
+    - { event: 'origin windup' }
+```
+[```config/proc/get.server_access.yml```](../config/proc/get.server_access.yml)

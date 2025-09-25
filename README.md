@@ -30,6 +30,7 @@
 * [drush](docs/auto_generated--proc--drush.md)
 * [env](docs/auto_generated--proc--env.md)
 * [exec](docs/auto_generated--proc--exec.md)
+* [get.server_access](docs/auto_generated--proc--get.server_access.md)
 * [init](docs/auto_generated--proc--init.md)
 * [ls.network](docs/auto_generated--proc--ls.network.md)
 * [ls.php.extensions](docs/auto_generated--proc--ls.php.extensions.md)
