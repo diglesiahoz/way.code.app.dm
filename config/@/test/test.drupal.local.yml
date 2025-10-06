@@ -64,6 +64,18 @@ appsetting:
       host:
         sv: ((_tag))-solr
         ui: ((_env))-solr.((appsetting.wildcard_host.0))
+    sonarqube:
+      base_image: sonarqube:community
+      extra_commands: []
+      host:
+        sv: ((_tag))-sonarqube
+        ui: ((_env))-sonarqube.((appsetting.wildcard_host.0))
+    sonarqube_db:
+      base_image: postgres:15
+      extra_commands: []
+      host:
+        sv: ((_tag))-sonarqube-db
+        ui: ((_env))-sonarqube-db.((appsetting.wildcard_host.0))
     www:
       base_image: ubuntu:24.04
       extra_commands: []
@@ -116,53 +128,53 @@ hook:
             key: composer.run
             value:
               - require drush/drush
-              - require drupal/admin_toolbar
-              - require drupal/ckeditor5_plugin_pack
-              - require drupal/devel
-              - require drupal/devel_kint_extras
-              - require drupal/environment_indicator
-              - require drupal/gin_toolbar
-              - require drupal/gin
-              - require drupal/metatag
-              - require drupal/masquerade:^2.0@RC
-              - require drupal/paragraphs
-              - require drupal/pathauto
-              - require drupal/redirect
-              - require drupal/search_api_solr
-              - require drupal/symfony_mailer_lite
-              - require drupal/twig_tweak
-              - require drupal/viewsreference:^2.0@beta
-        - 
-          call: var
-          args:
-            allow_merge: true
-            key: drush.run
-            value:
-              - pm:enable admin_toolbar
-              - pm:enable admin_toolbar_tools
-              - pm:enable ckeditor5_plugin_pack
-              - pm:enable devel
-              - pm:enable devel_kint_extras
-              - pm:enable environment_indicator
-              - pm:enable masquerade
-              - pm:enable metatag
-              - pm:enable paragraphs
-              - pm:enable pathauto
-              - pm:enable redirect
-              - pm:enable search_api_solr
-              - pm:enable symfony_mailer_lite
-              - pm:enable twig_tweak
-              - pm:enable viewsreference
-              - config-set system.performance css.preprocess 1
-              - config-set system.performance js.preprocess 1
-              - user:create admin.editor --password admin
-              - user:role:add content_editor admin.editor
-              # - pm:enable navigation
-              # - pm:enable navigation_top_bar
-              - theme:enable gin
-              - pm:enable gin_toolbar
-              - config-set system.theme admin gin
-              - config-set gin.settings enable_darkmode 0
-              - config-set gin.settings classic_toolbar horizontal
-              - cset locale.settings translation.import_enabled false -y
+      #        - require drupal/admin_toolbar
+      #        - require drupal/ckeditor5_plugin_pack
+      #        - require drupal/devel
+      #        - require drupal/devel_kint_extras
+      #        - require drupal/environment_indicator
+      #        - require drupal/gin_toolbar
+      #        - require drupal/gin
+      #        - require drupal/metatag
+      #        - require drupal/masquerade:^2.0@RC
+      #        - require drupal/paragraphs
+      #        - require drupal/pathauto
+      #        - require drupal/redirect
+      #        - require drupal/search_api_solr
+      #        - require drupal/symfony_mailer_lite
+      #        - require drupal/twig_tweak
+      #        - require drupal/viewsreference:^2.0@beta
+      #  - 
+      #    call: var
+      #    args:
+      #      allow_merge: true
+      #      key: drush.run
+      #      value:
+      #        - pm:enable admin_toolbar
+      #        - pm:enable admin_toolbar_tools
+      #        - pm:enable ckeditor5_plugin_pack
+      #        - pm:enable devel
+      #        - pm:enable devel_kint_extras
+      #        - pm:enable environment_indicator
+      #        - pm:enable masquerade
+      #        - pm:enable metatag
+      #        - pm:enable paragraphs
+      #        - pm:enable pathauto
+      #        - pm:enable redirect
+      #        - pm:enable search_api_solr
+      #        - pm:enable symfony_mailer_lite
+      #        - pm:enable twig_tweak
+      #        - pm:enable viewsreference
+      #        - config-set system.performance css.preprocess 1
+      #        - config-set system.performance js.preprocess 1
+      #        - user:create admin.editor --password admin
+      #        - user:role:add content_editor admin.editor
+      #        # - pm:enable navigation
+      #        # - pm:enable navigation_top_bar
+      #        - theme:enable gin
+      #        - pm:enable gin_toolbar
+      #        - config-set system.theme admin gin
+      #        - config-set gin.settings enable_darkmode 0
+      #        - config-set gin.settings classic_toolbar horizontal
+      #        - cset locale.settings translation.import_enabled false -y
       windup: {}

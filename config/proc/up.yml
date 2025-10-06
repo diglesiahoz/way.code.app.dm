@@ -32,6 +32,17 @@
 # 5. En Visual Studio Code iniciar depuración
 # :RECIPE
 
+# RECIPE:Ajustar valor "vm.max_map_count" en kernel del host (linux). Necesario para SonarQube.
+# 1. Ajuste temporal
+# ```
+# sudo sysctl -w vm.max_map_count=262144
+# ```
+# 1. Ajuste permanente
+# ```
+# echo | echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+# ```
+# :RECIPE
+
 example:
  - (({}.tmp.proc.sig))
 

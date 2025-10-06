@@ -1,0 +1,2 @@
+sonarqube_db_data:
+  name: ${COMPOSE_PROJECT_NAME}-sonarqube_db_data

@@ -1,0 +1,6 @@
+sonarqube_data:
+  name: ${COMPOSE_PROJECT_NAME}-sonarqube_data
+sonarqube_extensions:
+  name: ${COMPOSE_PROJECT_NAME}-sonarqube_extensions
+sonarqube_logs:
+  name: ${COMPOSE_PROJECT_NAME}-sonarqube_logs

@@ -1,0 +1,15 @@
+sonarqube_db:
+  container_name: ${COMPOSE_PROJECT_NAME}-sonarqube_db
+  build:
+    context: .
+    dockerfile: ./templates/dockerfile/sonarqube_db
+    args:
+      APPSETTING_SERVICE_SONARQUBE_DB_BASE_IMAGE: ${APPSETTING_SERVICE_SONARQUBE_DB_BASE_IMAGE}
+  environment:
+    POSTGRES_USER: sonar
+    POSTGRES_PASSWORD: sonar
+    POSTGRES_DB: sonarqube
+  volumes:
+    - sonarqube_db_data:/var/lib/postgresql/data
+  networks:
+    - dm_proxy
