@@ -1,5 +1,8 @@
 ### Modificar y/o crear certificados
 
+#
+- Necesario instalar "jq" y "mkcert" en tu host
+#
 1. Modifica el perfil de configuración
 2. Accede al root de la aplicación
 ```console

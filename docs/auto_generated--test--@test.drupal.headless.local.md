@@ -14,6 +14,7 @@ appsetting:
     backup_db: ((_pwd))/private/db
   service:
     db:
+      leap_from: {}
       base_image: mariadb:11 # [ mariadb:10.3 | mariadb:11 | mysql:8.0.0 ]
       extra_commands: []
       host:
