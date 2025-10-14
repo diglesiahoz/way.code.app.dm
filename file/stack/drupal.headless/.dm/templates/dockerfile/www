@@ -72,11 +72,17 @@ RUN apt-get install -y \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-xdebug \
     libapache2-mod-php${APPSETTING_SERVICE_WWW_PHP_RELEASE}
 
-# web-server:
-ADD ./templates/php.ini.conf /tmp/php.ini.conf
-RUN cat /tmp/php.ini.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini
-RUN rm /tmp/php.ini.conf
+# php:
+RUN phpdismod -s cli xdebug \
+ && rm -f /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/cli/conf.d/*xdebug*.ini
+RUN phpdismod -s fpm xdebug \
+ && rm -f /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/conf.d/*xdebug*.ini
 
+ADD ./templates/php-fpm.ini.conf /tmp/php-fpm.ini.conf
+RUN cat /tmp/php-fpm.ini.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini
+RUN rm /tmp/php-fpm.ini.conf
+
+# web-server:
 ADD ./templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf
 RUN cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/pool.d/www.conf
 RUN rm /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf
