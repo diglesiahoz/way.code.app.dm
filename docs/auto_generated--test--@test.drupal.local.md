@@ -85,16 +85,8 @@ appsetting:
       host:
         sv: ''
         ui: ((_env)).((appsetting.wildcard_host.0))
-      # Establece el directorio de origen, desde el cual se monta el volumen. Ej: [ ../ | ../drupal | ../web ]
-      source: "../((appsetting.stack))"
-      # Establece el directorio de destino en el contenedor. Ej: [ /var/www/html ]
-      target: "/var/www/html"
       # Establece el tipo de servidor web. Ej: [ nginx | apache2 ]
       webserver: nginx 
-      # Establece el nombre del directorio al que accede las peticiones del servidor web. 
-      # Deja en blanco para no añadir ninguna ruta relativa y que el directorio raíz sea /var/www/html.
-      # Ej: [ /web ]
-      webserver_docroot: "/web"
       # Pemite compartir aplicación a través de Ngrok.
       # Ver: https://ngrok.com/docs/guides/developer-preview/getting-started/
       # Panel de control: https://dashboard.ngrok.com/get-started/setup/linux
@@ -106,7 +98,6 @@ appsetting:
         release: 2
       drupal:
         release: ^11 # [ ^10 | ^11 ]
-        target: ((appsetting.stack))
         error_level: verbose
         file_system:
           config_path: ../config

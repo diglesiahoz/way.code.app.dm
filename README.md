@@ -1,6 +1,6 @@
-# Docker Manager (dm)
+# Drupal Manager (dm)
 
-> Aplicación que te permite automatizar tareas sitios gestionados con Docker.
+> Aplicación que te permite gestionar sitios Drupal.
 
 ## Docs
 

@@ -40,7 +40,7 @@ task:
           -
             call: exec
             args:
-              cmd: (({}.exec)) (({origin}._config_name)) exec "cd (({origin}.appsetting.service.www.target)) && composer reinstall \$(jq -r \".extra.patches | keys[]\" (({origin}.appsetting.service.www.target))/composer.json | xargs)"
+              cmd: (({}.exec)) (({origin}._config_name)) exec "cd /var/www/drupal && composer reinstall \$(jq -r \".extra.patches | keys[]\" /var/www/drupal/composer.json | xargs)"
               out: true
     - { event: 'origin windup' }
 ```

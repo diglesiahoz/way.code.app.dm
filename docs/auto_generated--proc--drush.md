@@ -27,7 +27,7 @@ task:
     -
       call: exec
       args:
-        cmd: (({}.exec)) (({origin}._config_name)) exec (({origin}.appsetting.service.www.target))/vendor/bin/drush (({}.var.command))
+        cmd: (({}.exec)) (({origin}._config_name)) exec /var/www/drupal/vendor/bin/drush (({}.var.command))
         out: true
     - { event: 'origin windup' }
 ```

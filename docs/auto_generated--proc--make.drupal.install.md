@@ -20,14 +20,6 @@ task:
       args:
         message: "¿Deseas instalar Drupal? (Sobreescribe datos)"
         exitIfNegative: true
-    # Establece directorios de destino drupal
-    - loop:
-        - (({origin}.appsetting.root))/(({origin}.appsetting.service.www.drupal.target))/recommended-project
-      do:
-        - label: Creando directorio (())
-          call: exec
-          args:
-            cmd: mkdir -p (())
     # Crea proyecto Drupal mediante Composer
     - label: Creando proyecto Drupal
       call: exec
@@ -39,7 +31,7 @@ task:
       call: exec
       args:
         cd: (({origin}.appsetting.root))
-        cmd: cp -r (({origin}.appsetting.service.www.drupal.target))/recommended-project/. (({origin}.appsetting.service.www.drupal.target))/ && rm -r (({origin}.appsetting.service.www.drupal.target))/recommended-project
+        cmd: cp -r drupal/recommended-project/. drupal/ && rm -r drupal/recommended-project
     # Establece dependencias
     - check:
         data: 
@@ -55,21 +47,13 @@ task:
                 call: exec
                 args:
                   cd: (({origin}.appsetting.root))
-                  cmd: (({}.exec)) dm.composer -n (())
+                  cmd: (({}.exec)) dm.composer -n (()) 
     # Actualiza dependencias
     - label: Actualiza
       call: exec
       args:
         cd: (({origin}.appsetting.root))
         cmd: (({}.exec)) dm.composer install
-    # Despliega estrutura de pila
-    - label: Desplegando código
-      call: dm.init
-      args:
-        remove_all: false
-        name: "(({origin}.appsetting.stack))"
-        include:
-          - '^drupal/'
     # Vacia base de datos
     - label: Vaciando tablas de base de datos
       call: exec
@@ -109,7 +93,7 @@ task:
       call: exec
       args:
         cd: (({origin}.appsetting.root))
-        cmd: (({}.exec)) dm.drush cim --partial --source=/var/www/html/config -y
+        cmd: (({}.exec)) dm.drush cim --partial --source=/var/www/drupal/config -y
     # Exporta configuración
     - label: Exportando configuración
       call: exec
@@ -120,25 +104,14 @@ task:
     - label: Estableciendo propietario y permisos
       call: exec
       args:
-        cd: (({origin}.appsetting.root))
-        # cmd: chown -R $(id -u):$(id -g) (({origin}.appsetting.service.www.drupal.target))/
-        cmd: sudo chown -R $(id -u):www-data (({origin}.appsetting.service.www.drupal.target))/web
-    # Establece permisos
-    - label: Estableciendo propietario y permisos para "web"
+        cd: 
+        cmd: sudo chown -R $(id -u):www-data (({origin}.appsetting.root))/drupal
+    # Ejecuta cron
+    - label: Ejecutando cron
       call: exec
       args:
         cd: (({origin}.appsetting.root))
-        cmd: sudo chmod -R g+w (({origin}.appsetting.service.www.drupal.target))/web
-    - label: Estableciendo propietario y permisos para "private"
-      call: exec
-      args:
-        cd: (({origin}.appsetting.root))
-        cmd: sudo chmod 777 (({origin}.appsetting.service.www.drupal.target))/private
-    - label: Estableciendo propietario y permisos para "private"
-      call: exec
-      args:
-        cd: (({origin}.appsetting.root))
-        cmd: sudo chmod 777 (({origin}.appsetting.service.www.drupal.target))/private
+        cmd: (({}.exec)) dm.drush cron
     # Obtiene acceso a sitio web
     - label: Obteniendo acceso a sitio web
       call: exec

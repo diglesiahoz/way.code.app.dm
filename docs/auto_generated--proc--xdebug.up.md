@@ -9,7 +9,8 @@ task:
       - .*(\.local) origin
   do:
     - { event: 'origin startup' }
-    - { call: exec, args: { cmd: 'docker exec -it (({origin}.appsetting.tag))-www sudo phpenmod xdebug', out: true } }
+    - { call: exec, args: { cmd: 'docker exec -it (({origin}.appsetting.tag))-www sudo phpenmod -s fpm xdebug', out: true } }
+    - { call: exec, args: { cmd: 'docker exec -it (({origin}.appsetting.tag))-www sudo service php(({origin}.appsetting.service.www.php.release))-fpm reload', out: false } }
     - { call: log, args: { message: 'Done!', type: success } }
     - { event: 'origin windup' }
 ```

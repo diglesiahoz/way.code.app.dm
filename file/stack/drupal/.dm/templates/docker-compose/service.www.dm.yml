@@ -12,31 +12,15 @@ www:
       APPSETTING_SERVICE_WWW_PHP_RELEASE: ${APPSETTING_SERVICE_WWW_PHP_RELEASE}
       APPSETTING_SERVICE_WWW_COMPOSER_RELEASE: ${APPSETTING_SERVICE_WWW_COMPOSER_RELEASE}
       APPSETTING_SERVICE_WWW_WEBSERVER: ${APPSETTING_SERVICE_WWW_WEBSERVER}
-  #environment: (({}.var.env_docker_compose))
   env_file:
     - ../.env
     - .env
-  working_dir: ${APPSETTING_SERVICE_WWW_TARGET}
+  working_dir: ${APPSETTING_SERVICE_WWW_TARGET}/drupal
   volumes:
     - 
       consistency: cached
-      source: ${APPSETTING_SERVICE_WWW_SOURCE}
+      source: ../
       target: ${APPSETTING_SERVICE_WWW_TARGET}
-      type: bind
-    - 
-      consistency: cached
-      source: ../private/sh
-      target: /opt/sh
-      type: bind
-    - 
-      consistency: cached
-      source: ../.env
-      target: /opt/sh/.env
-      type: bind
-    - 
-      consistency: cached
-      source: ../private/log
-      target: /opt/log
       type: bind
   healthcheck:
     interval: 1s

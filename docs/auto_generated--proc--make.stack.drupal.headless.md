@@ -44,11 +44,6 @@ task:
             args:
               cmd: docker volume rm "(({origin}.appsetting.tag))-db_data" 2>/dev/null
               out: false
-          - label: Estableciendo propietario y permisos para "private"
-            call: exec
-            args:
-              cd: (({origin}.appsetting.root))
-              cmd: sudo chmod 777 -R (({origin}.appsetting.service.www.drupal.target))
           - label: Desplegando configuración
             call: dm.init
             args:

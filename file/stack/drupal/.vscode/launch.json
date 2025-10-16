@@ -7,7 +7,7 @@
       "request": "launch",
       "port": 9003,
       "pathMappings": {
-        "/var/www/html": "${workspaceFolder}"
+        "((appsetting.service.www.target))": "${workspaceFolder}"
       },
       "xdebugSettings": {
         "max_data": 65535,
