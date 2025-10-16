@@ -18,6 +18,8 @@ task:
       appsetting.stack: ^drupal
   do:
     - { event: 'origin startup' }
+    - call: dmMakeDrupal
+    - call: exit 
     # Levanta servicios
     -
       label: Apagando servicios

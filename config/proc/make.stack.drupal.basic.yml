@@ -23,6 +23,10 @@ task:
   do:
     - { event: 'origin startup' }
 
+    - call: dm.makeDrupal
+
+    - call: exit 
+
     # Levanta servicios
     -
       label: Apagando servicios

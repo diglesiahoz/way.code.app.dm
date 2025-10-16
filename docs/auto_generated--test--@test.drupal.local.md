@@ -9,7 +9,8 @@ appsetting:
   root: ((_pwd))
   stack: drupal
   wildcard_host:
-    - ((_key))
+    - ((_key)).1
+    - ((_key)).2
   path:
     backup_db: ((_pwd))/private/db
   service:

@@ -7,7 +7,8 @@ appsetting:
   root: ((_pwd))
   stack: drupal
   wildcard_host:
-    - ((_key))
+    - ((_key)).1
+    - ((_key)).2
   path:
     backup_db: ((_pwd))/private/db
   service:
@@ -18,23 +19,23 @@ appsetting:
       host:
         sv: ((_tag))-db
         ui: ''
-      name: ((_tag))
-      user: ((_tag))_user
-      pass: ((_tag))_pass
-      conf:
-        db-export:
-          excluded-tables: []
-          # excluded-tables:
-          #   - "batch" 
-          #   - "cache_" 
-          #   - "flood" 
-          #   - "queue" 
-          #   - "search_dataset" 
-          #   - "search_index" 
-          #   - "search_total" 
-          #   - "semaphore" 
-          #   - "sessions" 
-          #   - "watchdog"
+      dbs:
+        - 
+          name: ((_tag))
+          user: ((_tag))_user
+          pass: ((_tag))_pass
+          conf:
+            db-export:
+              excluded-tables: []
+              # excluded-tables: [ "batch", "cache_", "flood", "queue", "search_dataset", "search_index", "search_total", "semaphore", "sessions", "watchdog" ]
+        - 
+          name: ((_tag))
+          user: ((_tag))_user
+          pass: ((_tag))_pass
+          conf:
+            db-export:
+              excluded-tables: []
+              # excluded-tables: [ "batch", "cache_", "flood", "queue", "search_dataset", "search_index", "search_total", "semaphore", "sessions", "watchdog" ]
     pma:
       base_image: phpmyadmin/phpmyadmin
       extra_commands: []
@@ -93,6 +94,7 @@ appsetting:
         release: 2
       drupal:
         release: ^11 # [ ^10 | ^11 ]
+        multisite: false
         error_level: verbose
         file_system:
           config_path: ../config

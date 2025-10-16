@@ -205,6 +205,7 @@ dm:
         required: true
         type: String
         defaultValue:
+  makeDrupal:
   makeSync:
     collection: false
     args:
