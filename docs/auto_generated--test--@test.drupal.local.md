@@ -81,16 +81,13 @@ appsetting:
         ui: ((_env))-sonarqube-db.((appsetting.wildcard_host.0))
     www:
       base_image: ubuntu:24.04
+      target: /opt
       extra_commands: []
       host:
         sv: ''
         ui: ((_env)).((appsetting.wildcard_host.0))
-      # Establece el tipo de servidor web. Ej: [ nginx | apache2 ]
-      webserver: nginx 
-      # Pemite compartir aplicación a través de Ngrok.
-      # Ver: https://ngrok.com/docs/guides/developer-preview/getting-started/
-      # Panel de control: https://dashboard.ngrok.com/get-started/setup/linux
-      ngrok:
+      webserver: nginx  # Establece el tipo de servidor web. Ej: [ nginx | apache2 ]
+      ngrok: # Pemite compartir aplicación a través de Ngrok (https://ngrok.com/docs/guides/developer-preview/getting-started/, https://dashboard.ngrok.com/get-started/setup/linux)
         token: ""
       php:
         release: 8.3 # [ 8.1 | 8.3 ]

@@ -21,7 +21,7 @@ task:
     -
       call: exec
       args:
-        cmd: docker exec --user (({}.user.username)) --workdir /var/www/drupal -it (({origin}.appsetting.tag))-www composer (({}.args.command))
+        cmd: docker exec --user (({}.user.username)) -it (({origin}.appsetting.tag))-www composer (({}.args.command))
         out: true       
     - { event: 'origin windup' }
 ```

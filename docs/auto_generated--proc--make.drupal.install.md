@@ -93,7 +93,7 @@ task:
       call: exec
       args:
         cd: (({origin}.appsetting.root))
-        cmd: (({}.exec)) dm.drush cim --partial --source=/var/www/drupal/config -y
+        cmd: (({}.exec)) dm.drush cim --partial --source=(({origin}.appsetting.service.www.target))/drupal/config -y
     # Exporta configuración
     - label: Exportando configuración
       call: exec
@@ -112,6 +112,7 @@ task:
       args:
         cd: (({origin}.appsetting.root))
         cmd: (({}.exec)) dm.drush cron
+        out: true
     # Obtiene acceso a sitio web
     - label: Obteniendo acceso a sitio web
       call: exec
