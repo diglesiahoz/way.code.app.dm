@@ -9,7 +9,7 @@ example:
 task:
   require:
     config:
-      - .*(\.local|\.dev|\.test|\.pre|\.stage|\.prod) origin
+      - .*(\.local|\.dev|\.test|\.pre|\.stage) origin
     args:
       command:
         required: true

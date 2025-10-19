@@ -134,6 +134,10 @@ dm:
   makeDbImport:
     collection: false
     args:
+      leap_from:
+        required: false
+        type: Object
+        defaultValue: {}
       env_key:
         required: true
         type: String

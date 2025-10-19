@@ -34,6 +34,15 @@ function error() {
     echo -e "❌ $1" && exit 1
   fi;
 }
+function warning() {
+  [ "$*" = "" ] && MESSAGE="WARNING!" || MESSAGE="$*"
+  if [ "$OPT_LOG" = true ]
+  then
+    echo -e "🟧 $MESSAGE" >> $LOG_FILE
+  else
+    echo -e "🟧 $MESSAGE"
+  fi
+}
 function success() {
   [ "$*" = "" ] && MESSAGE="OK!" || MESSAGE="$*"
   if [ "$OPT_LOG" = true ]
@@ -119,21 +128,23 @@ then
   [ "$TO_RUN" = "" ] && error "Not found script to run"
 fi
 ARGS=$(echo $ARGS | xargs -n1 | grep -v "$TO_RUN" | xargs)
-LOG_DIR=/opt/log
-if [ ! -d $LOG_DIR ]
-then
-  error "Not found log dir: $LOG_DIR"
-else
-  LOG_FILE=$LOG_DIR/$TO_RUN.log
-fi
 
 if [ "$APPSETTING_SERVICE_WWW_TARGET" != "" ]
 then
-  DRUPAL_ROOT=$APPSETTING_SERVICE_WWW_TARGET
+  LOG_DIR=$APPSETTING_SERVICE_WWW_TARGET/private/log
+else
+  LOG_DIR=$(dirname $CURRENT_SCRIPT_PATH)/log
+fi
+[ ! -d $LOG_DIR ] && error "Not found log dir: $LOG_DIR" && exit 1
+LOG_FILE=$LOG_DIR/$TO_RUN.log
+
+if [ "$APPSETTING_SERVICE_WWW_TARGET" != "" ]
+then
+  DRUPAL_ROOT=$APPSETTING_SERVICE_WWW_TARGET/drupal
 else
   DRUPAL_ROOT=$(dirname $(dirname $CURRENT_SCRIPT_PATH))/drupal
-  [ ! -d $DRUPAL_ROOT ] && echo "Not found drupal root path" && exit 1
 fi
+[ ! -d $DRUPAL_ROOT ] && error "Not found drupal root: $DRUPAL_ROOT" && exit 1
 
 REL_PATH_SITES=$(cd $DRUPAL_ROOT && sudo find . -maxdepth 2 -type d -name "sites" | xargs)
 if [ "$REL_PATH_SITES" = "" ]
