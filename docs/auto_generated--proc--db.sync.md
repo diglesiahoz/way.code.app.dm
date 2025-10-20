@@ -41,6 +41,7 @@ task:
     -
       call: dm.makeDbImport
       args:
+        leap_from: (({target}.appsetting.service.db.leap_from))
         env_key: (({target}._env))
         from_service: (({target}._parent_key))-db
         base_image: (({target}.appsetting.service.db.base_image))
