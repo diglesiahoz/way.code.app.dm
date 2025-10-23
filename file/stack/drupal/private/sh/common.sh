@@ -3,28 +3,16 @@
 # REF: https://getemoji.com/#symbols
 
 function log_running() {
-  if [ "$OPT_LOG" = true ]
-  then
-    echo -e "🔸 $*" >> $LOG_FILE
-  else
-    echo -e "🔸 $*"
-  fi
+  echo -e "🔸 $*" | tee -a "$LOG_FILE"
 }
 function log_hook() {
-  if [ "$OPT_LOG" = true ]
-  then
-    echo -e "🔺 $*" >> $LOG_FILE
-  else
-    echo -e "🔺 $*"
-  fi
+  echo -e "🔺 $*" | tee -a "$LOG_FILE"
 }
 function log() {
-  if [ "$OPT_LOG" = true ]
-  then
-    echo -e "🔹 $*" >> $LOG_FILE
-  else
-    echo -e "🔹 $*"
-  fi
+  echo -e "🔹 $*" | tee -a "$LOG_FILE"
+}
+function write_to_log() {
+  echo -e "$*" | tee -a "$LOG_FILE"
 }
 function error() {
   if [ "$2" = "NO_EXIT" ]
@@ -36,21 +24,11 @@ function error() {
 }
 function warning() {
   [ "$*" = "" ] && MESSAGE="WARNING!" || MESSAGE="$*"
-  if [ "$OPT_LOG" = true ]
-  then
-    echo -e "🟧 $MESSAGE" >> $LOG_FILE
-  else
-    echo -e "🟧 $MESSAGE"
-  fi
+  echo -e "🟧 $MESSAGE" | tee -a "$LOG_FILE"
 }
 function success() {
   [ "$*" = "" ] && MESSAGE="OK!" || MESSAGE="$*"
-  if [ "$OPT_LOG" = true ]
-  then
-    echo -e "✅ $MESSAGE" >> $LOG_FILE
-  else
-    echo -e "✅ $MESSAGE"
-  fi
+  echo -e "✅ $MESSAGE" | tee -a "$LOG_FILE"
 }
 function checkError() {
   if [ "$OPT_DRYRUN" = false ]
@@ -69,15 +47,14 @@ function cmd() {
   if [ "$OPT_DRYRUN" = false ]
   then
     log "$CMD"
-    if [ "$OPT_LOG" = true ]
-    then
-      eval $CMD >> $LOG_FILE 2>&1 
-    else
-      eval $CMD 2>&1
-    fi
+    CMD_OUTPUT=$(eval $CMD 2>&1)
     EXIT_CODE=$?
+    if [ "$CMD_OUTPUT" != "" ]
+    then
+      echo -e "$CMD_OUTPUT" | tee -a "$LOG_FILE"
+    fi
   else 
-    echo -e "🔹 [DRY-RUN] $CMD"
+    echo -e "🔹 [DRY-RUN] $CMD" | tee -a "$LOG_FILE"
   fi
 }
 function hook() {
@@ -158,11 +135,6 @@ if [ "$(echo $* | xargs -n1 | grep -E '^--v$')" != "" ]
 then
   OPT_V=true
 fi
-OPT_LOG=false
-if [ "$(echo $* | xargs -n1 | grep -E '^--log$')" != "" ]
-then
-  OPT_LOG=true
-fi
 OPT_DRYRUN=false
 if [ "$(echo $* | xargs -n1 | grep -E '^--dry-run$')" != "" ]
 then
@@ -189,7 +161,6 @@ fi
 #* ARGS:|$ARGS
 #* DRUPAL_ROOT:|$DRUPAL_ROOT
 #* REL_PATH_SITES:|$REL_PATH_SITES
-#* OPT_LOG:|$OPT_LOG
 #* OPT_DRYRUN:|$OPT_DRYRUN
 #* OPT_FORCE:|$OPT_FORCE
 #**********************
@@ -208,7 +179,6 @@ then
   log "ARGS: $ARGS"
   log "DRUPAL_ROOT: $DRUPAL_ROOT"
   log "REL_PATH_SITES: $REL_PATH_SITES"
-  log "OPT_LOG: $OPT_LOG"
   log "OPT_DRYRUN: $OPT_DRYRUN"
   log "OPT_FORCE: $OPT_FORCE"
   log "**********************************"

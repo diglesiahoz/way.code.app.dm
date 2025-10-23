@@ -13,6 +13,9 @@ else
   then
     error "You must set the \"APPSETTING_COMPILE_MAPPING\" variable in the environment configuration file (.env)"
   fi
+
+  cd $DRUPAL_ROOT
+
   if [ "$OPT_FAST" = true ]
   then
 
@@ -46,7 +49,8 @@ else
     hook "pre__compile"
     hook "commit/$CURRENT_COMMIT/pre__compile"
 
-    $CURRENT_SCRIPT_PATH/common.sh compile $APPSETTING_COMPILE_MAPPING $OPTS
+    O=$($CURRENT_SCRIPT_PATH/common.sh compile $APPSETTING_COMPILE_MAPPING $OPTS)
+    write_to_log "$O"
 
     hook "post__compile"
     hook "commit/$CURRENT_COMMIT/post__compile"
@@ -64,14 +68,15 @@ else
       hook "commit/$CURRENT_COMMIT/pre__cst"
 
       log "Checking differences between database and config files..."
-      if [ "$OPT_DRYRUN" = false ]
+      CONFIG_DIFF=$(cd $DRUPAL_ROOT && vendor/bin/drush config:status 2>&1)
+      if [ "$(echo "$CONFIG_DIFF" | grep "No differences between DB and sync directory")" = "" ]
       then
-        CONFIG_DIFF=$(cd $DRUPAL_ROOT && vendor/bin/drush config:status 2>&1)
-        if [ "$(echo "$CONFIG_DIFF" | grep "No differences between DB and sync directory")" = "" ]
+        echo "$CONFIG_DIFF"
+        if [ "$OPT_DRYRUN" = false ]
         then
-          echo "$CONFIG_DIFF"
           error "Deployment aborted due to differences between database and configuration files"
-          exit 1
+        else
+          warning "Deployment aborted due to differences between database and configuration files"
         fi
       fi
 
@@ -112,7 +117,8 @@ else
     hook "pre__compile"
     hook "commit/$CURRENT_COMMIT/pre__compile"
 
-    $CURRENT_SCRIPT_PATH/common.sh compile $APPSETTING_COMPILE_MAPPING $OPTS
+    O=$($CURRENT_SCRIPT_PATH/common.sh compile $APPSETTING_COMPILE_MAPPING $OPTS)
+    write_to_log "$O"
 
     hook "post__compile"
     hook "commit/$CURRENT_COMMIT/post__compile"
@@ -120,7 +126,8 @@ else
     hook "pre__fixperm"
     hook "commit/$CURRENT_COMMIT/pre__fixperm"
 
-    $CURRENT_SCRIPT_PATH/common.sh fix_perm $OPTS
+    O=$($CURRENT_SCRIPT_PATH/common.sh fix_perm $OPTS)
+    write_to_log "$O"
 
     hook "post__fixperm"
     hook "commit/$CURRENT_COMMIT/post__fixperm"

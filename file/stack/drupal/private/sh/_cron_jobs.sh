@@ -18,7 +18,8 @@ else
   then
     cmd "$DRUPAL_ROOT/vendor/bin/drush cron -v --uri $DOMAIN"
     checkError "Could not execute Drupal cron"
-    . $CURRENT_SCRIPT_PATH/_fix_perm.sh
+    O=$($CURRENT_SCRIPT_PATH/common.sh fix_perm)
+    write_to_log "$O"
   else 
     error "Not found \"$DRUPAL_ROOT/vendor/bin/drush\""
   fi
