@@ -228,6 +228,19 @@ dm:
         required: false
         type: String
         defaultValue: "-O -avzc --no-o --no-g --no-perms"
+  makeTrace:
+    collection: false
+    args:
+      # Ruta absoluta de ficheros o directorios que permite trazar
+      to_track: 
+        required: true
+        type: Object
+        defaultValue: {}
+      # Nombre del log a mostrar
+      name: 
+        required: false
+        type: String
+        defaultValue: ""
   powerOff:
   setDbExec:
     collection: false
