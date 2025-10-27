@@ -22,6 +22,16 @@ www:
       source: ../
       target: ${APPSETTING_SERVICE_WWW_TARGET}
       type: bind
+    -
+      consistency: cached
+      source: /home/${APPSETTING_USER}/.gitconfig
+      target: /home/${APPSETTING_USER}/.gitconfig
+      type: bind
+    -
+      consistency: cached
+      source: /home/${APPSETTING_USER}/.git-credentials
+      target: /home/${APPSETTING_USER}/.git-credentials
+      type: bind
   healthcheck:
     interval: 1s
     retries: 120
