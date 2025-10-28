@@ -1,48 +1,25 @@
 ### exec
 
 ```yml
-help: Ejecuta comando
+help: Accede a entorno o ejecuta comando
 example:
-- (({}.tmp.proc.sig)) www whoami
-- (({}.tmp.proc.sig)) www ls -la
-- (({}.tmp.proc.sig)) www vendor/bin/phpstan.phar analyze web/modules/custom --memory-limit=256M
+- (({}.tmp.proc.sig)) whoami
+- (({}.tmp.proc.sig)) ls -la
+- (({}.tmp.proc.sig)) vendor/bin/phpstan.phar analyze web/modules/custom --memory-limit=256M
 task:
   require:
     config:
-      - .*(\.local|\.dev|\.test|\.pre|\.stage) origin
+      - .*(\.local|\.dev|\.test|\.pre|\.stage|\.prod) origin
     args:
       command:
         required: true
         type: .*
         default: /bin/bash
-    opt:
-      user:
-        type: String
-        default:
+    opt: {}
     settings: {}
   do:
     - { event: 'origin startup' }
-    - 
-      check:
-        data:
-          -
-            key: (({origin}._env))
-            is: equal
-            value: local
-        true:
-          -
-            call: exec
-            args:
-              cmd: (({}.exec)) (({origin}._config_name)) (({}.optSig)) service.exec www (({}.args.command))
-              out: true
-        false:
-          -
-            call: exec
-            args:
-              # user: (({origin}.hook.call[dm.exec].exec.user))
-              # pass: (({origin}.hook.call[dm.exec].exec.pass))
-              cmd: (({}.args.command))
-              out: true
+    - { call: dm.makeExec, args: { cmd: "(({}.args.command))" } }
     - { event: 'origin windup' }
 ```
 [```config/proc/exec.yml```](../config/proc/exec.yml)

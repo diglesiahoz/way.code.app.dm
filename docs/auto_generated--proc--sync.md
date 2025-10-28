@@ -1,7 +1,7 @@
 ### sync
 
 ```yml
-help: Sincroniza
+help: Sincroniza ficheros
 example:
 - (({}.tmp.proc.sig))
 task:
@@ -13,14 +13,6 @@ task:
         type: String
         required: true
         default: callback::dm.getEnvKeys
-      source_path:
-        type: String
-        required: false
-        default:
-      target_path:
-        type: String
-        required: false
-        default: 
     opt:
       dry-run:
         type: Boolean
@@ -31,12 +23,7 @@ task:
     settings: {}
   do:
     - { event: 'origin startup' }
-    -
-      call: dm.makeSync
-      args:
-        env_key: (({}.args.env_key))
-        source_path: (({}.args.source_path))
-        target_path: (({}.args.target_path))
+    - { call: dm.makeSync, args: { env_key: "(({}.args.env_key))" } }
     - { event: 'origin windup' }
 ```
 [```config/proc/sync.yml```](../config/proc/sync.yml)

@@ -12,7 +12,6 @@
 
 #### Procedimientos
 
-* [access](docs/auto_generated--proc--access.md)
 * [composer](docs/auto_generated--proc--composer.md)
 * [curl](docs/auto_generated--proc--curl.md)
 * [db.access](docs/auto_generated--proc--db.access.md)
@@ -52,7 +51,6 @@
 * [restart](docs/auto_generated--proc--restart.md)
 * [run](docs/auto_generated--proc--run.md)
 * [send.mail.test](docs/auto_generated--proc--send.mail.test.md)
-* [service.exec](docs/auto_generated--proc--service.exec.md)
 * [sh](docs/auto_generated--proc--sh.md)
 * [share](docs/auto_generated--proc--share.md)
 * [sync](docs/auto_generated--proc--sync.md)

@@ -1,5 +1,27 @@
 dm:
-  checkEnvDbSync:
+  checkEnv:
+    collection: false
+    args:
+      type:
+        required: true
+        type: String
+        defaultValue: sync
+      source_env:
+        required: true
+        type: String
+        defaultValue:
+      source_extra_info:
+        required: true
+        type: String
+        defaultValue: ''
+      target_env:
+        required: true
+        type: String
+        defaultValue:
+      target_extra_info:
+        required: true
+        type: String
+        defaultValue: ''
   getEnvKeys:
   getHookEventKeys:
   getCustomScriptNames:
@@ -209,6 +231,17 @@ dm:
         required: true
         type: String
         defaultValue:
+  makeExec:
+    collection: false
+    args:
+      cmd:
+        required: true
+        type: String
+        defaultValue:
+      access:
+        required: false
+        type: Object
+        defaultValue: {}
   makeSync:
     collection: false
     args:
@@ -216,18 +249,10 @@ dm:
         required: true
         type: String
         defaultValue:
-      source_path:
-        required: true
-        type: String
-        defaultValue:
-      target_path:
-        required: false
-        type: String
-        defaultValue:
       rsync_options:
         required: false
         type: String
-        defaultValue: "-O -avzc --no-o --no-g --no-perms"
+        defaultValue: "-O -avzc --no-o --no-g --no-perms -e \"ssh -o StrictHostKeyChecking=no\""
   makeTrace:
     collection: false
     args:

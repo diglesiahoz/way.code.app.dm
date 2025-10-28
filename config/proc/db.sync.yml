@@ -22,7 +22,13 @@ task:
   do:
     - { event: 'origin startup' }
     - { event: 'target startup' }
-    - { call: 'dm.checkEnvDbSync' }
+    - call: 'dm.checkEnv'
+      args:
+        type: sync
+        source_env: (({origin}._env))
+        source_extra_info: "{(({origin}.appsetting.service.db.host.sv))/(({origin}.appsetting.service.db.name))}"
+        target_env: (({target}._env))
+        target_extra_info: "{(({target}.appsetting.service.db.host.sv))/(({target}.appsetting.service.db.name))}"
     -
       call: dm.makeDbExport
       args:
