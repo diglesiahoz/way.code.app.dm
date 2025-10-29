@@ -78,6 +78,10 @@ RUN phpdismod -s cli xdebug \
 RUN phpdismod -s fpm xdebug \
  && rm -f /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/conf.d/*xdebug*.ini
 
+ADD ./templates/php-cli.ini.conf /tmp/php-cli.ini.conf
+RUN cat /tmp/php-cli.ini.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/cli/php.ini
+RUN rm /tmp/php-cli.ini.conf
+
 ADD ./templates/php-fpm.ini.conf /tmp/php-fpm.ini.conf
 RUN cat /tmp/php-fpm.ini.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini
 RUN rm /tmp/php-fpm.ini.conf
