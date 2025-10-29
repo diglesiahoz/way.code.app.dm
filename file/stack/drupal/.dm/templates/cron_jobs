@@ -1,4 +1,4 @@
 SHELL=/bin/bash
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
-*/5 * * * * /opt/sh/common.sh cron_jobs ((appsetting.service.www.domain)) --log
+*/5 * * * * ((appsetting.service.www.target))/private/sh/common.sh cron_jobs ((appsetting.service.www.domain))
 # An empty line is required at the end of this file for a valid cron file.
