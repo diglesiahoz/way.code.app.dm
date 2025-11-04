@@ -53,6 +53,7 @@
 * [send.mail.test](docs/auto_generated--proc--send.mail.test.md)
 * [sh](docs/auto_generated--proc--sh.md)
 * [share](docs/auto_generated--proc--share.md)
+* [ssl.check](docs/auto_generated--proc--ssl.check.md)
 * [sync](docs/auto_generated--proc--sync.md)
 * [test](docs/auto_generated--proc--test.md)
 * [trace](docs/auto_generated--proc--trace.md)
