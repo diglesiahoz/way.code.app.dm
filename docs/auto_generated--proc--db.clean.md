@@ -1,7 +1,7 @@
 ### db.clean
 
 ```yml
-help: Limpia de tablas la base de datos
+help: Elimina tablas de base de datos
 example:
 - (({}.tmp.proc.sig))
 task:
@@ -11,9 +11,17 @@ task:
     opt: {}
   do:
     - { event: 'origin startup' }
+    - call: dm.checkEnv
+      args:
+        type: exec
+        source_env: (({origin}._env))
+        source_extra_info: "{(({origin}.appsetting.service.db.host.sv))/(({origin}.appsetting.service.db.name))}"
+        target_env: (({origin}._env))
+        target_extra_info: "{(({origin}.appsetting.service.db.host.sv))/(({origin}.appsetting.service.db.name))}"
     -
       call: dm.makeDbClean
       args:
+        leap_from: (({origin}.appsetting.service.db.leap_from))
         from_service: (({origin}._parent_key))-db
         base_image: (({origin}.appsetting.service.db.base_image))
         host: (({origin}.appsetting.service.db.host.sv))

@@ -82,6 +82,10 @@ dm:
   makeDbClean:
     collection: false
     args:
+      leap_from:
+        required: false
+        type: Object
+        defaultValue: {}
       from_service:
         required: true
         type: String

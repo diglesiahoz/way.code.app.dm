@@ -23,8 +23,7 @@ task:
         default: false
   do:
     - { event: 'origin startup' }
-    - { event: 'target startup' }
-    - call: 'dm.checkEnv'
+    - call: dm.checkEnv
       args:
         type: sync
         source_env: (({origin}._env))
@@ -44,6 +43,7 @@ task:
         pass: (({origin}.appsetting.service.db.pass))
         excluded_tables: (({origin}.appsetting.service.db.conf.db-export.excluded-tables))
         backup_db_path: (({origin}.appsetting.path.backup_db))
+    - { event: 'target before_db_import' }
     -
       call: dm.makeDbImport
       args:
@@ -57,7 +57,6 @@ task:
         pass: (({target}.appsetting.service.db.pass))
         backup_db_path: (({target}.appsetting.path.backup_db))
         file: (({}.out.data.file))
-    - { event: 'origin windup' }
-    - { event: 'target startup' }
+    - { event: 'target windup' }
 ```
 [```config/proc/db.sync.yml```](../config/proc/db.sync.yml)
