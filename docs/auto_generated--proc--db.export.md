@@ -3,9 +3,7 @@
 ```yml
 help: Exporta base de datos
 example:
-- (({}.tmp.proc.sig))
-- (({}.tmp.proc.sig)) --tag test
-- (({}.tmp.proc.sig)) --lock-tables
+- (({}.tmp.proc.sig)) --tag drupal10 --lock
 task:
   require:
     config:
@@ -23,7 +21,7 @@ task:
       call: dm.makeDbExport
       args:
         leap_from: (({origin}.appsetting.service.db.leap_from))
-        env_key: (({origin}._env))
+        env_key: (({origin}._config_name))
         from_service: (({origin}._parent_key))-db
         base_image: (({origin}.appsetting.service.db.base_image))
         host: (({origin}.appsetting.service.db.host.sv))

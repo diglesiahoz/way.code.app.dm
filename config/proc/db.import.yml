@@ -1,8 +1,7 @@
 help: Importa base de datos
 example:
-- (({}.tmp.proc.sig))
-- (({}.tmp.proc.sig)) --last --truncate
-- (({}.tmp.proc.sig)) --truncate --file @dm.test.drupal.local---dm_test_drupal---2025-02-25---02:30:00.sql.gz
+- (({}.tmp.proc.sig)) --last
+- (({}.tmp.proc.sig)) --file @dm.test.drupal.local---dm_test_drupal---2025-02-25---02:30:00.sql.gz
 
 task:
   require:
@@ -21,7 +20,7 @@ task:
       call: dm.makeDbImport
       args:
         leap_from: (({origin}.appsetting.service.db.leap_from))
-        env_key: (({origin}._env))
+        env_key: (({origin}._config_name))
         from_service: (({origin}._parent_key))-db
         base_image: (({origin}.appsetting.service.db.base_image))
         host: (({origin}.appsetting.service.db.host.sv))
