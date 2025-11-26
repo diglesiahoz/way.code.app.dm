@@ -235,6 +235,13 @@ dm:
         required: true
         type: String
         defaultValue:
+  makeDbSync:
+    collection: false
+    args:
+      env_key:
+        required: true
+        type: String
+        defaultValue:
   makeExec:
     collection: false
     args:
