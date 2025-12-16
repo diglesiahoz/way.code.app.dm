@@ -1,5 +1,5 @@
 networks:
-  dm_proxy:
+  dmproxy:
     external: true
 
 volumes: (({}.var.volumes))

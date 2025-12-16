@@ -1,6 +1,0 @@
-# check=skip=InvalidDefaultArgInFrom
-
-ARG APPSETTING_SERVICE_SONARQUBE_BASE_IMAGE
-FROM $APPSETTING_SERVICE_SONARQUBE_BASE_IMAGE
-
-(({}.var.extra_commands))

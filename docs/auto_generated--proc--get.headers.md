@@ -1,7 +1,9 @@
+### get.headers
+
+```yml
 help: Ejecuta comando curl
 example:
 - (({}.tmp.proc.sig)) /my-url
-
 task:
   require:
     config:
@@ -17,7 +19,8 @@ task:
     -
       call: exec
       args:
-        cmd: docker exec --user (({}.user.username)) -it (({origin}._parent_key))-www curl -kIs (({origin}.appsetting.service.www.curl))(({}.args.rel_url))
+        cmd: docker exec --user (({}.user.username)) -it (({origin}.appsetting.service.www.host)) curl -kIs (({origin}.appsetting.service.www.curl))(({}.args.rel_url))
         out: true
     - { event: 'origin windup' }
- 
+```
+[```config/proc/get.headers.yml```](../config/proc/get.headers.yml)

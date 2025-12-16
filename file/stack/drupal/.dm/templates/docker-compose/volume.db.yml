@@ -1,2 +1,2 @@
 db_data:
-  name: ${COMPOSE_PROJECT_NAME}-db_data
+  name: ${APPSETTING_SERVICE_DB_HOST}_data

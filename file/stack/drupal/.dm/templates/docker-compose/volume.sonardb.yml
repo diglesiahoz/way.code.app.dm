@@ -1,0 +1,2 @@
+sonardb_data:
+  name: ${APPSETTING_SERVICE_SONARDB_HOST}_data

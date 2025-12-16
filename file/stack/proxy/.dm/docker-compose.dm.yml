@@ -2,8 +2,8 @@
 # https://knplabs.com/en/blog/how-to-handle-https-with-docker-compose-and-mkcert-for-local-development/
 
 networks:
-  dm_proxy:
+  dmproxy:
     driver: bridge
     name: ${COMPOSE_PROJECT_NAME} 
 
-services: (({}.var.services))
+services: (({}.var.services_dm))

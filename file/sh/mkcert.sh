@@ -2,7 +2,7 @@
 
 EXEC="docker exec -it -u $USER way_code-app /usr/bin/node $WAY_CODE_APP_ROOT"
 
-CERTS_PATH=`$EXEC @dm.proxy.local.._pwd -o | jq -r 'map(."_pwd") | join(" ")'`
+CERTS_PATH=`$EXEC @dm.proxy.local.._root -o | jq -r 'map(."_root") | join(" ")'`
 
 a=$($EXEC @*..appsetting.wildcard_host -o | jq -r 'map(to_entries | map(.value)) | flatten | join(" ")' 2>/dev/null)
 if [ $? = 1 ]
@@ -17,4 +17,4 @@ do
 done
 
 mkcert -install
-mkcert -cert-file ${CERTS_PATH}/certs/dm--cert.pem -key-file ${CERTS_PATH}/certs/dm--key.pem ${ALL_DOMAINS}
+mkcert -cert-file ${CERTS_PATH}/.dm/certs/dm--cert.pem -key-file ${CERTS_PATH}/.dm/certs/dm--key.pem ${ALL_DOMAINS}

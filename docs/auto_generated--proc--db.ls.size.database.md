@@ -18,7 +18,7 @@ task:
       call: exec
       args:
         message: ""
-        cmd: docker exec -i -e MYSQL_PWD=(({origin}.appsetting.service.db.pass)) (({origin}._parent_key))-db (({}.var.db_exec)) -h (({origin}.appsetting.service.db.host.sv)) -u (({origin}.appsetting.service.db.user)) -B -e "SELECT table_schema AS \"Database\",ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS \"Size (MB)\" FROM information_schema.TABLES GROUP BY table_schema;" | tail -n +2 | xargs printf "%-25s %s\n"
+        cmd: docker exec -i -e MYSQL_PWD=(({origin}.appsetting.service.db.pass)) (({origin}._tag))-db (({}.var.db_exec)) -h (({origin}.appsetting.service.db.host)) -u (({origin}.appsetting.service.db.user)) -B -e "SELECT table_schema AS \"Database\",ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS \"Size (MB)\" FROM information_schema.TABLES GROUP BY table_schema;" | tail -n +2 | xargs printf "%-25s %s\n"
         out: true
     - { event: 'origin windup' }
 ```

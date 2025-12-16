@@ -9,11 +9,6 @@ then
   echo  "Usage: $(dirname $(test -L "$0" && readlink "$0" || echo "$0"))/common.sh deploy [--dry-run|--log|--force|--fast]"
   exit 1
 else
-  if [ -z $APPSETTING_COMPILE_MAPPING ]
-  then
-    error "You must set the \"APPSETTING_COMPILE_MAPPING\" variable in the environment configuration file (.env)"
-  fi
-
   cd $DRUPAL_ROOT
 
   if [ "$OPT_FAST" = true ]
@@ -46,14 +41,17 @@ else
     hook "post__install"
     hook "commit/$CURRENT_COMMIT/post__install"
 
-    hook "pre__compile"
-    hook "commit/$CURRENT_COMMIT/pre__compile"
+    if [ -z $APPSETTING_COMPILE_MAPPING ] && [ "$APPSETTING_COMPILE_MAPPING" != "" ]
+    then
+      hook "pre__compile"
+      hook "commit/$CURRENT_COMMIT/pre__compile"
 
-    O=$($CURRENT_SCRIPT_PATH/common.sh compile $APPSETTING_COMPILE_MAPPING $OPTS)
-    write_to_log "$O"
+      O=$($CURRENT_SCRIPT_PATH/common.sh compile $APPSETTING_COMPILE_MAPPING $OPTS)
+      write_to_log "$O"
 
-    hook "post__compile"
-    hook "commit/$CURRENT_COMMIT/post__compile"
+      hook "post__compile"
+      hook "commit/$CURRENT_COMMIT/post__compile"
+    fi
 
   else
 
@@ -114,14 +112,17 @@ else
     hook "post__install"
     hook "commit/$CURRENT_COMMIT/post__install"
 
-    hook "pre__compile"
-    hook "commit/$CURRENT_COMMIT/pre__compile"
+    if [ -z $APPSETTING_COMPILE_MAPPING ] && [ "$APPSETTING_COMPILE_MAPPING" != "" ]
+    then
+      hook "pre__compile"
+      hook "commit/$CURRENT_COMMIT/pre__compile"
 
-    O=$($CURRENT_SCRIPT_PATH/common.sh compile $APPSETTING_COMPILE_MAPPING $OPTS)
-    write_to_log "$O"
+      O=$($CURRENT_SCRIPT_PATH/common.sh compile $APPSETTING_COMPILE_MAPPING $OPTS)
+      write_to_log "$O"
 
-    hook "post__compile"
-    hook "commit/$CURRENT_COMMIT/post__compile"
+      hook "post__compile"
+      hook "commit/$CURRENT_COMMIT/post__compile"
+    fi
 
     hook "pre__fixperm"
     hook "commit/$CURRENT_COMMIT/pre__fixperm"

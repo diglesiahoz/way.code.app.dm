@@ -1,19 +1,25 @@
 solr:
-  container_name: ${COMPOSE_PROJECT_NAME}-solr
+  container_name: ${APPSETTING_SERVICE_SOLR_HOST}
+  hostname: ${APPSETTING_SERVICE_SOLR_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/solr
     args:
       APPSETTING_SERVICE_SOLR_BASE_IMAGE: ${APPSETTING_SERVICE_SOLR_BASE_IMAGE}
+  mem_limit: 1g
+  mem_reservation: 512m
+  memswap_limit: 1g
+  environment:
+    SOLR_JAVA_MEM: "-Xms512m -Xmx768m" # 🔥 JVM Limits
   volumes:
     - solr_data:/var/solr
   command:
     - solr-precreate
-    - ${APPSETTING_SERVICE_SOLR_HOST_SV}
+    - ${APPSETTING_SERVICE_SOLR_HOST}
   labels:
     - "traefik.enable=true"
-    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_solr.tls=true"
-    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_solr.rule=Host(`${APPSETTING_SERVICE_SOLR_HOST_UI}`)"
-    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_solr.loadbalancer.server.port=8983"
+    - "traefik.http.routers.${APPSETTING_SERVICE_SOLR_HOST}.tls=true"
+    - "traefik.http.routers.${APPSETTING_SERVICE_SOLR_HOST}.rule=${APPSETTING_PROXY_SERVICE_SOLR_RULE_HOST}"
+    - "traefik.http.services.${APPSETTING_SERVICE_SOLR_HOST}.loadbalancer.server.port=8983"
   networks:
-    - dm_proxy
+    - dmproxy

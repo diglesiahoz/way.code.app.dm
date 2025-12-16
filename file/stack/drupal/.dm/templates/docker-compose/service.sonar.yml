@@ -1,0 +1,25 @@
+# Login:
+# 1. admin/admin
+# 2. admin/Drupal$Sonar1
+sonar:
+  container_name: ${APPSETTING_SERVICE_SONAR_HOST}
+  hostname: ${APPSETTING_SERVICE_SONAR_HOST}
+  build:
+    context: .
+    dockerfile: ./templates/dockerfile/sonar
+    args:
+      APPSETTING_SERVICE_SONAR_BASE_IMAGE: ${APPSETTING_SERVICE_SONAR_BASE_IMAGE}
+  mem_limit: 2g
+  memswap_limit: 2g
+  mem_reservation: 1g
+  cpus: 1.5
+  environment:
+    SONAR_JDBC_URL: jdbc:postgresql://${APPSETTING_SERVICE_SONARDB_HOST}:5432/${APPSETTING_SERVICE_SONARDB_NAME}
+    SONAR_JDBC_USERNAME: ${APPSETTING_SERVICE_SONARDB_USER}
+    SONAR_JDBC_PASSWORD: ${APPSETTING_SERVICE_SONARDB_PASS}
+    SONAR_JAVA_OPTS: "-Xms512m -Xmx1g" # 🔥 JVM Limits
+  volumes:
+    - sonar_data:/opt/sonar/data
+    - sonar_extensions:/opt/sonar/extensions
+    - sonar_logs:/opt/sonar/logs
+  ports: [ "9000:9000" ]

@@ -16,6 +16,6 @@ task:
   do:
     - { event: 'origin startup' }
     - { call: dm.loadRunEnv }
-    - { call: exec, args: { cmd: "(({}.var.env)); [ -f (({origin}.appsetting.root))/.dm/custom/sh/(({}.args.script_name)) ] && (({origin}.appsetting.root))/.dm/custom/sh/(({}.args.script_name)) (({}.args._))", out: true } }
+    - { call: exec, args: { cmd: "(({}.var.env)); [ -f (({origin}._root))/.dm/custom/sh/(({}.args.script_name)) ] && (({origin}._root))/.dm/custom/sh/(({}.args.script_name)) (({}.args._))", out: true } }
     - { event: 'origin windup' }
 

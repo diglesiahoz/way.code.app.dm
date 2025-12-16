@@ -31,7 +31,7 @@ task:
           -
             call: exec
             args:
-              cmd: docker exec -it --user (({}.user.username)) (({origin}.appsetting.tag))-www bash -c "composer reinstall \$(jq -r \".extra.patches | keys[]\" composer.json | xargs)"
+              cmd: docker exec -it --user (({}.user.username)) (({origin}.appsetting.service.www.host)) bash -c "composer reinstall \$(jq -r \".extra.patches | keys[]\" composer.json | xargs)"
               out: true
         false:
           - { call: log, args: { message: remote, type: success}}

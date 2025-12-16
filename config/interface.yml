@@ -26,6 +26,13 @@ dm:
   getHookEventKeys:
   getCustomScriptNames:
   getNetworks:
+  hookLibLoadConfig:
+    collection: false
+    args:
+      config:
+        required: true
+        type: Object
+        defaultValue: {}
   init:
     collection: false
     args:
@@ -253,6 +260,25 @@ dm:
         required: false
         type: Object
         defaultValue: {}
+  makeSonarScan:
+    collection: false
+    args:
+      user:
+        required: true
+        type: String
+        defaultValue:
+      pass:
+        required: true
+        type: String
+        defaultValue:
+      token:
+        required: true
+        type: String
+        defaultValue:
+      project_settings:
+        required: true
+        type: Array
+        defaultValue: []
   makeSync:
     collection: false
     args:

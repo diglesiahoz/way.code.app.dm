@@ -15,7 +15,7 @@ task:
     -
       call: exec
       args:
-        cmd: docker exec --user (({}.user.username)) -it (({origin}._parent_key))-www printenv | sort
+        cmd: docker exec --user (({}.user.username)) -it (({origin}.appsetting.service.www.host)) printenv | sort
         out: true
     - { event: 'origin windup' }
 ```

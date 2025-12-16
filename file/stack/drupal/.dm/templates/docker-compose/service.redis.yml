@@ -1,5 +1,6 @@
 redis:
-  container_name: ${COMPOSE_PROJECT_NAME}-redis
+  container_name: ${APPSETTING_SERVICE_REDIS_HOST}
+  hostname: ${APPSETTING_SERVICE_REDIS_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/redis

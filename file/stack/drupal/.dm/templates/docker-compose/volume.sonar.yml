@@ -1,0 +1,6 @@
+sonar_data:
+  name: ${APPSETTING_SERVICE_SONAR_HOST}_data
+sonar_extensions:
+  name: ${APPSETTING_SERVICE_SONAR_HOST}_extensions
+sonar_logs:
+  name: ${APPSETTING_SERVICE_SONAR_HOST}_logs

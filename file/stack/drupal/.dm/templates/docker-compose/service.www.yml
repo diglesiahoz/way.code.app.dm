@@ -1,6 +1,6 @@
 www:
-  container_name: ${COMPOSE_PROJECT_NAME}-www
-  hostname: ${COMPOSE_PROJECT_NAME}-www
+  container_name: ${APPSETTING_SERVICE_WWW_HOST}
+  hostname: ${APPSETTING_SERVICE_WWW_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/www

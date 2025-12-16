@@ -1,6 +1,6 @@
 www:
-  container_name: ${COMPOSE_PROJECT_NAME}-www
-  hostname: ${COMPOSE_PROJECT_NAME}-www
+  container_name: ${APPSETTING_SERVICE_WWW_HOST}
+  hostname: ${APPSETTING_SERVICE_WWW_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/www
@@ -39,14 +39,14 @@ www:
     timeout: 2m0s
   labels:
     - "traefik.enable=true"
-    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_www.tls=true"
-    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_www.rule=Host(`${APPSETTING_SERVICE_WWW_HOST_UI}`)"
-    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_www.entrypoints=websecure"
-    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_www.loadbalancer.server.port=443"
-    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_www.loadbalancer.server.port=80"
     - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_www.middlewares=redirect-to-https"
+    - "traefik.http.routers.${APPSETTING_SERVICE_WWW_HOST}.tls=true"
+    - "traefik.http.routers.${APPSETTING_SERVICE_WWW_HOST}.rule=${APPSETTING_PROXY_SERVICE_WWW_RULE_HOST}"
+    - "traefik.http.routers.${APPSETTING_SERVICE_WWW_HOST}.entrypoints=websecure"
+    - "traefik.http.routers.${APPSETTING_SERVICE_WWW_HOST}.middlewares=redirect-to-https"
+    - "traefik.http.services.${APPSETTING_SERVICE_WWW_HOST}.loadbalancer.server.port=443"
+    - "traefik.http.services.${APPSETTING_SERVICE_WWW_HOST}.loadbalancer.server.port=80"
   extra_hosts:
     - "host.docker.internal:host-gateway"
   networks:
-    - dm_proxy
+    - dmproxy

@@ -1,5 +1,6 @@
 pma:
-  container_name: ${COMPOSE_PROJECT_NAME}-pma
+  container_name: ${APPSETTING_SERVICE_PMA_HOST}
+  hostname: ${APPSETTING_SERVICE_PMA_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/pma
@@ -9,7 +10,7 @@ pma:
     - db
   environment:
     MYSQL_ROOT_PASSWORD: root
-    PMA_HOST: ${COMPOSE_PROJECT_NAME}-db
+    PMA_HOST: ${APPSETTING_SERVICE_DB_HOST}
     PMA_USER: ${APPSETTING_SERVICE_DB_USER}
     PMA_PASSWORD: ${APPSETTING_SERVICE_DB_PASS}
   depends_on:

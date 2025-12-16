@@ -1,0 +1,15 @@
+sonardb:
+  container_name: ${APPSETTING_SERVICE_SONARDB_HOST}
+  hostname: ${APPSETTING_SERVICE_SONARDB_HOST}
+  build:
+    context: .
+    dockerfile: ./templates/dockerfile/sonardb
+    args:
+      APPSETTING_SERVICE_SONARDB_BASE_IMAGE: ${APPSETTING_SERVICE_SONARDB_BASE_IMAGE}
+  environment:
+    POSTGRES_USER: ${APPSETTING_SERVICE_SONARDB_USER}
+    POSTGRES_PASSWORD: ${APPSETTING_SERVICE_SONARDB_PASS}
+    POSTGRES_DB: ${APPSETTING_SERVICE_SONARDB_NAME}
+  volumes:
+    - ./templates/entrypoint/sonardb.init.sql:/docker-entrypoint-initdb.d/docker-entrypoint.sonardb.init.sql
+    - sonardb_data:/var/lib/postgresql/data

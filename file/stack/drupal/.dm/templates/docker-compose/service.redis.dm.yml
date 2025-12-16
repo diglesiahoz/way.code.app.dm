@@ -1,11 +1,12 @@
 redis:
-  container_name: ${COMPOSE_PROJECT_NAME}-redis
+  container_name: ${APPSETTING_SERVICE_REDIS_HOST}
+  hostname: ${APPSETTING_SERVICE_REDIS_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/redis
     args:
       APPSETTING_SERVICE_REDIS_BASE_IMAGE: ${APPSETTING_SERVICE_REDIS_BASE_IMAGE}
   labels:
-    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_db.loadbalancer.server.port=6379"
+    - "traefik.http.services.${APPSETTING_SERVICE_REDIS_HOST}.loadbalancer.server.port=6379"
   networks:
-    - dm_proxy
+    - dmproxy

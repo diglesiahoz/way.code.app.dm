@@ -1,6 +1,6 @@
 next:
-  container_name: ${COMPOSE_PROJECT_NAME}-next
-  hostname: ${COMPOSE_PROJECT_NAME}-next
+  container_name: ${APPSETTING_SERVICE_NEXT_HOST}
+  hostname: ${APPSETTING_SERVICE_NEXT_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/next
@@ -24,10 +24,10 @@ next:
     timeout: 2m0s
   labels:
     - "traefik.enable=true"
-    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_react.tls=true"
-    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}_react.rule=Host(`${APPSETTING_SERVICE_NEXT_HOST_UI}`)"
-    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_react.loadbalancer.server.port=3000"
+    - "traefik.http.routers.${APPSETTING_SERVICE_NEXT_HOST}.tls=true"
+    - "traefik.http.routers.${APPSETTING_SERVICE_NEXT_HOST}.rule=${APPSETTING_PROXY_SERVICE_NEXT_RULE_HOST}"
+    - "traefik.http.services.${APPSETTING_SERVICE_NEXT_HOST}.loadbalancer.server.port=3000"
   extra_hosts:
     - "host.docker.internal:host-gateway"
   networks:
-    - dm_proxy
+    - dmproxy

@@ -9,9 +9,9 @@ then
   echo  "Usage: $(dirname $(test -L "$0" && readlink "$0" || echo "$0"))/common.sh memcached [command] [--dry-run|--log|--force]"
   exit 1
 else
-  if [ "$APPSETTING_SERVICE_MEMCACHED_HOST_SV" != "" ]
+  if [ "$APPSETTING_SERVICE_MEMCACHED_HOST" != "" ]
   then
-    MEMCACHED_HOST=$APPSETTING_SERVICE_MEMCACHED_HOST_SV
+    MEMCACHED_HOST=$APPSETTING_SERVICE_MEMCACHED_HOST
   else
     MEMCACHED_HOST="127.0.0.1"
   fi

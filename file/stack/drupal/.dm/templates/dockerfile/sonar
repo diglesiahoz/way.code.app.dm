@@ -1,0 +1,6 @@
+# check=skip=InvalidDefaultArgInFrom
+
+ARG APPSETTING_SERVICE_SONAR_BASE_IMAGE
+FROM $APPSETTING_SERVICE_SONAR_BASE_IMAGE
+
+(({}.var.extra_commands))

@@ -1,5 +1,6 @@
 proxy:
-  container_name: ${COMPOSE_PROJECT_NAME}-proxy
+  container_name: ${APPSETTING_SERVICE_PROXY_HOST}
+  hostname: ${APPSETTING_SERVICE_PROXY_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/proxy
@@ -16,8 +17,8 @@ proxy:
     - ./certs:/etc/certs:ro
   labels:
     - "traefik.enable=true"
-    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.rule=Host(`${APPSETTING_SERVICE_PROXY_HOST}`)"
-    - "traefik.http.routers.${COMPOSE_PROJECT_NAME}.entrypoints=web"
+    - "traefik.http.routers.${APPSETTING_SERVICE_PROXY_HOST}.rule=${APPSETTING_PROXY_SERVICE_PROXY_RULE_HOST}"
+    - "traefik.http.routers.${APPSETTING_SERVICE_PROXY_HOST}.entrypoints=web"
     - "traefik.port=8080"
   networks:
     - ${COMPOSE_PROJECT_NAME}

@@ -1,6 +1,6 @@
 next:
-  container_name: ${COMPOSE_PROJECT_NAME}-next
-  hostname: ${COMPOSE_PROJECT_NAME}-next
+  container_name: ${APPSETTING_SERVICE_NEXT_HOST}
+  hostname: ${APPSETTING_SERVICE_NEXT_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/next

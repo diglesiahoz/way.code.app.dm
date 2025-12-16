@@ -106,6 +106,7 @@ then
 fi
 ARGS=$(echo $ARGS | xargs -n1 | grep -v "$TO_RUN" | xargs)
 
+# Establece "LOG_FILE"
 if [ "$APPSETTING_SERVICE_WWW_TARGET" != "" ]
 then
   LOG_DIR=$APPSETTING_SERVICE_WWW_TARGET/private/log
@@ -115,13 +116,37 @@ fi
 [ ! -d $LOG_DIR ] && error "Not found log dir: $LOG_DIR" && exit 1
 LOG_FILE=$LOG_DIR/$TO_RUN.log
 
-if [ "$APPSETTING_SERVICE_WWW_TARGET" != "" ]
+# Carga configuración de entorno
+if [ -f $CURRENT_SCRIPT_PATH/.env ]
 then
-  DRUPAL_ROOT=$APPSETTING_SERVICE_WWW_TARGET/drupal
+  ENV_SOURCE_DIR=$CURRENT_SCRIPT_PATH
 else
-  DRUPAL_ROOT=$(dirname $(dirname $CURRENT_SCRIPT_PATH))/drupal
+  ENV_SOURCE_DIR=$(dirname $(dirname $CURRENT_SCRIPT_PATH))
+fi
+if [ -f $ENV_SOURCE_DIR/.env ]
+then
+  set -a
+  source $ENV_SOURCE_DIR/.env
+  set +a
+  log "Loaded env file: $ENV_SOURCE_DIR/.env"
+else
+  error "Could not load env file from: $ENV_SOURCE_DIR/.env"
+fi
+
+# Establece "DRUPAL_ROOT"
+if [ "$APPSETTING_DRUPAL_ROOT" != "" ]
+then
+  DRUPAL_ROOT=$APPSETTING_DRUPAL_ROOT
+else
+  if [ "$APPSETTING_SERVICE_WWW_TARGET" != "" ]
+  then
+    DRUPAL_ROOT=$APPSETTING_SERVICE_WWW_TARGET/drupal
+  else
+    DRUPAL_ROOT=$(dirname $(dirname $CURRENT_SCRIPT_PATH))/drupal
+  fi
 fi
 [ ! -d $DRUPAL_ROOT ] && error "Not found drupal root: $DRUPAL_ROOT" && exit 1
+
 
 REL_PATH_SITES=$(cd $DRUPAL_ROOT && sudo find . -maxdepth 2 -type d -name "sites" | xargs)
 if [ "$REL_PATH_SITES" = "" ]
@@ -187,21 +212,6 @@ fi
 if [ -f $CURRENT_SCRIPT_PATH/_$TO_RUN.sh ]
 then
   START_TIME=$(date +%s)
-  if [ -f $CURRENT_SCRIPT_PATH/.env ]
-  then
-    ENV_SOURCE_DIR=$CURRENT_SCRIPT_PATH
-  else
-    ENV_SOURCE_DIR=$(dirname $(dirname $CURRENT_SCRIPT_PATH))
-  fi
-  if [ -f $ENV_SOURCE_DIR/.env ]
-  then
-    set -a            
-    source $ENV_SOURCE_DIR/.env
-    set +a
-    log "Loaded env file: $ENV_SOURCE_DIR/.env"
-  else
-    error "Could not load env file from: $ENV_SOURCE_DIR/.env"
-  fi
   log_running "[$(date +"%Y-%m-%d %H:%M:%S")] Running: $CURRENT_SCRIPT_PATH/common.sh $TO_RUN $ARGS"
   hook "startup"
   . $CURRENT_SCRIPT_PATH/_$TO_RUN.sh $ARGS

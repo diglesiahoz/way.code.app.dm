@@ -1,5 +1,6 @@
 db:
-  container_name: ${COMPOSE_PROJECT_NAME}-db
+  container_name: ${APPSETTING_SERVICE_DB_HOST}
+  hostname: ${APPSETTING_SERVICE_DB_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/db
@@ -19,6 +20,6 @@ db:
     - ./templates/entrypoint/db.init.sql:/docker-entrypoint-initdb.d/docker-entrypoint.db.init.sql
     - db_data:/var/lib/mysql
   labels:
-    - "traefik.http.services.${COMPOSE_PROJECT_NAME}_db.loadbalancer.server.port=3306"
+    - "traefik.http.services.${APPSETTING_SERVICE_DB_HOST}.loadbalancer.server.port=3306"
   networks:
-    - dm_proxy
+    - dmproxy

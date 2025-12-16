@@ -48,7 +48,7 @@ RUN apt-get install -y jq
 
 # php:
 RUN LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE} \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-fpm \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-cli \
@@ -56,7 +56,6 @@ RUN apt-get install -y \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-xml \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-xmlrpc \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-soap \
-    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-opcache \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-zip \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-simplexml \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-mbstring \
@@ -68,9 +67,20 @@ RUN apt-get install -y \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-intl \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-bcmath \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-memcached \
+    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-redis \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-apcu \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-xdebug \
     libapache2-mod-php${APPSETTING_SERVICE_WWW_PHP_RELEASE}
+
+# php (opcache):
+RUN if apt-cache show php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-opcache >/dev/null 2>&1; then \
+      echo "Instalando php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-opcache desde apt" && \
+      apt-get update && \
+      apt-get install -y php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-opcache; \
+    else \
+      echo "Paquete php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-opcache no existe, habilitando Opcache integrado" && \
+      docker-php-ext-enable opcache || true; \
+    fi
 
 # php:
 RUN phpdismod -s cli xdebug \
@@ -130,6 +140,13 @@ ADD ./templates/cron_jobs /etc/cron.d/cron_jobs
 RUN chmod 0644 /etc/cron.d/cron_jobs
 RUN crontab -u $APPSETTING_USER /etc/cron.d/cron_jobs
 RUN /etc/init.d/cron start
+
+# sonar:
+RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.0.1.4817-linux-x64.zip && \
+    unzip sonar-scanner-cli-7.0.1.4817-linux-x64.zip && \
+    mv sonar-scanner-7.0.1.4817-linux-x64 /opt/sonar-scanner && \
+    rm sonar-scanner-cli-7.0.1.4817-linux-x64.zip
+ENV PATH="/opt/sonar-scanner/bin:${PATH}"
 
 # extra commands:
 (({}.var.extra_commands))

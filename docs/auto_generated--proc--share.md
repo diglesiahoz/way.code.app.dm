@@ -19,7 +19,7 @@ task:
     -
       call: exec
       args:
-        cmd: (({}.exec)) (({origin}._config_name)) exec ngrok http (({origin}._tag))-www
+        cmd: (({}.exec)) (({origin}._config_name)) exec ngrok http (({origin}.appsetting.service.www.host))
         out: true
     - { event: 'origin windup' }
 ```

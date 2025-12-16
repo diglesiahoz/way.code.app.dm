@@ -42,7 +42,7 @@ task:
               out: false
           - call: exec
             args:
-              cmd: docker volume rm "(({origin}.appsetting.tag))-db_data" 2>/dev/null
+              cmd: docker volume rm "(({origin}._tag))-db_data" 2>/dev/null
               out: false
           - label: Desplegando configuración
             call: dm.init
@@ -70,13 +70,6 @@ task:
       args:
         cmd: (({}.exec)) (({origin}._config_name)) make.drupal.install (({}.optSig))
         out: true
-    # Establece proyecto Git
-    - label: Estableciendo proyecto Git
-      call: exec
-      args:
-        cd: (({origin}.appsetting.root))
-        cmd: git init 2>/dev/null && git checkout -b develop && git add . && git config user.name 'dummy' && git config user.email 'dummy@dummy.org' && git commit -m "Initial commit" && git config --unset user.name && git config --unset user.email
-        out: false
     - { event: 'origin windup' }
 ```
 [```config/proc/make.stack.drupal.basic.yml```](../config/proc/make.stack.drupal.basic.yml)

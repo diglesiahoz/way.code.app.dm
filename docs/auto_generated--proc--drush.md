@@ -20,15 +20,10 @@ task:
   do:
     - { event: 'origin startup' }
     -
-      call: var
-      args:
-        key: command
-        value: --uri https://(({origin}.appsetting.service.www.host.ui)) (({}.args.command))
-    -
-      call: exec
-      args:
-        cmd: (({}.exec)) (({origin}._config_name)) exec (({origin}.appsetting.service.www.drupal.workdir))/vendor/bin/drush (({}.var.command))
-        out: true
+     call: exec
+     args:
+       cmd: (({}.exec)) (({origin}._config_name)) exec (({origin}.appsetting.service.www.drupal.workdir))/vendor/bin/drush --uri https://(({origin}.appsetting.service.www.domain)) (({}.args.command))
+       out: true
     - { event: 'origin windup' }
 ```
 [```config/proc/drush.yml```](../config/proc/drush.yml)
