@@ -1,4 +1,4 @@
-### ps.ll
+### ps
 
 ```yml
 help: Lista servicios
@@ -34,4 +34,4 @@ task:
               out: true  
     - { event: 'origin windup' }
 ```
-[```config/proc/ps.ll.yml```](../config/proc/ps.ll.yml)
+[```config/proc/ps.yml```](../config/proc/ps.yml)

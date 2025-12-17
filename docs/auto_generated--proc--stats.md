@@ -1,4 +1,4 @@
-### ps.stat
+### stats
 
 ```yml
 help: Muestra estadísticas de uso
@@ -17,4 +17,4 @@ task:
         out: true
     - { event: 'origin windup' }
 ```
-[```config/proc/ps.stat.yml```](../config/proc/ps.stat.yml)
+[```config/proc/stats.yml```](../config/proc/stats.yml)
