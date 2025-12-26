@@ -1,7 +1,7 @@
-### db.ls.conf
+### db.ls.size.tables
 
 ```yml
-help: Muestra configuración de base de datos
+help: Muestra tamaño de las tablas de la base de datos
 example:
 - (({}.tmp.proc.sig))
 task:
@@ -40,14 +40,14 @@ task:
     # ========
     # hook:
     #   call:
-    #     dm.db.ls.conf:
+    #     dm.db.ls.size.table:
     #       exec: ((server_access))
     -
       call: exec
       args:
         message: ""
-        cmd: (({}.var.signature)) -B -e "SHOW variables"
+        cmd: (({}.var.signature)) -B -e "SELECT table_name AS \"Table\",ROUND(((data_length + index_length) / 1024 / 1024), 2) AS \"Size (MB)\" FROM information_schema.TABLES WHERE table_schema = \"(({origin}.appsetting.service.db.name))\" ORDER BY (data_length + index_length);" | tail -n +2 | sort -u | xargs printf "%-50s %s\n"
         out: true
     - { event: 'origin windup' }
 ```
-[```config/proc/db.ls.conf.yml```](../config/proc/db.ls.conf.yml)
+[```config/proc/db.ls.size.tables.yml```](../config/proc/db.ls.size.tables.yml)

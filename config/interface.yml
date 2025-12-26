@@ -299,7 +299,7 @@ dm:
         type: Object
         defaultValue: {}
       # Nombre del log a mostrar
-      name: 
+      type: 
         required: false
         type: String
         defaultValue: ""

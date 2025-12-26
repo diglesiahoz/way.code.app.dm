@@ -1,4 +1,4 @@
-### db.ls.conf
+### db.ls.proc
 
 ```yml
 help: Muestra configuración de base de datos
@@ -40,14 +40,14 @@ task:
     # ========
     # hook:
     #   call:
-    #     dm.db.ls.conf:
+    #     dm.db.ls.proc:
     #       exec: ((server_access))
     -
       call: exec
       args:
         message: ""
-        cmd: (({}.var.signature)) -B -e "SHOW variables"
+        cmd: watch -n 0.5 "(({}.var.signature)) -B -e \"SHOW FULL PROCESSLIST\""
         out: true
     - { event: 'origin windup' }
 ```
-[```config/proc/db.ls.conf.yml```](../config/proc/db.ls.conf.yml)
+[```config/proc/db.ls.proc.yml```](../config/proc/db.ls.proc.yml)

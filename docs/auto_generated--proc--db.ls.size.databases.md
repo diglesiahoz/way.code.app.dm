@@ -1,7 +1,7 @@
-### db.ls.conf
+### db.ls.size.databases
 
 ```yml
-help: Muestra configuración de base de datos
+help: Muestra tamaño de bases de datos
 example:
 - (({}.tmp.proc.sig))
 task:
@@ -40,14 +40,14 @@ task:
     # ========
     # hook:
     #   call:
-    #     dm.db.ls.conf:
+    #     dm.db.ls.size.database:
     #       exec: ((server_access))
     -
       call: exec
       args:
         message: ""
-        cmd: (({}.var.signature)) -B -e "SHOW variables"
+        cmd: (({}.var.signature)) -B -e "SELECT table_schema AS \"Database\",ROUND(SUM(data_length + index_length) / 1024 / 1024, 2) AS \"Size (MB)\" FROM information_schema.TABLES GROUP BY table_schema ORDER BY SUM(data_length + index_length) DESC;" | tail -n +2 | xargs printf "%-25s %s\n"
         out: true
     - { event: 'origin windup' }
 ```
-[```config/proc/db.ls.conf.yml```](../config/proc/db.ls.conf.yml)
+[```config/proc/db.ls.size.databases.yml```](../config/proc/db.ls.size.databases.yml)

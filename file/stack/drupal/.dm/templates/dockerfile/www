@@ -148,8 +148,20 @@ RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-s
     rm sonar-scanner-cli-7.0.1.4817-linux-x64.zip
 ENV PATH="/opt/sonar-scanner/bin:${PATH}"
 
+# node:
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
+    && export NVM_DIR="/root/.nvm" \
+    && . "$NVM_DIR/nvm.sh" \
+    && nvm install 18 \
+    && mkdir -p /usr/local/node \
+    && cp -r $NVM_DIR/versions/node/$(nvm version)/* /usr/local/node
+ENV PATH=/usr/local/node/bin:$PATH
+
 # extra commands:
 (({}.var.extra_commands))
+
+# home permission:
+RUN chown $APPSETTING_USER:$APPSETTING_USER -R /home/$APPSETTING_USER/.bashrc
 
 # build info:
 RUN echo "Built on $(date)" > /build.log

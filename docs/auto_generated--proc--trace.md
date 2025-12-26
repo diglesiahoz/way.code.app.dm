@@ -8,8 +8,9 @@ task:
   require:
     config:
       - .*(\.local|\.dev|\.test|\.pre|\.stage|\.prod) origin
-    opt:
-      name:
+    args:
+      type:
+        required: false
         type: String
         default:
   do:
@@ -17,7 +18,7 @@ task:
     -
       call: dm.makeTrace
       args:
-        name: (({}.opt.name))
+        type: (({}.args.type))
     - { event: 'origin windup' }
 ```
 [```config/proc/trace.yml```](../config/proc/trace.yml)

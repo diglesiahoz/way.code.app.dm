@@ -24,7 +24,7 @@ task:
           -
             call: exec
             args:
-              cmd: docker ps -a --filter name=^/(({}.args.filter))
+              cmd: docker ps --filter name=^/(({}.args.filter))
               out: true  
         false:
           -

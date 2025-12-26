@@ -1,4 +1,4 @@
-### log
+### logs
 
 ```yml
 help: Muestra mensajes de depuración de todos los servicios
@@ -19,4 +19,4 @@ task:
         out: true
     - { event: 'origin windup' }
 ```
-[```config/proc/log.yml```](../config/proc/log.yml)
+[```config/proc/logs.yml```](../config/proc/logs.yml)
