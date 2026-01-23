@@ -1,9 +1,3 @@
-# RECIPE:Instalar Drupal (desacoplado):
-# ```console
-# way @dm.test.drupal.headless.local make.stack.drupal.headless -fvy
-# ```
-# :RECIPE
-
 help: Crear nuevo sitio Drupal (desacoplado)
 example:
  - (({}.tmp.proc.sig))

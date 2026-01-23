@@ -1,9 +1,3 @@
-# RECIPE:Instalar Drupal (básico):
-# ```console
-# way @dm.test.drupal.local make.stack.drupal.basic -fvy
-# ```
-# :RECIPE
-
 help: Crear nuevo sitio Drupal (básico)
 example:
  - (({}.tmp.proc.sig))

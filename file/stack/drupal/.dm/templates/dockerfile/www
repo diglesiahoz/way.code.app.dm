@@ -1,9 +1,9 @@
 # check=skip=InvalidDefaultArgInFrom
 
 ARG APPSETTING_SERVICE_WWW_BASE_IMAGE
-FROM $APPSETTING_SERVICE_WWW_BASE_IMAGE
+FROM ${APPSETTING_SERVICE_WWW_BASE_IMAGE}
 
-# arg:
+# ---------- args ----------
 ARG APPSETTING_USER
 ARG APPSETTING_GID
 ARG APPSETTING_UID
@@ -11,58 +11,64 @@ ARG APPSETTING_SERVICE_WWW_WEBSERVER
 ARG APPSETTING_SERVICE_WWW_PHP_RELEASE
 ARG APPSETTING_SERVICE_WWW_COMPOSER_RELEASE
 
-# env:
-ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/Madrid"
+# ---------- env ----------
+ENV DEBIAN_FRONTEND=noninteractive \
+    TZ=Europe/Madrid
 
-# user:
 USER root
 
-# packages:
-RUN apt-get update
-RUN apt-get install -y software-properties-common
-RUN apt-get install -y --no-install-recommends
-RUN apt-get install -y sudo
-RUN apt-get install -y nano
-RUN apt-get install -y patch
-RUN apt-get install -y apt-utils
-RUN apt-get install -y iputils-ping
-RUN apt-get install -y apt-transport-https
-RUN apt-get install -y ca-certificates
-RUN update-ca-certificates
-RUN apt-get install -y curl
-RUN apt-get install -y net-tools
-RUN apt-get install -y git
-RUN apt-get install -y zip
-RUN apt-get install -y unzip
-RUN apt-get install -y mysql-client
-RUN apt-get install -y swaks
-RUN apt-get install -y sshpass
-RUN apt-get install -y rsync
-RUN apt-get install -y htop
-RUN apt-get install -y wget
-RUN apt-get install -y cron
-RUN apt-get install -y telnet
-RUN apt-get install -y bsdmainutils
-RUN apt-get install -y jq
-# RUN apt-get install -y npm
+# ---------- force ipv4 (docker friendly) ----------
+RUN echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99force-ipv4
 
-# php:
-RUN LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
-RUN apt-get update && apt-get install -y \
+# ---------- system packages ----------
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    gnupg2 \
+    dirmngr \
+    apt-utils \
+    iputils-ping \
+    net-tools \
+    git \
+    zip \
+    unzip \
+    mysql-client \
+    swaks \
+    sshpass \
+    rsync \
+    htop \
+    wget \
+    cron \
+    telnet \
+    bsdmainutils \
+    jq \
+    nano \
+    patch \
+    sudo \
+ && rm -rf /var/lib/apt/lists/*
+
+# ---------- ondrej php repo (FIX REAL, nothing else touched) ----------
+RUN curl -fsSL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xE5267A6C" \
+ | gpg --dearmor -o /usr/share/keyrings/ondrej-php.gpg
+
+RUN . /etc/os-release \
+ && echo "deb [signed-by=/usr/share/keyrings/ondrej-php.gpg] \
+ https://ppa.launchpadcontent.net/ondrej/php/ubuntu ${VERSION_CODENAME} main" \
+ > /etc/apt/sources.list.d/ondrej-php.list
+
+# ---------- php ----------
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE} \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-fpm \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-cli \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-gd \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-xml \
-    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-xmlrpc \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-soap \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-zip \
-    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-simplexml \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-mbstring \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-mysql \
-    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-common \
-    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-gmp \
-    php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-ldap \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-curl \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-intl \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-bcmath \
@@ -70,106 +76,103 @@ RUN apt-get update && apt-get install -y \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-redis \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-apcu \
     php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-xdebug \
-    libapache2-mod-php${APPSETTING_SERVICE_WWW_PHP_RELEASE}
+    libapache2-mod-php${APPSETTING_SERVICE_WWW_PHP_RELEASE} \
+ && rm -rf /var/lib/apt/lists/*
 
-# php (opcache):
-RUN if apt-cache show php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-opcache >/dev/null 2>&1; then \
-      echo "Instalando php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-opcache desde apt" && \
-      apt-get update && \
-      apt-get install -y php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-opcache; \
-    else \
-      echo "Paquete php${APPSETTING_SERVICE_WWW_PHP_RELEASE}-opcache no existe, habilitando Opcache integrado" && \
-      docker-php-ext-enable opcache || true; \
-    fi
-
-# php:
+# ---------- disable xdebug ----------
 RUN phpdismod -s cli xdebug \
- && rm -f /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/cli/conf.d/*xdebug*.ini
-RUN phpdismod -s fpm xdebug \
- && rm -f /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/conf.d/*xdebug*.ini
+ && phpdismod -s fpm xdebug \
+ && rm -f /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/{cli,fpm}/conf.d/*xdebug*.ini
 
-ADD ./templates/php-cli.ini.conf /tmp/php-cli.ini.conf
-RUN cat /tmp/php-cli.ini.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/cli/php.ini
-RUN rm /tmp/php-cli.ini.conf
+# ---------- php config ----------
+COPY ./templates/php-cli.ini.conf /tmp/php-cli.ini.conf
+RUN cat /tmp/php-cli.ini.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/cli/php.ini \
+ && rm /tmp/php-cli.ini.conf
 
-ADD ./templates/php-fpm.ini.conf /tmp/php-fpm.ini.conf
-RUN cat /tmp/php-fpm.ini.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini
-RUN rm /tmp/php-fpm.ini.conf
+COPY ./templates/php-fpm.ini.conf /tmp/php-fpm.ini.conf
+RUN cat /tmp/php-fpm.ini.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/php.ini \
+ && rm /tmp/php-fpm.ini.conf
 
-# web-server:
-ADD ./templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf
-RUN cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/pool.d/www.conf
-RUN rm /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf
+# ---------- php-fpm pool ----------
+COPY ./templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.php.fpm.pool.conf /tmp/pool.conf
+RUN cat /tmp/pool.conf >> /etc/php/${APPSETTING_SERVICE_WWW_PHP_RELEASE}/fpm/pool.d/www.conf \
+ && rm /tmp/pool.conf
 
-RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then apt-get install -y nginx; fi
-RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then apt-get install -y apache2; fi
+# ---------- webserver ----------
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then \
+      apt-get update && apt-get install -y nginx; \
+    fi \
+ && if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then \
+      apt-get update && apt-get install -y apache2; \
+      a2enmod proxy_fcgi rewrite expires headers; \
+    fi \
+ && rm -rf /var/lib/apt/lists/*
 
-ADD ./templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf
-RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf > /etc/nginx/sites-available/default; fi
-RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then cat /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf > /etc/apache2/sites-available/000-default.conf; fi
-RUN rm /tmp/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf
+COPY ./templates/webserver.${APPSETTING_SERVICE_WWW_WEBSERVER}.default.conf /tmp/default.conf
+RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then \
+      cat /tmp/default.conf > /etc/nginx/sites-available/default; \
+    fi \
+ && if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then \
+      cat /tmp/default.conf > /etc/apache2/sites-available/000-default.conf; \
+    fi \
+ && rm /tmp/default.conf
 
-RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "apache2" ]; then a2enmod proxy_fcgi rewrite expires headers; fi
+# ---------- composer ----------
+RUN curl -sS https://getcomposer.org/installer \
+ | php -- --install-dir=/usr/local/bin --filename=composer \
+ && composer self-update --${APPSETTING_SERVICE_WWW_COMPOSER_RELEASE}
 
-# composer:
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN /usr/local/bin/composer self-update --${APPSETTING_SERVICE_WWW_COMPOSER_RELEASE}
+# ---------- ngrok ----------
+RUN curl -fsSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
+ | tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \
+ && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" \
+ | tee /etc/apt/sources.list.d/ngrok.list \
+ && apt-get update \
+ && apt-get install -y ngrok \
+ && rm -rf /var/lib/apt/lists/*
 
-# ngrok:
-RUN curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
-  | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \
-  && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" \
-  | sudo tee /etc/apt/sources.list.d/ngrok.list \
-  && sudo apt update \
-  && sudo apt install ngrok
-
-# user:
+# ---------- user ----------
 RUN if [ "$(grep -c '^ubuntu:' /etc/passwd)" = 1 ] ; then deluser --remove-home ubuntu; fi
 RUN addgroup --gid ${APPSETTING_GID} ${APPSETTING_USER} \
- && useradd -m -u ${APPSETTING_UID} -g ${APPSETTING_GID} -s /bin/bash -d /home/${APPSETTING_USER} ${APPSETTING_USER} \
- && usermod -aG www-data $APPSETTING_USER \
- && usermod -aG sudo $APPSETTING_USER \
+ && useradd -m -u ${APPSETTING_UID} -g ${APPSETTING_GID} -s /bin/bash ${APPSETTING_USER} \
+ && usermod -aG www-data,sudo ${APPSETTING_USER} \
  && echo "" >> /etc/sudoers \
- && echo "${APPSETTING_USER} ALL=NOPASSWD: ALL" >> /etc/sudoers
-ADD ./templates/bashrc /home/$APPSETTING_USER/.bashrc
-ADD ./templates/bashrc /root/.bashrc
+ && echo "${APPSETTING_USER} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# cron:
-RUN /etc/init.d/cron stop
-ADD ./templates/cron_jobs /etc/cron.d/cron_jobs
-RUN chmod 0644 /etc/cron.d/cron_jobs
-RUN crontab -u $APPSETTING_USER /etc/cron.d/cron_jobs
-RUN /etc/init.d/cron start
+COPY ./templates/bashrc /home/${APPSETTING_USER}/.bashrc
+COPY ./templates/bashrc /root/.bashrc
+RUN chown ${APPSETTING_USER}:${APPSETTING_USER} /home/${APPSETTING_USER}/.bashrc
 
-# sonar:
-RUN wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.0.1.4817-linux-x64.zip && \
-    unzip sonar-scanner-cli-7.0.1.4817-linux-x64.zip && \
-    mv sonar-scanner-7.0.1.4817-linux-x64 /opt/sonar-scanner && \
-    rm sonar-scanner-cli-7.0.1.4817-linux-x64.zip
+# ---------- cron ----------
+COPY ./templates/cron_jobs /etc/cron.d/cron_jobs
+RUN chmod 0644 /etc/cron.d/cron_jobs \
+ && crontab -u ${APPSETTING_USER} /etc/cron.d/cron_jobs
+
+# ---------- sonar ----------
+RUN wget -q https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-7.0.1.4817-linux-x64.zip \
+ && unzip sonar-scanner-cli-7.0.1.4817-linux-x64.zip \
+ && mv sonar-scanner-7.0.1.4817-linux-x64 /opt/sonar-scanner \
+ && rm sonar-scanner-cli-7.0.1.4817-linux-x64.zip
 ENV PATH="/opt/sonar-scanner/bin:${PATH}"
 
-# node:
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
-    && export NVM_DIR="/root/.nvm" \
-    && . "$NVM_DIR/nvm.sh" \
-    && nvm install 18 \
-    && mkdir -p /usr/local/node \
-    && cp -r $NVM_DIR/versions/node/$(nvm version)/* /usr/local/node
-ENV PATH=/usr/local/node/bin:$PATH
+# ---------- node ----------
+RUN curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
+ && export NVM_DIR="/root/.nvm" \
+ && . "$NVM_DIR/nvm.sh" \
+ && nvm install 18 \
+ && mkdir -p /usr/local/node \
+ && cp -r $NVM_DIR/versions/node/$(nvm version)/* /usr/local/node
+ENV PATH="/usr/local/node/bin:${PATH}"
 
-# extra commands:
+# ---------- extra commands ----------
 (({}.var.extra_commands))
 
-# home permission:
-RUN chown $APPSETTING_USER:$APPSETTING_USER -R /home/$APPSETTING_USER/.bashrc
-
-# build info:
+# ---------- build info ----------
 RUN echo "Built on $(date)" > /build.log
 
-# stopsignal:
 STOPSIGNAL SIGQUIT
 
-# entrypoint:
+# ---------- entrypoint ----------
 COPY ./templates/entrypoint/www.sh /docker-entrypoint.www.sh
 RUN chmod +x /docker-entrypoint.www.sh
-ENTRYPOINT [ "/docker-entrypoint.www.sh" ]
+ENTRYPOINT ["/docker-entrypoint.www.sh"]

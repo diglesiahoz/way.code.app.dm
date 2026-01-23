@@ -100,7 +100,7 @@ hook:
   event:
     # --------------------------------------------------------
     # - Make Drupal -
-    #   way @funely.local make.stack.drupal.basic -fyv
+    #   way @test.drupal.local make.stack.drupal.basic -fyv
     # --------------------------------------------------------
     dm.make.drupal:
       startup:

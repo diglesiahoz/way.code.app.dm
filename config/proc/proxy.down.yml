@@ -1,9 +1,3 @@
-# RECIPE:Apagar proxy:
-# ```console
-# way dm.proxy.down -v
-# ```
-# :RECIPE
-
 help: "Apaga proxy"
 example:
  - (({}.tmp.proc.sig))
