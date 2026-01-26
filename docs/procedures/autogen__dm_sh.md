@@ -1,0 +1,33 @@
+# dm.sh
+
+📂 `app/custom/app/dm/config/proc/sh.yml`
+
+
+### Código
+```yml
+help: Ejecuta scripts personalizados
+example:
+  - '(({}.tmp.proc.sig))'
+task:
+  complete: []
+  require:
+    config:
+      - .*(\.local) origin
+    args:
+      script_name:
+        type: String
+        required: true
+        default: 'callback::dm.getCustomScriptNames'
+    opt: {}
+  do:
+    - event: origin startup
+    - call: dm.loadRunEnv
+    - call: exec
+      args:
+        cmd: >-
+          (({}.var.env)); [ -f
+          (({origin}._root))/.dm/custom/sh/(({}.args.script_name)) ] &&
+          (({origin}._root))/.dm/custom/sh/(({}.args.script_name)) (({}.args._))
+        out: true
+    - event: origin windup
+```

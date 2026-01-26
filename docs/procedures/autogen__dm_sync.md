@@ -1,0 +1,34 @@
+# dm.sync
+
+📂 `app/custom/app/dm/config/proc/sync.yml`
+
+
+### Código
+```yml
+help: Sincroniza ficheros
+example:
+  - '(({}.tmp.proc.sig))'
+task:
+  require:
+    config:
+      - .*(\.local) origin
+    args:
+      env_key:
+        type: String
+        required: true
+        default: 'callback::dm.getEnvKeys'
+    opt:
+      dry-run:
+        type: Boolean
+        default: false
+      delete:
+        type: Boolean
+        default: false
+    settings: {}
+  do:
+    - event: origin startup
+    - call: dm.makeSync
+      args:
+        env_key: '(({}.args.env_key))'
+    - event: origin windup
+```

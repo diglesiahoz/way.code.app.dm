@@ -1,0 +1,26 @@
+# dm.restart
+
+📂 `app/custom/app/dm/config/proc/restart.yml`
+
+
+### Código
+```yml
+help: Re-inicia servicios
+example:
+  - '(({}.tmp.proc.sig))'
+task:
+  require:
+    config:
+      - .*(\.local) origin
+  do:
+    - event: origin startup
+    - call: exec
+      args:
+        cmd: '(({}.exec)) (({origin}._config_name)) dm.down (({}.optSig))'
+        out: true
+    - call: exec
+      args:
+        cmd: '(({}.exec)) (({origin}._config_name)) dm.up (({}.optSig))'
+        out: true
+    - event: origin windup
+```

@@ -1,0 +1,33 @@
+# dm.send.mail.test
+
+📂 `app/custom/app/dm/config/proc/send.mail.test.yml`
+
+
+### Código
+```yml
+help: Envia correo electronico de prueba
+example:
+  - '(({}.tmp.proc.sig))'
+task:
+  complete: []
+  require:
+    config:
+      - .*(\.local) origin
+    args: {}
+    opt: {}
+  do:
+    - event: origin startup
+    - loop: '(({origin}.appsetting.wildcard_host))'
+      do:
+        - label: Ejecutando "(())"
+          call: exec
+          args:
+            cmd: >-
+              docker exec -it (({origin}.appsetting.service.www.host)) swaks -s
+              (({origin}.appsetting.service.mailhog.host)):1025 --to
+              webmaster@(()) --add-header "Subject: Test email" --add-header
+              "Content-Type: text/html" --body "<h3 style=\"color:
+              #0b8707;\">This is a test email</h3>"
+            out: true
+    - event: origin windup
+```
