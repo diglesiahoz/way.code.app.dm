@@ -2,6 +2,6 @@
 
 > Aplicación que permite gestionar sitios web mediante docker.
 
-## Documentación completa
+## Docs
 
 - [Ver documentación completa](docs/index.md)
