@@ -2,7 +2,7 @@
 title: Procedimientos
 sidebar_label: 📦 Procedimientos
 sidebar_position: 4.0
-slug: /apps/dm/procedures
+slug: /custom/apps/dm/procedures
 tags: []
 ---
 

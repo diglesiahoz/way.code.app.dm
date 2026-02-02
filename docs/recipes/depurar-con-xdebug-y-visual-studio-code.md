@@ -2,8 +2,8 @@
 title: Depurar con XDebug y Visual Studio Code
 sidebar_label: Depurar con XDebug y Visual Studio Code
 sidebar_position: 1.0
-slug: /recipes/depurar-con-xdebug-y-visual-studio-code
-tags: [core, configuración]
+slug: /custom/apps/dm/recipes/depurar-con-xdebug-y-visual-studio-code
+tags: [recetas]
 ---
 
 # Depurar con XDebug y Visual Studio Code

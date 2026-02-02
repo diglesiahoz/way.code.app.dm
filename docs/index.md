@@ -2,7 +2,7 @@
 title: dm
 sidebar_label: 🧩 dm
 sidebar_position: 1.0
-slug: /apps/dm
+slug: /custom/apps/dm
 tags: []
 ---
 
@@ -10,6 +10,10 @@ tags: []
 
 > Aplicación que permite gestionar entornos docker.
 
-- [Perfiles](./profiles/index.md)
-- [Procedimientos](./procedures/index.md)
-- [Recetas](./recipes/index.md)
+<!-- AUTOGEN:START -->
+
+- [Perfiles](./profiles)
+- [Procedimientos](./procedures)
+- [Recetas](./recipes)
+
+<!-- AUTOGEN:END -->
