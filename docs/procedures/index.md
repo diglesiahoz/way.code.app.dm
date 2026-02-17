@@ -11,6 +11,7 @@ tags: []
 <!-- AUTOGEN:START -->
 
 - [dm.aws.s3.ls](./autogen__dm_aws_s3_ls.md)
+- [dm.aws.s3.rm.directory](./autogen__dm_aws_s3_rm_directory.md)
 - [dm.composer](./autogen__dm_composer.md)
 - [dm.db.access](./autogen__dm_db_access.md)
 - [dm.db.clean](./autogen__dm_db_clean.md)

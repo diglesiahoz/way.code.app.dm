@@ -167,4 +167,13 @@ hook:
               - 'user:role:add content_editor admin.editor'
               - pmu search
       windup: {}
+    dm.run:
+      fix.perm:
+        - call: exec
+          args:
+            cmd: >-
+              (({}.exec)) ((_config_name)) dm.exec
+              "((appsetting.service.www.target))/private/sh/common.sh fix_perm
+              (({}.optAll))"
+            out: true
 ```
