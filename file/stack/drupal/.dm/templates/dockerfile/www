@@ -156,13 +156,15 @@ RUN wget -q https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sona
 ENV PATH="/opt/sonar-scanner/bin:${PATH}"
 
 # ---------- node ----------
-RUN curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
- && export NVM_DIR="/root/.nvm" \
- && . "$NVM_DIR/nvm.sh" \
- && nvm install 18 \
- && mkdir -p /usr/local/node \
- && cp -r $NVM_DIR/versions/node/$(nvm version)/* /usr/local/node
-ENV PATH="/usr/local/node/bin:${PATH}"
+# RUN curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
+#  && export NVM_DIR="/root/.nvm" \
+#  && . "$NVM_DIR/nvm.sh" \
+#  && nvm install 18 \
+#  && mkdir -p /usr/local/node \
+#  && cp -r $NVM_DIR/versions/node/$(nvm version)/* /usr/local/node
+# ENV PATH="/usr/local/node/bin:${PATH}"
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+ && apt-get install -y nodejs
 
 # ---------- extra commands ----------
 (({}.var.extra_commands))
