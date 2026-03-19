@@ -38,14 +38,14 @@ task:
       call: exec
       args:
         cd: '(({origin}._root))'
-        cmd: '(({}.exec)) dm.drush entity:delete shortcut_set'
+        cmd: '(({}.exec)) dm.drush entity:delete shortcut_set -y'
     - label: Obteniendo UUID del sitio
       call: exec
       args:
         cd: '(({origin}._root))'
         cmd: >-
-          (({}.exec)) exec www grep -r "uuid:" ./ | grep config/system.site.yml
-          | awk "{ print \$2 }" | xargs
+          (({}.exec)) exec grep -rI "uuid:" ./ | grep config/system.site.yml |
+          awk "{ print \$2 }" | xargs
         pipe: site.uuid
         out: false
     - label: Estableciendo UUID del sitio
