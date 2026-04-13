@@ -46,6 +46,7 @@ RUN apt-get update \
     nano \
     patch \
     sudo \
+    ripgrep \
  && rm -rf /var/lib/apt/lists/*
 
 # ---------- ondrej php repo (FIX REAL, nothing else touched) ----------
