@@ -11,7 +11,7 @@ appsetting:
     - ((_env)).((_key))
   service:
     proxy:
-      base_image: 'traefik:v3.1'
+      base_image: 'traefik:v3.6.13'
       extra_commands: []
       host: ((appsetting.wildcard_host.0))
 ```
