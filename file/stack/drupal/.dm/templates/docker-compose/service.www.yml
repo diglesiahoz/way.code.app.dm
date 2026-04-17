@@ -4,6 +4,7 @@ www:
   build:
     context: .
     dockerfile: ./templates/dockerfile/www
+    network: host
     args:
       APPSETTING_USER: ${APPSETTING_USER}
       APPSETTING_GID: ${APPSETTING_GID}

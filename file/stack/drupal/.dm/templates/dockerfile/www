@@ -19,6 +19,32 @@ USER root
 
 # ---------- force ipv4 (docker friendly) ----------
 RUN echo 'Acquire::ForceIPv4 "true";' > /etc/apt/apt.conf.d/99force-ipv4
+RUN printf '%s\n' \
+  'Acquire::Retries "5";' \
+  'Acquire::http::Timeout "20";' \
+  'Acquire::https::Timeout "20";' \
+  'Acquire::http::Pipeline-Depth "0";' \
+  > /etc/apt/apt.conf.d/80-network-retries
+
+# Usar HTTPS para mirrors (HTTP 80 puede quedar bloqueado por VPN).
+RUN if [ -f /etc/apt/sources.list.d/ubuntu.sources ]; then \
+      sed -i 's|http://archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g; s|http://security.ubuntu.com/ubuntu|https://security.ubuntu.com/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources; \
+    fi \
+ && if [ -f /etc/apt/sources.list ]; then \
+      sed -i 's|http://archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g; s|http://security.ubuntu.com/ubuntu|https://security.ubuntu.com/ubuntu|g' /etc/apt/sources.list; \
+    fi
+
+# ---------- bootstrap TLS trust ----------
+# Primer bootstrap en HTTPS sin validacion de peer/host para poder instalar ca-certificates.
+RUN printf '%s\n' \
+  'Acquire::https::Verify-Peer "false";' \
+  'Acquire::https::Verify-Host "false";' \
+  > /etc/apt/apt.conf.d/05bootstrap-insecure-https \
+ && apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates \
+ && update-ca-certificates \
+ && rm -f /etc/apt/apt.conf.d/05bootstrap-insecure-https \
+ && rm -rf /var/lib/apt/lists/*
 
 # ---------- system packages ----------
 RUN apt-get update \
