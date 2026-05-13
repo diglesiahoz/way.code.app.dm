@@ -1,0 +1,14 @@
+# check=skip=InvalidDefaultArgInFrom
+# Imagen oficial con navegadores; https://playwright.dev/docs/docker
+ARG APPSETTING_SERVICE_PLAYWRIGHT_BASE_IMAGE
+FROM $APPSETTING_SERVICE_PLAYWRIGHT_BASE_IMAGE
+
+WORKDIR /workspace
+
+COPY templates/entrypoint/playwright.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+EXPOSE 9323
+ENTRYPOINT ["/docker-entrypoint.sh"]
+# UI Mode: https://playwright.dev/docs/test-ui-mode#docker
+CMD ["npx", "playwright", "test", "--ui", "--ui-host=0.0.0.0", "--ui-port=9323"]

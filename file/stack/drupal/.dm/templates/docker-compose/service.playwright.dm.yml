@@ -1,0 +1,27 @@
+playwright:
+  container_name: ${APPSETTING_SERVICE_PLAYWRIGHT_HOST}
+  hostname: ${APPSETTING_SERVICE_PLAYWRIGHT_HOST}
+  build:
+    context: .
+    dockerfile: ./templates/dockerfile/playwright
+    args:
+      APPSETTING_SERVICE_PLAYWRIGHT_BASE_IMAGE: ${APPSETTING_SERVICE_PLAYWRIGHT_BASE_IMAGE}
+  environment:
+    PLAYWRIGHT_BASE_URL: http://${APPSETTING_SERVICE_WWW_HOST}
+  volumes:
+    -
+      consistency: cached
+      source: ../
+      target: ${APPSETTING_SERVICE_WWW_TARGET}
+      type: bind
+  working_dir: ${APPSETTING_SERVICE_WWW_TARGET}/test
+  user: ${APPSETTING_UID}:${APPSETTING_GID}
+  ports:
+    - "127.0.0.1:9323:9323"
+  labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.${APPSETTING_SERVICE_PLAYWRIGHT_HOST}.rule=${APPSETTING_PROXY_SERVICE_PLAYWRIGHT_RULE_HOST}"
+    - "traefik.http.routers.${APPSETTING_SERVICE_PLAYWRIGHT_HOST}.tls=true"
+    - "traefik.http.services.${APPSETTING_SERVICE_PLAYWRIGHT_HOST}.loadbalancer.server.port=9323"
+  networks:
+    - dmproxy
