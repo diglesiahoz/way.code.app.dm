@@ -144,6 +144,9 @@ RUN if [ "$APPSETTING_SERVICE_WWW_WEBSERVER" = "nginx" ]; then \
     fi \
  && rm /tmp/default.conf
 
+# Credenciales HTTP Basic para /@storybook/, /@stat/ y /@netdata/ (desarrollo: admin / admin)
+COPY ./templates/nginx.htpasswd /etc/nginx/conf.d/.htpasswd
+
 # ---------- composer ----------
 RUN curl -sS https://getcomposer.org/installer \
  | php -- --install-dir=/usr/local/bin --filename=composer \

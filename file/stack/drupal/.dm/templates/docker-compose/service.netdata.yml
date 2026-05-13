@@ -1,0 +1,31 @@
+netdata:
+  container_name: ${APPSETTING_SERVICE_NETDATA_HOST}
+  hostname: ${APPSETTING_SERVICE_NETDATA_HOST}
+  build:
+    context: .
+    dockerfile: ./templates/dockerfile/netdata
+    args:
+      APPSETTING_SERVICE_NETDATA_BASE_IMAGE: ${APPSETTING_SERVICE_NETDATA_BASE_IMAGE}
+  restart: unless-stopped
+  init: true
+  security_opt:
+    - apparmor:unconfined
+  cap_add:
+    - SYS_PTRACE
+  environment:
+    # NETDATA_DISABLE_CLOUD no aplica en Netdata v2.x (ver issue netdata#19007).
+    - DISABLE_TELEMETRY=1
+    - DO_NOT_TRACK=1
+  volumes:
+    - netdata_config:/etc/netdata
+    - netdata_lib:/var/lib/netdata
+    - netdata_cache:/var/cache/netdata
+    - /etc/passwd:/host/etc/passwd:ro
+    - /etc/group:/host/etc/group:ro
+    - /etc/localtime:/etc/localtime:ro
+    - /proc:/host/proc:ro
+    - /sys:/host/sys:ro
+    - /etc/os-release:/host/etc/os-release:ro
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+  # Sin Traefik: abre http://127.0.0.1:19999/v3 (Netdata v2 muestra splash en /).
+  ports: [ "19999:19999" ]

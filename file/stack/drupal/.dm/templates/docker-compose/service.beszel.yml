@@ -1,0 +1,16 @@
+beszel:
+  container_name: ${APPSETTING_SERVICE_BESZEL_HOST}
+  hostname: ${APPSETTING_SERVICE_BESZEL_HOST}
+  build:
+    context: .
+    dockerfile: ./templates/dockerfile/beszel
+    args:
+      APPSETTING_SERVICE_BESZEL_BASE_IMAGE: ${APPSETTING_SERVICE_BESZEL_BASE_IMAGE}
+  restart: unless-stopped
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  environment:
+    APP_URL: ${APPSETTING_SERVICE_BESZEL_APP_URL:-http://127.0.0.1:8090}
+  volumes:
+    - beszel_data:/beszel_data
+  ports: [ "8090:8090" ]

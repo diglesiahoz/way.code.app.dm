@@ -1,0 +1,6 @@
+netdata_config:
+  name: ${COMPOSE_PROJECT_NAME}_netdata_config
+netdata_lib:
+  name: ${COMPOSE_PROJECT_NAME}_netdata_lib
+netdata_cache:
+  name: ${COMPOSE_PROJECT_NAME}_netdata_cache

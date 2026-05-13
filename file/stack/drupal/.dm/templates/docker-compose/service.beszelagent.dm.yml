@@ -1,0 +1,24 @@
+beszelagent:
+  container_name: ${APPSETTING_SERVICE_BESZELAGENT_HOST}
+  build:
+    context: .
+    dockerfile: ./templates/dockerfile/beszelagent
+    args:
+      APPSETTING_SERVICE_BESZELAGENT_BASE_IMAGE: ${APPSETTING_SERVICE_BESZELAGENT_BASE_IMAGE}
+  restart: unless-stopped
+  network_mode: host
+  volumes:
+    - beszelagent_data:/var/lib/beszel-agent
+    - /var/run/docker.sock:/var/run/docker.sock:ro
+    - /proc:/host/proc:ro
+    - /sys:/host/sys:ro
+    - /:/host/root:ro
+  environment:
+    # Host/IP en la UI del hub: host.docker.internal:<PORT> (hub en Docker, agente con network_mode: host).
+    # KEY = Public key del modal. TOKEN = UUID del campo Token (el agente ≥0.18 lo exige para el WebSocket al hub).
+    # HUB_URL: desde el host, el hub publica 127.0.0.1:8090; no uses la URL HTTPS de Traefik salvo que resuelva y acepte el agente.
+    PORT: ${APPSETTING_SERVICE_BESZELAGENT_PORT:-45876}
+    KEY: ${APPSETTING_SERVICE_BESZELAGENT_KEY}
+    HUB_URL: ${APPSETTING_SERVICE_BESZELAGENT_HUB_URL:-http://127.0.0.1:8090}
+    TOKEN: ${APPSETTING_SERVICE_BESZELAGENT_TOKEN}
+  privileged: true
