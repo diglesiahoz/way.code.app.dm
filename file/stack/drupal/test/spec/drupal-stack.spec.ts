@@ -9,7 +9,7 @@ test.describe('Drupal stack', () => {
     expect(res?.ok()).toBeTruthy();
     await expect(page.locator('body')).toBeVisible();
   });
-  test('Formulario de login core', async ({ page }) => {
+  test('Formulario de login', async ({ page }) => {
     const login = await page.goto('/user/login');
     expect(login?.ok()).toBeTruthy();
     await expect(page.locator('form#user-login-form')).toBeVisible({ timeout: 20000 });
