@@ -1,0 +1,15 @@
+# Entorno local / IDE
+.env
+.idea
+
+# Dependencias
+node_modules/
+
+# Salidas de Playwright (https://playwright.dev/docs/test-reporters)
+test-results/
+playwright-report/
+blob-report/
+
+# Traces y adjuntos por defecto en fallos (si se guardan bajo el árbol test/)
+**/trace.zip
+**/trace/**/*.zip
