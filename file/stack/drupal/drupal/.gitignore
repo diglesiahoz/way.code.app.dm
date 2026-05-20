@@ -24,3 +24,7 @@
 
 # Ignore sonar files
 .scannerwork
+
+# Ignore custom modules and themes
+/web/modules/custom/*
+/web/themes/custom/*

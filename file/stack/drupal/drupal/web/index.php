@@ -1,0 +1,3 @@
+<?php
+print "<h1>It's working!</h1>";
+?>

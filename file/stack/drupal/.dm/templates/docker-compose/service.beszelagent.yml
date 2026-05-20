@@ -1,12 +1,12 @@
 beszelagent:
   container_name: ${APPSETTING_SERVICE_BESZELAGENT_HOST}
+  hostname: ${APPSETTING_SERVICE_BESZELAGENT_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/beszelagent
     args:
       APPSETTING_SERVICE_BESZELAGENT_BASE_IMAGE: ${APPSETTING_SERVICE_BESZELAGENT_BASE_IMAGE}
   restart: unless-stopped
-  network_mode: host
   volumes:
     - beszelagent_data:/var/lib/beszel-agent
     - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -14,10 +14,16 @@ beszelagent:
     - /sys:/host/sys:ro
     - /:/host/root:ro
   environment:
-    # Host/IP en la UI del hub: host.docker.internal:<PORT> si el hub está en red bridge; si hub y agente comparten host, 127.0.0.1:<PORT>.
     PORT: ${APPSETTING_SERVICE_BESZELAGENT_PORT:-45876}
     KEY: ${APPSETTING_SERVICE_BESZELAGENT_KEY}
-    HUB_URL: ${APPSETTING_SERVICE_BESZELAGENT_HUB_URL:-http://127.0.0.1:8090}
+    HUB_URL: ${APPSETTING_SERVICE_BESZELAGENT_HUB_URL:-http://${APPSETTING_SERVICE_BESZEL_HOST}:8090}
     TOKEN: ${APPSETTING_SERVICE_BESZELAGENT_TOKEN}
     EXCLUDE_CONTAINERS: ${APPSETTING_SERVICE_BESZELAGENT_EXCLUDE_CONTAINERS:-}
   privileged: true
+  labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.${APPSETTING_SERVICE_BESZELAGENT_HOST}.rule=${APPSETTING_PROXY_SERVICE_BESZELAGENT_RULE_HOST}"
+    - "traefik.http.routers.${APPSETTING_SERVICE_BESZELAGENT_HOST}.tls=true"
+    - "traefik.http.services.${APPSETTING_SERVICE_BESZELAGENT_HOST}.loadbalancer.server.port=${APPSETTING_SERVICE_BESZELAGENT_PORT:-45876}"
+  networks:
+    - dmproxy

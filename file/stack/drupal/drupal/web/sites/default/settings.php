@@ -15,7 +15,6 @@
   $APPSETTING_SERVICE_WWW_DRUPAL_FILE_SYSTEM_PRIVATE_PATH = (!empty(getenv('APPSETTING_SERVICE_WWW_DRUPAL_FILE_SYSTEM_PRIVATE_PATH'))) ? getenv('APPSETTING_SERVICE_WWW_DRUPAL_FILE_SYSTEM_PRIVATE_PATH') : '';
   $APPSETTING_SERVICE_WWW_DRUPAL_FILE_SYSTEM_TEMP_PATH = (!empty(getenv('APPSETTING_SERVICE_WWW_DRUPAL_FILE_SYSTEM_TEMP_PATH'))) ? getenv('APPSETTING_SERVICE_WWW_DRUPAL_FILE_SYSTEM_TEMP_PATH') : '';
   $APPSETTING_SERVICE_WWW_DRUPAL_FILE_SYSTEM_CONFIG_PATH = (!empty(getenv('APPSETTING_SERVICE_WWW_DRUPAL_FILE_SYSTEM_CONFIG_PATH'))) ? getenv('APPSETTING_SERVICE_WWW_DRUPAL_FILE_SYSTEM_CONFIG_PATH') : '';
-  $APPSETTING_SERVICE_MEMCACHED_HOST = (!empty(getenv('APPSETTING_SERVICE_MEMCACHED_HOST'))) ? getenv('APPSETTING_SERVICE_MEMCACHED_HOST') : '';
   $APPSETTING_SERVICE_REDIS_HOST = (!empty(getenv('APPSETTING_SERVICE_REDIS_HOST'))) ? getenv('APPSETTING_SERVICE_REDIS_HOST') : '';
   $APPSETTING_SERVICE_MAILHOG_HOST = (!empty(getenv('APPSETTING_SERVICE_MAILHOG_HOST'))) ? getenv('APPSETTING_SERVICE_MAILHOG_HOST') : '';
   $APPSETTING_SERVICE_SOLR_HOST = (!empty(getenv('APPSETTING_SERVICE_SOLR_HOST'))) ? getenv('APPSETTING_SERVICE_SOLR_HOST') : '';
@@ -147,70 +146,33 @@ $config['search_api.server.solr'] = [
       }
   } else {
     # ---------------------
-    # Redis – Bins críticos
+    # Redis – caché distribuida (todos los bins usados en prod)
     # ---------------------
     if (!empty($APPSETTING_SERVICE_REDIS_HOST)) {
-      # Redis conection
       $settings['redis.connection']['interface'] = 'PhpRedis';
       $settings['redis.connection']['host'] = $APPSETTING_SERVICE_REDIS_HOST;
       $settings['redis.connection']['port'] = 6379;
-      # -----------------------------------
-      # Load services from the Redis module
-      # -----------------------------------
       if (file_exists(DRUPAL_ROOT . '/modules/contrib/redis/redis.services.yml')) {
         $settings['container_yamls'][] = DRUPAL_ROOT . '/modules/contrib/redis/redis.services.yml';
       }
       if (file_exists(DRUPAL_ROOT . '/sites/default/redis.services.yml')) {
         $settings['container_yamls'][] = DRUPAL_ROOT . '/sites/default/redis.services.yml';
       }
-      # ----------------------
-      # Critical bins in Redis
-      # ----------------------
       $settings['cache']['bins']['config'] = 'cache.backend.redis';
       $settings['cache']['bins']['discovery'] = 'cache.backend.redis';
       $settings['cache']['bins']['render'] = 'cache.backend.redis';
       $settings['cache']['bins']['entity'] = 'cache.backend.redis';
-      # ----------
-      # Key prefix
-      # ----------
-      $settings['cache_prefix']['default'] = "$APPSETTING_KEY:";
+      $settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.redis';
+      $settings['cache']['bins']['page'] = 'cache.backend.redis';
+      $cacheKeyRoot = trim($APPSETTING_KEY) !== '' ? $APPSETTING_KEY . ':' : '';
+      $cacheEnv = trim($APPSETTING_ENV) !== '' ? $APPSETTING_ENV . ':' : '';
+      $settings['cache_prefix']['default'] = $cacheKeyRoot . $cacheEnv;
       $settings['cache_prefix']['bins'] = [
-        'default' => "$APPSETTING_KEY:",
-        'bootstrap' => "$APPSETTING_KEY:bootstrap:",
-        'config' => "$APPSETTING_KEY:config:",
+        'default' => $cacheKeyRoot . $cacheEnv,
+        'bootstrap' => $cacheKeyRoot . $cacheEnv . 'bootstrap:',
+        'config' => $cacheKeyRoot . $cacheEnv . 'config:',
       ];
-      # -------------------------
-      # Enable cache tag checksum
-      # -------------------------
       $settings['cache']['redis']['cache_tags_checksum'] = TRUE;
-    }
-    # -----------------------------------
-    # Memcached – Bins volátiles (página)
-    # -----------------------------------
-    if (!empty($APPSETTING_SERVICE_MEMCACHED_HOST)) {
-      # -------------------
-      # Memcached conection
-      # -------------------
-      $settings['memcache']['servers'] = [ $APPSETTING_SERVICE_MEMCACHED_HOST . ':11211' => 'default' ];
-      $settings['memcache']['key_prefix'] = $APPSETTING_KEY . '_' . $APPSETTING_ENV;
-      $settings['memcache']['stampede_protection'] = TRUE;
-      # ------------------
-      # Volatile bins only
-      # ------------------
-      $settings['cache']['bins']['dynamic_page_cache'] = 'cache.backend.memcache';
-      $settings['cache']['bins']['page'] = 'cache.backend.memcache';
-      # -----------------------
-      # Load Memcached services
-      # -----------------------
-      if (file_exists(DRUPAL_ROOT . '/modules/contrib/memcache/memcache.services.yml')) {
-        $settings['container_yamls'][] = DRUPAL_ROOT . '/modules/contrib/memcache/memcache.services.yml';
-      }
-    }
-    # ---------------------------
-    # APCu – cache local opcional
-    # ---------------------------
-    if (extension_loaded('apcu') && ini_get('apc.enabled')) {
-      $settings['cache']['bins']['bootstrap'] = 'cache.backend.chainedfast';
     }
     # -------------
     # Cache default
@@ -219,6 +181,14 @@ $config['search_api.server.solr'] = [
       $settings['cache']['default'] = 'cache.backend.redis';
     } else {
       $settings['cache']['default'] = 'cache.backend.database';
+    }
+    # APCu opcional: bin bootstrap APCu→Redis (o APCu→BD si sin Redis).
+    # ChainedFastBackendFactory lee cache.default como backend consistente — sin YAML extra.
+    if (extension_loaded('apcu') && ini_get('apc.enabled')) {
+      $settings['cache']['bins']['bootstrap'] = 'cache.backend.chainedfast';
+    }
+    elseif (!empty($APPSETTING_SERVICE_REDIS_HOST)) {
+      $settings['cache']['bins']['bootstrap'] = 'cache.backend.redis';
     }
     # --------------------------
     # Opcional: logging de cache

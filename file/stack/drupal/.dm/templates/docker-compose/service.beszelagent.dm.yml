@@ -1,12 +1,13 @@
 beszelagent:
   container_name: ${APPSETTING_SERVICE_BESZELAGENT_HOST}
+  hostname: ${APPSETTING_SERVICE_BESZELAGENT_HOST}
   build:
     context: .
     dockerfile: ./templates/dockerfile/beszelagent
     args:
       APPSETTING_SERVICE_BESZELAGENT_BASE_IMAGE: ${APPSETTING_SERVICE_BESZELAGENT_BASE_IMAGE}
   restart: unless-stopped
-  network_mode: host
+  # Red bridge + Traefik (igual que netdata/beszel). Con network_mode: host Traefik no enruta al agente.
   volumes:
     - beszelagent_data:/var/lib/beszel-agent
     - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -14,11 +15,18 @@ beszelagent:
     - /sys:/host/sys:ro
     - /:/host/root:ro
   environment:
-    # Host/IP en la UI del hub: host.docker.internal:<PORT> (hub en Docker, agente con network_mode: host).
-    # KEY = Public key del modal. TOKEN = UUID del campo Token (el agente ≥0.18 lo exige para el WebSocket al hub).
-    # HUB_URL: desde el host, el hub publica 127.0.0.1:8090; no uses la URL HTTPS de Traefik salvo que resuelva y acepte el agente.
+    # KEY / TOKEN desde el hub Beszel (UI).
     PORT: ${APPSETTING_SERVICE_BESZELAGENT_PORT:-45876}
     KEY: ${APPSETTING_SERVICE_BESZELAGENT_KEY}
-    HUB_URL: ${APPSETTING_SERVICE_BESZELAGENT_HUB_URL:-http://127.0.0.1:8090}
+    # Hub en la misma red: HTTP interno. Override con URL pública HTTPS si el agente debe salir por Traefik al hub.
+    HUB_URL: ${APPSETTING_SERVICE_BESZELAGENT_HUB_URL:-http://${APPSETTING_SERVICE_BESZEL_HOST}:8090}
     TOKEN: ${APPSETTING_SERVICE_BESZELAGENT_TOKEN}
+    EXCLUDE_CONTAINERS: ${APPSETTING_SERVICE_BESZELAGENT_EXCLUDE_CONTAINERS:-}
   privileged: true
+  labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.${APPSETTING_SERVICE_BESZELAGENT_HOST}.rule=${APPSETTING_PROXY_SERVICE_BESZELAGENT_RULE_HOST}"
+    - "traefik.http.routers.${APPSETTING_SERVICE_BESZELAGENT_HOST}.tls=true"
+    - "traefik.http.services.${APPSETTING_SERVICE_BESZELAGENT_HOST}.loadbalancer.server.port=${APPSETTING_SERVICE_BESZELAGENT_PORT:-45876}"
+  networks:
+    - dmproxy

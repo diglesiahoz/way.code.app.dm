@@ -10,11 +10,11 @@ beszel:
   extra_hosts:
     - "host.docker.internal:host-gateway"
   environment:
-    APP_URL: ${APPSETTING_SERVICE_BESZEL_APP_URL:-http://127.0.0.1:8090}
+    # Con Traefik usa la URL pública (HTTPS), p. ej. APPSETTING_SERVICE_BESZEL_APP_URL=https://local-beszel.ejemplo.es
+    APP_URL: ${APPSETTING_SERVICE_BESZEL_APP_URL:-http://${APPSETTING_SERVICE_BESZEL_HOST}:8090}
   volumes:
     - beszel_data:/beszel_data
-  ports:
-    - "127.0.0.1:8090:8090"
+  # Sin publish a localhost:8090 (evita colisión si otro stack ya usa 8090). Acceso: Traefik (443) o red dmproxy.
   labels:
     - "traefik.enable=true"
     - "traefik.http.routers.${APPSETTING_SERVICE_BESZEL_HOST}.rule=${APPSETTING_PROXY_SERVICE_BESZEL_RULE_HOST}"

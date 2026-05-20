@@ -10,7 +10,9 @@ beszel:
   extra_hosts:
     - "host.docker.internal:host-gateway"
   environment:
-    APP_URL: ${APPSETTING_SERVICE_BESZEL_APP_URL:-http://127.0.0.1:8090}
+    APP_URL: ${APPSETTING_SERVICE_BESZEL_APP_URL:-http://${APPSETTING_SERVICE_BESZEL_HOST}:8090}
   volumes:
     - beszel_data:/beszel_data
-  ports: [ "8090:8090" ]
+  # Host port configurable: por defecto 18090 para no chocar con otro Beszel/servicio en 8090.
+  ports:
+    - "127.0.0.1:${APPSETTING_SERVICE_BESZEL_PUBLISH_PORT:-18090}:8090"
