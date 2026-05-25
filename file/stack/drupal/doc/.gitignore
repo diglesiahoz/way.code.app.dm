@@ -1,0 +1,22 @@
+build/
+node_modules/
+.docusaurus/
+.DS_Store
+
+# Archivos temporales de sistema
+*.log
+*.tmp
+*.swp
+
+# Caché de yarn o npm (opcional)
+.yarn/
+.npm/
+
+# Personalizado
+*__custom__*.md
+md/custom/apps/*/
+md/custom/recipes/
+
+# Generado por scripts/build-doc.mjs (npm run build:doc)
+md/**
+!md/.gitkeep

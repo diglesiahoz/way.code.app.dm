@@ -1,0 +1,12 @@
+# check=skip=InvalidDefaultArgInFrom
+# Imagen oficial con navegadores; https://playwright.dev/docs/docker
+ARG APPSETTING_SERVICE_DOC_BASE_IMAGE
+FROM $APPSETTING_SERVICE_DOC_BASE_IMAGE
+
+# Crear directorio de trabajo
+WORKDIR /doc
+
+# ---------- entrypoint ----------
+COPY ./templates/entrypoint/doc.sh /docker-entrypoint.doc.sh
+RUN chmod +x /docker-entrypoint.doc.sh
+ENTRYPOINT ["/docker-entrypoint.doc.sh"]

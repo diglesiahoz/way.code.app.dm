@@ -1,0 +1,22 @@
+doc:
+  container_name: ${APPSETTING_SERVICE_DOC_HOST}
+  hostname: ${APPSETTING_SERVICE_DOC_HOST}
+  build:
+    context: .
+    dockerfile: ./templates/dockerfile/doc
+    args:
+      APPSETTING_SERVICE_DOC_BASE_IMAGE: ${APPSETTING_SERVICE_DOC_BASE_IMAGE}
+  env_file:
+    - ../.env
+    - .env
+  volumes:
+    -
+      consistency: cached
+      source: ../
+      target: ${APPSETTING_SERVICE_WWW_TARGET}
+      type: bind
+  working_dir: ${APPSETTING_SERVICE_WWW_TARGET}/doc
+  user: ${APPSETTING_UID}:${APPSETTING_GID}
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
+  ports: [ "3000:3000" ]

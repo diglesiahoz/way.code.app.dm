@@ -1,0 +1,77 @@
+:root {
+  --ifm-color-primary: rgb(61, 162, 216);
+}
+pre {
+  font-size: 1.2rem;
+  background-color: #1e202a !important;
+}
+.aa-DetachedSearchButton,
+.aa-DetachedSearchButtonIcon,
+.aa-SubmitIcon,
+.aa-Input,
+.aa-Input::placeholder,
+.aa-ClearIcon {
+  color: white !important;
+}
+.aa-Input {
+  outline: none !important;
+  box-shadow: none !important;
+}
+.aa-DetachedSearchButton {
+  background: transparent !important;
+  border: 0 !important;
+}
+.aa-Form {
+  border-color: rgb(56, 56, 56) !important;
+}
+.aa-DetachedFormContainer,
+.aa-DetachedContainer,
+.aa-Panel,
+.aa-PanelLayout {
+  background: #222 !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.aa-DetachedSearchButtonPlaceholder,
+.aa-DetachedSearchButtonQuery {
+  display: none !important;
+}
+button,
+.aa-DetachedSearchButtonIcon {
+  cursor: pointer !important;
+}
+
+/* Solo para móviles (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Contenedor principal sigue flex, pero el brand se posiciona absolute */
+  .navbar__inner {
+    position: relative;
+  }
+
+  /* Toggle (hamburger) pegado a la izquierda */
+  .navbar__toggle {
+    position: absolute;
+    left: 0;
+    z-index: 10; /* encima del brand */
+  }
+
+  /* Logo + título centrados */
+  .navbar__brand {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Espacio entre logo y título */
+  .navbar__logo {
+    margin-right: 0.5rem;
+  }
+
+  .navbar__title {
+    text-align: center;
+    font-weight: 600;
+  }
+}
