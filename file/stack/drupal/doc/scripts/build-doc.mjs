@@ -266,8 +266,23 @@ function escapeInvalidAngleBrackets(text) {
   return text.replace(/<(?!\/?[a-z][a-z0-9]*\b[^>]*\/?>)/gi, '&lt;');
 }
 
+/** Enlaces a README.md del repo → rutas de doc (carpeta con index.md en Docusaurus). */
+function rewriteReadmeLinksForDocs(text) {
+  return text.replace(/\]\(([^)]+)\)/g, (full, href) => {
+    if (!/README\.md/i.test(href)) return full;
+    const hashIdx = href.search(/#/);
+    const hash = hashIdx === -1 ? '' : href.slice(hashIdx);
+    let path = hashIdx === -1 ? href : href.slice(0, hashIdx);
+    path = path.replace(/README\.md\/?$/i, '').replace(/README\.md\/?/gi, '');
+    if (!path || path === '.') path = '.';
+    else if (!path.endsWith('/')) path += '/';
+    return `](${path}${hash})`;
+  });
+}
+
 function sanitizeTextSegmentForMdx(text) {
   let out = text;
+  out = rewriteReadmeLinksForDocs(out);
   out = fixAngleBracketAutolinks(out);
   out = sanitizeVoidHtmlTags(out);
   out = escapeInvalidAngleBrackets(out);
@@ -436,7 +451,6 @@ function removeLegacyOutDirs(docDir, dryRun) {
       continue;
     }
     fs.rmSync(full, { recursive: true, force: true });
-    console.log(`Eliminado legado: ${full}`);
   }
 }
 
@@ -446,13 +460,13 @@ function main() {
   const projectRoot = opts.projectRoot;
 
   if (!fs.existsSync(projectRoot)) {
-    console.error(`No existe la raíz del proyecto: ${projectRoot}`);
+    console.error(`Not found project root: ${projectRoot}`);
     process.exit(1);
   }
 
   let readmes = findReadmes(projectRoot).filter((r) => passesBuildDocScope(r.relDir));
   if (readmes.length === 0) {
-    console.warn('No se encontraron README.md con el filtro build:doc.');
+    console.warn('Not found README.md with build:doc filter.');
   }
 
   if (opts.clean) {
@@ -500,10 +514,8 @@ function main() {
   ensureDir(opts.out, opts.dryRun);
   writeCategoryFiles(opts.out, opts.dryRun);
 
-  console.log(`\nListo: ${readmes.length} README(s) → ${opts.out}`);
-  console.log(
-    '\nTras cambiar READMEs: reinicia el contenedor doc o ejecuta npm run dev dentro de doc/.\n',
-  );
+  console.log(`\Done: ${readmes.length} README(s) → ${opts.out}`);
+
 }
 
 main();
