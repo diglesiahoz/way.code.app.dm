@@ -104,13 +104,6 @@ task:
         cd: '(({origin}._root))'
         cmd: '(({}.exec)) dm.drush cron'
         out: true
-    - label: Obteniendo acceso a sitio web
-      call: exec
-      args:
-        cd: '(({origin}._root))'
-        cmd: '(({}.exec)) dm.drush uli'
-        pipe: access.url
-        out: false
     - label: Estableciendo proyecto Git
       call: exec
       args:
@@ -129,9 +122,5 @@ task:
       call: exec
       args:
         cmd: 'sudo chmod -R g+w (({origin}._root))/drupal/web/sites/default/private'
-    - call: log
-      args:
-        message: 'Drupal access: (({}.var.access.url))'
-        type: success
     - event: origin windup
 ```

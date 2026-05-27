@@ -1,0 +1,37 @@
+-
+  entity_type: node
+  bundle: puzz_landing
+  elements:
+    -
+      __DEFAULT__:
+        status: 1
+        uid: 1
+        title: Home
+        promote: 1
+        sticky: 1
+        field_puzz_landing_section:
+          -
+            entity_type: paragraph
+            bundle: puzz_section
+            elements:
+              -
+                __DEFAULT__:
+                  status: 1
+                  field_puzz_section_component:
+                    -
+                      entity_type: paragraph
+                      bundle: puzz_header
+                      elements:
+                        -
+                          __DEFAULT__:
+                            status: 1
+                            field_puzz_header_caption: ''
+                            field_puzz_header_image:
+                              -
+                                __SOURCE__: files/dummy_image.png
+                                alt: Drupal
+                                title: Drupal
+                            field_puzz_header_link:
+                              uri: 'https://local-www.asistea.com'
+                              title: 'Go home'
+

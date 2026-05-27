@@ -92,20 +92,5 @@ task:
         cd: (({origin}._root))
         cmd: (({}.exec)) dm.drush cr
 
-    # Obtiene acceso a sitio web
-    - label: Obteniendo acceso a sitio web
-      call: exec
-      args:
-        cd: (({origin}._root))
-        cmd: (({}.exec)) dm.drush uli
-        pipe: access.url
-        out: false
-
-    # Mensaje de exito
-    - call: log
-      args:
-        message: "URL: (({}.var.access.url))"
-        type: success
-
     # Lanza evento de fin
     - event: 'origin windup'

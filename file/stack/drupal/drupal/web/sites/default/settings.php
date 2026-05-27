@@ -145,10 +145,14 @@ $config['search_api.server.solr'] = [
           $settings['cache']['bins']['discovery_migration'] = 'cache.backend.memory';
       }
   } else {
+    # Sin Redis durante site:install (evita caché obsoleta y errores en campos).
+    $drupal_installing = isset($GLOBALS['install_state'])
+      && empty($GLOBALS['install_state']['installation_finished']);
+    $use_redis_cache = !empty($APPSETTING_SERVICE_REDIS_HOST) && !$drupal_installing;
     # ---------------------
     # Redis – caché distribuida (todos los bins usados en prod)
     # ---------------------
-    if (!empty($APPSETTING_SERVICE_REDIS_HOST)) {
+    if ($use_redis_cache) {
       $settings['redis.connection']['interface'] = 'PhpRedis';
       $settings['redis.connection']['host'] = $APPSETTING_SERVICE_REDIS_HOST;
       $settings['redis.connection']['port'] = 6379;
@@ -177,7 +181,7 @@ $config['search_api.server.solr'] = [
     # -------------
     # Cache default
     # -------------
-    if (!empty($APPSETTING_SERVICE_REDIS_HOST)) {
+    if ($use_redis_cache) {
       $settings['cache']['default'] = 'cache.backend.redis';
     } else {
       $settings['cache']['default'] = 'cache.backend.database';
@@ -187,7 +191,7 @@ $config['search_api.server.solr'] = [
     if (extension_loaded('apcu') && ini_get('apc.enabled')) {
       $settings['cache']['bins']['bootstrap'] = 'cache.backend.chainedfast';
     }
-    elseif (!empty($APPSETTING_SERVICE_REDIS_HOST)) {
+    elseif ($use_redis_cache) {
       $settings['cache']['bins']['bootstrap'] = 'cache.backend.redis';
     }
     # --------------------------

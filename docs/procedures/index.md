@@ -39,8 +39,6 @@ tags: []
 - [dm.ls.site.headers](./autogen__dm_ls_site_headers.md)
 - [dm.make.drupal.install](./autogen__dm_make_drupal_install.md)
 - [dm.make.drupal.reinstall](./autogen__dm_make_drupal_reinstall.md)
-- [dm.make.stack.drupal.basic](./autogen__dm_make_stack_drupal_basic.md)
-- [dm.make.stack.drupal.headless](./autogen__dm_make_stack_drupal_headless.md)
 - [dm.memcached.flush_all](./autogen__dm_memcached_flush_all.md)
 - [dm.memcached.stats](./autogen__dm_memcached_stats.md)
 - [dm.poweroff](./autogen__dm_poweroff.md)
