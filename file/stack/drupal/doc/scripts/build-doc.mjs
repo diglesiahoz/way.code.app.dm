@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * build:doc — genera doc/md/ desde README.md de la raíz del proyecto (espejo jerárquico).
+ * build:doc — genera doc/md/ desde archivos .md del proyecto (espejo jerárquico).
  *
  * Uso (desde la raíz del proyecto):
  *   node doc/scripts/build-doc.mjs
@@ -33,6 +33,7 @@ const WEB_SEGMENT_ORDER = [
 const CUSTOM_ORDER = { custom: 20 };
 
 const README_RE = /^readme\.md$/i;
+const MARKDOWN_RE = /\.md$/i;
 
 const SKIP_DIR_NAMES = new Set([
   'node_modules',
@@ -46,6 +47,7 @@ const SKIP_DIR_NAMES = new Set([
 const CATEGORY_LABELS = {
   drupal: 'drupal',
   web: 'web',
+  recipes: 'recipes',
   private: 'private',
   test: 'test',
   modules: 'modules',
@@ -133,7 +135,7 @@ function comparePathSegments(aParts, bParts) {
   return aParts.length - bParts.length;
 }
 
-function findReadmes(projectRoot) {
+function findMarkdownFiles(projectRoot) {
   const results = [];
 
   function walk(dir, relFromRoot) {
@@ -149,9 +151,10 @@ function findReadmes(projectRoot) {
       const relDir = relFromRoot ? path.join(relFromRoot, ent.name) : ent.name;
       if (ent.isDirectory()) {
         walk(full, relDir);
-      } else if (ent.isFile() && README_RE.test(ent.name)) {
+      } else if (ent.isFile() && MARKDOWN_RE.test(ent.name)) {
         results.push({
-          readmePath: full,
+          markdownPath: full,
+          baseName: path.parse(ent.name).name,
           relDir: relFromRoot || '',
         });
       }
@@ -172,12 +175,13 @@ function relDirUsesPosix(relDir) {
 }
 
 /** Filtro único build:doc (sin contrib, sin README core en drupal/web). */
-function passesBuildDocScope(relDir) {
+function passesBuildDocScope(relDir, fileName) {
   const posix = relDirUsesPosix(relDir);
+  const lowerFile = (fileName || '').toLowerCase();
   if (posix === 'doc' || posix.startsWith('doc/')) return false;
-  if (posix === 'drupal/web') return false;
+  if (posix === 'drupal/web' && lowerFile === 'readme.md') return false;
   if (posix.includes('/contrib/')) return false;
-  if (posix.startsWith('drupal/web/core/')) return false;
+  if (posix.startsWith('drupal/web/core/') && lowerFile === 'readme.md') return false;
   if (posix.startsWith('drupal/web/libraries/')) return false;
   if (WEB_SKIP_REGEX.test(posix)) return false;
 
@@ -189,6 +193,8 @@ function passesBuildDocScope(relDir) {
   if (posix.startsWith('drupal/web/themes/custom/')) return true;
   if (posix.startsWith('drupal/web/profiles/custom/')) return true;
   if (posix.startsWith('drupal/web/sites/')) return true;
+  if (posix === 'recipes' || posix.startsWith('recipes/')) return true;
+  if (posix === 'drupal/recipes' || posix.startsWith('drupal/recipes/')) return true;
   return false;
 }
 
@@ -454,6 +460,25 @@ function removeLegacyOutDirs(docDir, dryRun) {
   }
 }
 
+function cleanOutputDir(mdRoot, dryRun) {
+  if (!fs.existsSync(mdRoot)) return;
+  let entries = [];
+  try {
+    entries = fs.readdirSync(mdRoot, { withFileTypes: true });
+  } catch {
+    return;
+  }
+  for (const ent of entries) {
+    if (ent.name === '.gitkeep') continue;
+    const full = path.join(mdRoot, ent.name);
+    if (dryRun) {
+      console.log(`[dry-run] clean ${full}`);
+      continue;
+    }
+    fs.rmSync(full, { recursive: true, force: true });
+  }
+}
+
 function main() {
   const opts = parseArgs(process.argv.slice(2));
   const docDir = path.resolve(__dirname, '..');
@@ -464,34 +489,40 @@ function main() {
     process.exit(1);
   }
 
-  let readmes = findReadmes(projectRoot).filter((r) => passesBuildDocScope(r.relDir));
-  if (readmes.length === 0) {
-    console.warn('Not found README.md with build:doc filter.');
+  let markdownFiles = findMarkdownFiles(projectRoot).filter((f) =>
+    passesBuildDocScope(f.relDir, path.basename(f.markdownPath)),
+  );
+  if (markdownFiles.length === 0) {
+    console.warn('Not found .md files with build:doc filter.');
   }
 
   if (opts.clean) {
     removeLegacyOutDirs(docDir, opts.dryRun);
+    cleanOutputDir(opts.out, opts.dryRun);
   }
 
   const validOut = new Set();
   let position = 10;
 
-  for (const { readmePath, relDir } of readmes) {
-    const sourceRel = path.relative(projectRoot, readmePath).split(path.sep).join('/');
-    const isProjectHome = relDir === '';
-    const outDir = isProjectHome ? opts.out : path.join(opts.out, relDir);
-    const outFile = path.join(outDir, 'index.md');
+  for (const { markdownPath, relDir, baseName } of markdownFiles) {
+    const sourceRel = path.relative(projectRoot, markdownPath).split(path.sep).join('/');
+    const isReadme = README_RE.test(path.basename(markdownPath));
+    const isProjectHomeReadme = relDir === '' && isReadme;
+    const outDir = relDir === '' ? opts.out : path.join(opts.out, relDir);
+    const outFile = isReadme
+      ? path.join(outDir, 'index.md')
+      : path.join(outDir, `${baseName}.md`);
 
-    const rawBody = fs.readFileSync(readmePath, 'utf8');
+    const rawBody = fs.readFileSync(markdownPath, 'utf8');
     const fm = parseSimpleFrontmatter(rawBody);
     const stripped = stripLeadingFrontmatter(rawBody.replace(/^\uFEFF/, ''));
     const body = sanitizeMarkdownForMdx(stripped);
-    const title = fm.title || extractTitle(stripped, 'README');
-    const sidebarLabel = isProjectHome
+    const title = fm.title || extractTitle(stripped, baseName || 'README');
+    const sidebarLabel = isProjectHomeReadme
       ? fm.sidebar_label || '🚀 Home'
-      : humanizeSegment(path.basename(relDir));
+      : (isReadme ? path.basename(relDir || baseName) : humanizeSegment(baseName));
 
-    const doc = isProjectHome
+    const doc = isProjectHomeReadme
       ? buildHomeFrontmatter({ title, sidebarLabel, sourceRel }) + body
       : buildFrontmatter({
           title,
@@ -504,7 +535,7 @@ function main() {
     writeFile(outFile, doc, opts.dryRun);
     validOut.add(outFile);
     console.log(`${sourceRel} → doc/md/${path.relative(opts.out, outFile)}`);
-    if (!isProjectHome) position += 10;
+    if (!isProjectHomeReadme) position += 10;
   }
 
   if (opts.clean) {
@@ -514,7 +545,7 @@ function main() {
   ensureDir(opts.out, opts.dryRun);
   writeCategoryFiles(opts.out, opts.dryRun);
 
-  console.log(`\Done: ${readmes.length} README(s) → ${opts.out}`);
+  console.log(`\Done: ${markdownFiles.length} markdown file(s) → ${opts.out}`);
 
 }
 
