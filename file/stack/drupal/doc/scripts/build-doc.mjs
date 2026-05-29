@@ -5,6 +5,7 @@
  * Uso (desde la raíz del proyecto):
  *   node doc/scripts/build-doc.mjs
  *   node doc/scripts/build-doc.mjs --clean
+ *   node doc/scripts/build-doc.mjs --watch
  *
  * Variables: DOC_PROJECT_ROOT, DOC_MD_OUT
  *
@@ -73,10 +74,20 @@ function parseArgs(argv) {
     out: process.env.DOC_MD_OUT || '',
     clean: false,
     dryRun: false,
+    watch: false,
+    invalidateDocusaurus: false,
+    skipInitialBuild: false,
+    watchDev: false,
   };
   for (const arg of argv) {
     if (arg === '--clean') opts.clean = true;
     if (arg === '--dry-run') opts.dryRun = true;
+    if (arg === '--watch') opts.watch = true;
+    if (arg === '--watch-dev') {
+      opts.watch = true;
+      opts.watchDev = true;
+    }
+    if (arg === '--skip-initial-build') opts.skipInitialBuild = true;
     if (arg.startsWith('--root=')) opts.projectRoot = arg.slice(7);
     if (arg.startsWith('--out=')) opts.out = arg.slice(6);
   }
@@ -355,8 +366,15 @@ function buildHomeFrontmatter({ title, sidebarLabel, sourceRel }) {
     sidebarLabel,
     sidebarPosition: 1,
     sourceRel,
-    slug: '/',
   });
+}
+
+/** Nombre de fichero .md seguro para rutas Docusaurus (sin espacios ni paréntesis). */
+function safeDocBaseName(baseName) {
+  return baseName
+    .replace(/[^\w.-]+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '') || 'doc';
 }
 
 function ensureDir(dir, dryRun) {
@@ -369,7 +387,15 @@ function writeFile(filePath, content, dryRun) {
     console.log(`[dry-run] write ${filePath}`);
     return;
   }
-  fs.writeFileSync(filePath, content, 'utf8');
+  writeFileAtomic(filePath, content);
+}
+
+function writeFileAtomic(filePath, content) {
+  const dir = path.dirname(filePath);
+  fs.mkdirSync(dir, { recursive: true });
+  const tmp = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+  fs.writeFileSync(tmp, content, 'utf8');
+  fs.renameSync(tmp, filePath);
 }
 
 function writeCategoryFiles(mdRoot, dryRun) {
@@ -383,7 +409,8 @@ function writeCategoryFiles(mdRoot, dryRun) {
       return;
     }
     const subdirs = entries.filter((e) => e.isDirectory());
-    if (subdirs.length > 0) dirs.push(dir);
+    const hasDirectMd = entries.some((e) => e.isFile() && MARKDOWN_RE.test(e.name));
+    if (subdirs.length > 0 || hasDirectMd) dirs.push(dir);
     for (const sd of subdirs) collect(path.join(dir, sd.name));
   }
 
@@ -413,39 +440,126 @@ function writeCategoryFiles(mdRoot, dryRun) {
   ]);
 
   for (const dir of dirs) {
-    if (skipCategoryDirs.has(dir)) continue;
-    const rel = path.relative(mdRoot, dir);
-    const name = path.basename(dir);
-    const parentParts = rel.split(path.sep).filter(Boolean).slice(0, -1);
-    const category = {
-      label: categoryLabel(name),
-      position: categoryPosition(name, parentParts),
-      collapsed: name === 'custom' ? false : true,
-    };
-    writeFile(path.join(dir, '_category_.json'), JSON.stringify(category, null, 2) + '\n', dryRun);
+    writeCategoryJsonForDir(dir, mdRoot, dryRun);
   }
 }
 
-function removeStaleSynced(mdRoot, validOutFiles, dryRun) {
+function writeCategoryJsonForDir(dir, mdRoot, dryRun) {
+  const webDir = path.join(mdRoot, 'drupal', 'web');
+  const skipCategoryDirs = new Set([
+    mdRoot,
+    path.join(mdRoot, 'drupal'),
+    webDir,
+    ...Object.keys(TOP_LEVEL_CATEGORY).map((k) => path.join(mdRoot, k)),
+  ]);
+  if (skipCategoryDirs.has(dir)) return;
+  const rel = path.relative(mdRoot, dir);
+  if (!rel || rel.startsWith('..')) return;
+  const name = path.basename(dir);
+  const parentParts = rel.split(path.sep).filter(Boolean).slice(0, -1);
+  const category = {
+    label: categoryLabel(name),
+    position: categoryPosition(name, parentParts),
+    collapsed: name === 'custom' ? false : true,
+  };
+  writeFile(path.join(dir, '_category_.json'), JSON.stringify(category, null, 2) + '\n', dryRun);
+}
+
+const REMOVED_DOC_TOMBSTONE = `---
+title: "(eliminado)"
+draft: true
+---
+
+El documento fuente ya no existe en el proyecto. Un \`npm run build:doc --clean\` elimina estas páginas huérfanas.
+
+`;
+
+function pruneOrphanDocDirs(mdRoot, dryRun) {
   if (!fs.existsSync(mdRoot)) return;
+
+  function dirHasMarkdown(dir) {
+    for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, ent.name);
+      if (ent.isDirectory()) {
+        if (dirHasMarkdown(full)) return true;
+      } else if (MARKDOWN_RE.test(ent.name)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function prune(dir) {
+    for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (!ent.isDirectory()) continue;
+      const full = path.join(dir, ent.name);
+      prune(full);
+      if (dirHasMarkdown(full)) continue;
+      const rel = path.relative(mdRoot, full);
+      const categoryFile = path.join(full, '_category_.json');
+      if (dryRun) {
+        console.log(`[dry-run] prune empty doc/md/${rel}`);
+        continue;
+      }
+      if (fs.existsSync(categoryFile)) fs.unlinkSync(categoryFile);
+      try {
+        fs.rmdirSync(full);
+        console.log(`pruned empty doc/md/${rel}`);
+      } catch {
+        // directorio no vacío
+      }
+    }
+  }
+
+  prune(mdRoot);
+}
+
+function listStaleSynced(mdRoot, validOutFiles) {
+  const stale = [];
+  if (!fs.existsSync(mdRoot)) return stale;
 
   function walk(dir) {
     for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
       const full = path.join(dir, ent.name);
-      if (ent.isDirectory()) walk(full);
-      else if (ent.name === 'index.md' || ent.name === '_category_.json') {
-        if (ent.name === '_category_.json') continue;
-        if (validOutFiles.has(full)) continue;
-        const raw = fs.readFileSync(full, 'utf8');
-        if (raw.includes('synced_from_project: true') || raw.includes('synced_from_web: true')) {
-          if (dryRun) console.log(`[dry-run] remove stale ${full}`);
-          else fs.unlinkSync(full);
-        }
+      if (ent.isDirectory()) {
+        walk(full);
+        continue;
+      }
+      if (!MARKDOWN_RE.test(ent.name)) continue;
+      if (validOutFiles.has(full)) continue;
+      let raw;
+      try {
+        raw = fs.readFileSync(full, 'utf8');
+      } catch {
+        continue;
+      }
+      if (raw.includes('synced_from_project: true') || raw.includes('synced_from_web: true')) {
+        stale.push(full);
       }
     }
   }
 
   walk(mdRoot);
+  return stale;
+}
+
+function removeStaleSynced(mdRoot, validOutFiles, dryRun, softRemove = false) {
+  const stale = listStaleSynced(mdRoot, validOutFiles);
+  for (const full of stale) {
+    const rel = path.relative(mdRoot, full);
+    if (dryRun) {
+      console.log(`[dry-run] remove stale ${rel}`);
+      continue;
+    }
+    if (softRemove) {
+      writeFileAtomic(full, REMOVED_DOC_TOMBSTONE);
+      console.log(`[watch] marked removed (tombstone) doc/md/${rel}`);
+    } else {
+      fs.unlinkSync(full);
+      console.log(`removed stale doc/md/${rel}`);
+    }
+  }
+  return stale.length;
 }
 
 function removeLegacyOutDirs(docDir, dryRun) {
@@ -479,15 +593,33 @@ function cleanOutputDir(mdRoot, dryRun) {
   }
 }
 
-function main() {
-  const opts = parseArgs(process.argv.slice(2));
+function isWatchIgnored(relFromRoot) {
+  if (!relFromRoot) return false;
+  const posix = relFromRoot.split(path.sep).join('/');
+  if (posix === 'doc' || posix.startsWith('doc/')) return true;
+  const parts = relFromRoot.split(path.sep);
+  return parts.some((p) => SKIP_DIR_NAMES.has(p));
+}
+
+function watchMarkdownRelParts(projectRoot, filePath) {
+  if (!MARKDOWN_RE.test(path.basename(filePath))) return null;
+  const rel = path.relative(projectRoot, filePath);
+  if (rel.startsWith('..') || rel === '') return null;
+  const relDir = path.dirname(rel);
+  const relDirKey = relDir === '.' ? '' : relDir;
+  if (isWatchIgnored(relDirKey)) return null;
+  const fileName = path.basename(filePath);
+  if (!passesBuildDocScope(relDirKey, fileName)) return null;
+  return { rel, relDirKey, fileName };
+}
+
+function shouldWatchMarkdownFile(projectRoot, filePath) {
+  return watchMarkdownRelParts(projectRoot, filePath) !== null;
+}
+
+function runBuild(opts) {
   const docDir = path.resolve(__dirname, '..');
   const projectRoot = opts.projectRoot;
-
-  if (!fs.existsSync(projectRoot)) {
-    console.error(`Not found project root: ${projectRoot}`);
-    process.exit(1);
-  }
 
   let markdownFiles = findMarkdownFiles(projectRoot).filter((f) =>
     passesBuildDocScope(f.relDir, path.basename(f.markdownPath)),
@@ -503,6 +635,7 @@ function main() {
 
   const validOut = new Set();
   let position = 10;
+  const outputs = [];
 
   for (const { markdownPath, relDir, baseName } of markdownFiles) {
     const sourceRel = path.relative(projectRoot, markdownPath).split(path.sep).join('/');
@@ -511,7 +644,7 @@ function main() {
     const outDir = relDir === '' ? opts.out : path.join(opts.out, relDir);
     const outFile = isReadme
       ? path.join(outDir, 'index.md')
-      : path.join(outDir, `${baseName}.md`);
+      : path.join(outDir, `${safeDocBaseName(baseName)}.md`);
 
     const rawBody = fs.readFileSync(markdownPath, 'utf8');
     const fm = parseSimpleFrontmatter(rawBody);
@@ -531,22 +664,112 @@ function main() {
           sourceRel,
         }) + body;
 
-    ensureDir(outDir, opts.dryRun);
-    writeFile(outFile, doc, opts.dryRun);
+    outputs.push({ sourceRel, outDir, outFile, doc });
     validOut.add(outFile);
-    console.log(`${sourceRel} → doc/md/${path.relative(opts.out, outFile)}`);
     if (!isProjectHomeReadme) position += 10;
   }
 
-  if (opts.clean) {
-    removeStaleSynced(opts.out, validOut, opts.dryRun);
+  const outDirs = [...new Set(outputs.map((o) => o.outDir))];
+  for (const outDir of outDirs) {
+    ensureDir(outDir, opts.dryRun);
+    if (!opts.dryRun) writeCategoryJsonForDir(outDir, opts.out, opts.dryRun);
+  }
+  for (const { sourceRel, outFile, doc } of outputs) {
+    writeFile(outFile, doc, opts.dryRun);
+    console.log(`${sourceRel} → doc/md/${path.relative(opts.out, outFile)}`);
+  }
+
+  let staleRemoved = 0;
+  if (!opts.dryRun) {
+    staleRemoved = removeStaleSynced(opts.out, validOut, opts.dryRun, opts.invalidateDocusaurus);
+    if (staleRemoved > 0 && !opts.invalidateDocusaurus) {
+      pruneOrphanDocDirs(opts.out, opts.dryRun);
+    }
   }
 
   ensureDir(opts.out, opts.dryRun);
   writeCategoryFiles(opts.out, opts.dryRun);
 
-  console.log(`\Done: ${markdownFiles.length} markdown file(s) → ${opts.out}`);
-
+  console.log(`\nDone: ${markdownFiles.length} markdown file(s) → ${opts.out}`);
+  return { count: markdownFiles.length, staleRemoved };
 }
 
-main();
+async function runWatch(opts) {
+  const chokidar = (await import('chokidar')).default;
+  const debounceMs = 700;
+  let timer;
+  let building = false;
+
+  const scheduleRebuild = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      if (building) return;
+      building = true;
+      try {
+        const label = opts.watchDev ? 'watch:dev' : 'watch';
+        console.log(`\n[${label}] Sincronizando .md → doc/md/…`);
+        runBuild({
+          ...opts,
+          clean: false,
+          invalidateDocusaurus: Boolean(opts.watchDev),
+        });
+      } finally {
+        building = false;
+      }
+    }, debounceMs);
+  };
+
+  const watcher = chokidar.watch(opts.projectRoot, {
+    ignoreInitial: true,
+    awaitWriteFinish: { stabilityThreshold: 200, pollInterval: 50 },
+    ignored: (absPath) => {
+      const rel = path.relative(opts.projectRoot, absPath);
+      if (!rel || rel.startsWith('..')) return false;
+      return isWatchIgnored(rel);
+    },
+  });
+
+  watcher.on('all', (event, filePath) => {
+    if (event === 'unlinkDir') {
+      const relDir = path.relative(opts.projectRoot, filePath);
+      if (!relDir || relDir.startsWith('..') || isWatchIgnored(relDir)) return;
+      console.log(`[watch] ${event} ${relDir}`);
+      scheduleRebuild();
+      return;
+    }
+
+    const parts = watchMarkdownRelParts(opts.projectRoot, filePath);
+    if (!parts) return;
+    console.log(`[watch] ${event} ${parts.rel}`);
+    scheduleRebuild();
+  });
+
+  if (opts.watchDev) {
+    console.log(`[watch:dev] Watching .md under ${opts.projectRoot}`);
+  } else {
+    console.log(`[watch] Watching .md under ${opts.projectRoot}`);
+  }
+  await new Promise(() => {});
+}
+
+async function main() {
+  const opts = parseArgs(process.argv.slice(2));
+
+  if (!fs.existsSync(opts.projectRoot)) {
+    console.error(`Not found project root: ${opts.projectRoot}`);
+    process.exit(1);
+  }
+
+  if (opts.watch) {
+    if (!opts.skipInitialBuild) runBuild(opts);
+    await runWatch(opts);
+    return;
+  }
+
+  runBuild(opts);
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

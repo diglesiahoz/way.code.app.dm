@@ -1,16 +1,21 @@
-// Dev (contenedor doc, puerto 3000): DOCUSAURUS_BASE_URL=/ via entrypoint/doc.sh
-// Build servido por nginx en www: DOCUSAURUS_BASE_URL=/@doc/
+/**
+ * Producción: DOCUSAURUS_BASE_URL=/@doc/ (npm run build, nginx).
+ * Desarrollo: DOCUSAURUS_BASE_URL=/ (scripts/dev.mjs, docusaurus start).
+ * DOCUSAURUS_URL opcional; por defecto http://localhost.
+ */
+const path = require('path');
 const baseUrl = process.env.DOCUSAURUS_BASE_URL || '/@doc/';
+const isDevServer = baseUrl === '/';
 
 module.exports = {
   title: 'Docs',
-  url: 'http://localhost',
+  url: process.env.DOCUSAURUS_URL || 'http://localhost',
   baseUrl,
   trailingSlash: baseUrl !== '/',
   favicon: 'img/logo.svg',
   themeConfig: {
     navbar: {
-      title: '((_name))',
+      title: 'Asistea',
       logo: {
         alt: 'Logo Docs',
         src: 'img/logo.svg',
@@ -22,7 +27,7 @@ module.exports = {
       disableSwitch: true,
       respectPrefersColorScheme: false,
     },
-  },  
+  },
   presets: [
     [
       'classic',
@@ -49,5 +54,8 @@ module.exports = {
         language: 'es',
       },
     ],
+    ...(isDevServer
+      ? [path.resolve(__dirname, 'plugins/dev-server-allowed-hosts.js')]
+      : []),
   ],
 };
