@@ -9,7 +9,7 @@ task:
   complete: []
   require:
     config:
-      - .*(\.local) origin
+      - .*(\.local|\.dev|\.test|\.pre|\.stage|\.prod) origin
     args: {}
     opt: {}
     setttings: {}
@@ -22,7 +22,7 @@ task:
           AWS_ACCESS_KEY_ID="(({origin}.appsetting.aws.access_key))" -e
           AWS_SECRET_ACCESS_KEY="(({origin}.appsetting.aws.secret_key))" -e
           AWS_DEFAULT_REGION="(({origin}.appsetting.aws.region))" -it
-          (({origin}.appsetting.service.www.host)) aws s3 ls
+          (({origin}._key))-www aws s3 ls
           s3://(({origin}.appsetting.aws.bucket)) --recursive
         out: true
     - event: origin windup
